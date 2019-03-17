@@ -1,0 +1,368 @@
+﻿<#@ template  debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+	List<Type> supportedTypes = new List<Type> {
+		//typeof(bool),
+		typeof(sbyte),
+		typeof(byte),
+		typeof(short),
+		typeof(ushort),
+		typeof(int),
+		typeof(uint),
+		typeof(long),
+		typeof(ulong),
+		typeof(float),
+		typeof(double),
+		typeof(decimal),
+	};
+	Func<Type, string> defaultValue = new Func<Type, string>(t => {
+		if (t.Equals(typeof(bool)))
+			return "false";
+		if (t.Equals(typeof(sbyte)))
+			return "(sbyte)0";
+		if (t.Equals(typeof(byte)))
+			return "(byte)0";
+		if (t.Equals(typeof(short)))
+			return "(short)0";
+		if (t.Equals(typeof(ushort)))
+			return "(ushort)0";
+		if (t.Equals(typeof(int)))
+			return "0";
+		if (t.Equals(typeof(uint)))
+			return "0u";
+		if (t.Equals(typeof(long)))
+			return "0L";
+		if (t.Equals(typeof(ulong)))
+			return "0uL";
+		if (t.Equals(typeof(float)))
+			return "0f";
+		if (t.Equals(typeof(double)))
+			return "0d";
+		if (t.Equals(typeof(decimal)))
+			return "0m";
+		throw new ArgumentException("Type <" + t.ToString() + "> not supported.");
+    });
+
+	Func<Type, string> oneValue = new Func<Type, string>(t => {
+		if (t.Equals(typeof(bool)))
+			return "true";
+		if (t.Equals(typeof(sbyte)))
+			return "(sbyte)1";
+		if (t.Equals(typeof(byte)))
+			return "(byte)1";
+		if (t.Equals(typeof(short)))
+			return "(short)1";
+		if (t.Equals(typeof(ushort)))
+			return "(ushort)1";
+		if (t.Equals(typeof(int)))
+			return "1";
+		if (t.Equals(typeof(uint)))
+			return "1u";
+		if (t.Equals(typeof(long)))
+			return "1L";
+		if (t.Equals(typeof(ulong)))
+			return "1uL";
+		if (t.Equals(typeof(float)))
+			return "1f";
+		if (t.Equals(typeof(double)))
+			return "1d";
+		if (t.Equals(typeof(decimal)))
+			return "1m";
+		throw new ArgumentException("Type <" + t.ToString() + "> not supported.");
+    });
+	
+	Func<Type, string> getFieldName = new Func<Type, string>(t => t.Name.ToLower() + "Value");
+	Func<Type, string> getPropertyName = new Func<Type, string>(t => t.Name + "Value");
+
+	Func<Type, bool> canBeNegated = new Func<Type, bool>(t => !t.Equals(typeof(ulong)) && !t.Equals(typeof(bool)));
+
+	Func<Type, bool> needsCastingToDouble = new Func<Type, bool>(t => t.Equals(typeof(decimal)));
+#>
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+
+namespace LinearAlgebra.Scalars
+{
+    [StructLayout(LayoutKind.Explicit)]
+    struct TypedValueContainer
+    {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+        [FieldOffset(0)]
+        public readonly <#= supportedTypes[i].ToString() #> <#= getFieldName(supportedTypes[i]) #>;
+<# } #>
+
+        public TypedValueContainer(<#= string.Join(", ", supportedTypes.Select(x => x.ToString() + " " + getFieldName(x))) #>)
+        {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+            <#= i == 0 ? "if" : "else if" #> (<#= getFieldName(supportedTypes[i]) #> != default)
+            {
+<# for (int j = 0; j < supportedTypes.Count; j++) { #>
+<# if (i != j) { #>
+                this.<#= getFieldName(supportedTypes[j]) #> = default;
+<# } #>
+<# } #>
+                this.<#= getFieldName(supportedTypes[i]) #> = <#= getFieldName(supportedTypes[i]) #>;
+            }
+<# } #>
+            else
+            {
+<# for (int j = 0; j < supportedTypes.Count; j++) { #>
+                this.<#= getFieldName(supportedTypes[j]) #> = default;
+<# } #>
+            }
+        }
+    }
+
+    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, IComparable, IComparable<T>, IComparable<Scalar<T>>
+        where T : struct, IComparable
+    {
+        private enum ScalarType
+        {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+            <#= supportedTypes[i].Name #><#= i < supportedTypes.Count - 1 ? "," : "" #>
+<# } #>
+        }
+
+        private static Dictionary<Type, ScalarType> TypeMap = new Dictionary<Type, ScalarType>
+        {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+            { typeof(<#= supportedTypes[i].ToString() #>), ScalarType.<#= supportedTypes[i].Name #> }<#= i < supportedTypes.Count - 1 ? "," : "" #>
+<# } #>
+        };
+
+        private static readonly ScalarType scalarType;
+
+        private readonly TypedValueContainer tvc;
+
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+        private <#= supportedTypes[i].ToString() #> <#= getPropertyName(supportedTypes[i]) #> => tvc.<#= getFieldName(supportedTypes[i]) #>;
+<# } #>
+
+        public T Value { get; }
+
+        public static Scalar<T> Zero { get; private set; }
+        public static Scalar<T> One { get; private set; }
+
+        static Scalar()
+        {
+            if (!TypeMap.TryGetValue(typeof(T), out scalarType))
+                throw new ArgumentException($"Type <{ typeof(T).Name }> not supported for scalar values.");
+
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].Name #>:
+                    Zero = <#= defaultValue(supportedTypes[i]) #>;
+                    One = <#= oneValue(supportedTypes[i]) #>;
+                    break;
+<# } #>
+                default:
+                    throw new ArgumentException($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public Scalar(T value)
+        {
+            Value = value;
+
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+            <#= i == 0 ? "if" : "else if" #> (value is <#= supportedTypes[i].ToString() #> <#= getFieldName(supportedTypes[i]) + "T" #>)
+                tvc = new TypedValueContainer(<#= string.Join(", ", supportedTypes.Select((x, j) => j == i ? getFieldName(x) + "T" : "default")) #>);
+<# } #>
+            else
+                throw new ArgumentException($"Type <{ typeof(T).Name }> not supported for scalar values.");
+        }
+
+        static Scalar<T> From<U>(U u) where U : struct
+        {
+            if (u is T t)
+                return new Scalar<T>(t);
+            if (u is IConvertible ic)
+                return new Scalar<T>((T)ic.ToType(typeof(T), null));
+
+            else throw new ArgumentException($"Type <{ typeof(U).Name }> cannot be converted to type <{ typeof(T).Name }>.");
+        }
+
+        public static Scalar<T> operator +(Scalar<T> t1, Scalar<T> t2)
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].Name #>:
+                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> + t2.<#= getPropertyName(supportedTypes[i]) #>);
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static Scalar<T> operator -(Scalar<T> t1, Scalar<T> t2)
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].Name #>:
+                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> - t2.<#= getPropertyName(supportedTypes[i]) #>);
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static Scalar<T> operator *(Scalar<T> t1, Scalar<T> t2)
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].Name #>:
+                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> * t2.<#= getPropertyName(supportedTypes[i]) #>);
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static Scalar<T> operator /(Scalar<T> t1, Scalar<T> t2)
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].Name #>:
+                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> / t2.<#= getPropertyName(supportedTypes[i]) #>);
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static Scalar<T> operator -(Scalar<T> t)
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].Name #>:
+<# if (canBeNegated(supportedTypes[i])) { #>
+                    return From(-t.<#= getPropertyName(supportedTypes[i]) #>);
+<# } else { #>
+                    throw new Exception("Type <<#= supportedTypes[i].ToString() #>> cannot be negated.");
+<# } #>
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static bool operator ==(Scalar<T> left, Scalar<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Scalar<T> left, Scalar<T> right)
+        {
+            return !left.Equals(right);
+        }
+        public static bool operator <(Scalar<T> left, Scalar<T> right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+        public static bool operator >(Scalar<T> left, Scalar<T> right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+        public static bool operator <=(Scalar<T> left, Scalar<T> right)
+        {
+            return (left < right) || (left == right);
+        }
+        public static bool operator >=(Scalar<T> left, Scalar<T> right)
+        {
+            return (left > right) || (left == right);
+        }
+
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+        public static implicit operator Scalar<T>(<#= supportedTypes[i].ToString() #> value)
+        {
+            return From(value);
+        }
+        public static implicit operator <#= supportedTypes[i].ToString() #>(Scalar<T> value)
+        {
+            return value.<#= getPropertyName(supportedTypes[i]) #>;
+        }
+
+<# } #>
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Scalar<T> sc)
+                return Value.Equals(sc.Value);
+            if (obj is T t)
+                return Value.Equals(t);
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public object Clone()
+        {
+            return new Scalar<T>(Value);
+        }
+
+        public bool Equals(Scalar<T> other)
+        {
+            return Value.Equals(other.Value);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Scalar<T> sc)
+                return sc.Value.CompareTo(Value);
+            if (obj is T t)
+                return t.CompareTo(Value);
+
+            throw new Exception($"Cannot compare type <{ obj.GetType().Name }> to  Scalar<{ typeof(T).Name }>");
+        }
+
+        public int CompareTo(T other)
+        {
+            return Value.CompareTo(other);
+        }
+
+        public int CompareTo(Scalar<T> other)
+        {
+            return Value.CompareTo(other.Value);
+        }
+
+        public Scalar<T> Sqrt()
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].Name #>:
+<# if (needsCastingToDouble(supportedTypes[i])) { #>
+                    return From(Math.Sqrt((double)<#= getPropertyName(supportedTypes[i]) #>));
+<# } else { #>
+                    return From(Math.Sqrt(<#= getPropertyName(supportedTypes[i]) #>));
+<# } #>
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+    }
+}

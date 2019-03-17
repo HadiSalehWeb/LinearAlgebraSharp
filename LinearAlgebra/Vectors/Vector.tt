@@ -1,0 +1,196 @@
+﻿<#@ template  debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+	var supportedDimensions = new List<int> { 1, 2, 3, 4, 5 };
+	var componentName = new Func<int, int, string>((n, i) => n < 5 ? "xyzw"[i].ToString() : "v" + i);
+	var index = 0;
+	var directionVocabulary = new List<Tuple<string, string>> 
+	{
+		Tuple.Create("right", "left"),
+		Tuple.Create("up", "down"),
+		Tuple.Create("forward", "backward"),
+		Tuple.Create("ana", "kata")
+	};
+    var primes = new List<int> { 1, 2136537719, 298955857, 421235453, 311692756, 270262448, 374968597, 956762603 };
+#>
+using LinearAlgebra.Scalars;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace LinearAlgebra.Vectors
+{
+<# foreach (var n in supportedDimensions) { #>
+    public struct Vector<#= n #><T> : ICloneable, IEquatable<Vector<#= n #><T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>
+        where T : struct, IComparable
+    {
+        public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #>;
+
+        public static readonly Vector<#= n #><T> zero = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(i => "Scalar<T>.Zero")) #>);
+        public static readonly Vector<#= n #><T> one = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(i => "Scalar<T>.One")) #>);
+
+<# if (n <= directionVocabulary.Count) { #>
+<# for (int i = 0; i < n; i++) { #>
+        public static readonly Vector<#= n #><T> <#= directionVocabulary[i].Item1 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "Scalar<T>.One" : "Scalar<T>.Zero")) #>);
+        public static readonly Vector<#= n #><T> <#= directionVocabulary[i].Item2 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "-Scalar<T>.One" : "Scalar<T>.Zero")) #>);
+<# } #>
+<# } #>
+
+        public Scalar<int> Dimension => <#= n #>;
+        public Scalar<T>[] Data => new Scalar<T>[<#= n #>] { <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #> };
+        public Scalar<T> this[int i] => Data[i];
+		
+        public Vector<#= n #>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "Scalar<T> " + componentName(n, x))) #>)
+        {
+<# for (int i = 0; i < n; i++) { #>
+            this.<#= componentName(n, i) #> = <#= componentName(n, i) #>;
+<# } #>
+        }
+
+        public Vector<#= n #>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "T " + componentName(n, x))) #>)
+        {
+<# for (int i = 0; i < n; i++) { #>
+            this.<#= componentName(n, i) #> = new Scalar<T>(<#= componentName(n, i) #>);
+<# } #>
+        }
+
+<# if (n > 1) { #>
+        public Vector<#= n #>(Scalar<T> s)
+        {
+<# for (int i = 0; i < n; i++) { #>
+            this.<#= componentName(n, i) #> = s;
+<# } #>
+        }
+
+        public Vector<#= n #>(T t)
+        {
+<# for (int i = 0; i < n; i++) { #>
+            this.<#= componentName(n, i) #> = new Scalar<T>(t);
+<# } #>
+        }
+
+<# } #>
+        public static Vector<#= n #><T> operator +(Vector<#= n #><T> left, Vector<#= n #><T> right)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "left." + componentName(n, x) + " + right." + componentName(n, x))) #>);
+        }
+
+        public static Vector<#= n #><T> operator -(Vector<#= n #><T> left, Vector<#= n #><T> right)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "left." + componentName(n, x) + " - right." + componentName(n, x))) #>);
+        }
+
+        public static Vector<#= n #><T> operator *(Vector<#= n #><T> left, Scalar<T> right)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "left." + componentName(n, x) + " * right")) #>);
+        }
+
+        public static Vector<#= n #><T> operator *(Scalar<T> left, Vector<#= n #><T> right)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "left" + " * right." + componentName(n, x))) #>);
+        }
+
+        public static Vector<#= n #><T> operator /(Vector<#= n #><T> left, Scalar<T> right)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "left." + componentName(n, x) + " / right")) #>);
+        }
+
+        public static Vector<#= n #><T> operator /(Scalar<T> left, Vector<#= n #><T> right)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "left" + " / right." + componentName(n, x))) #>);
+        }
+
+        public static bool operator ==(Vector<#= n #><T> left, Vector<#= n #><T> right)
+        {
+            return <#= string.Join(" && ", Enumerable.Range(0, n).Select(x => "left." + componentName(n, x) + " == right." + componentName(n, x))) #>;
+        }
+
+        public static bool operator !=(Vector<#= n #><T> left, Vector<#= n #><T> right)
+        {
+            return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "left." + componentName(n, x) + " != right." + componentName(n, x))) #>;
+        }
+
+        public Vector<#= n #><T> Scale(Vector<#= n #><T> vec)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) #>);
+        }
+
+        public Scalar<T> Dot(Vector<#= n #><T> vec)
+        {
+            return <#= string.Join(" + ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) #>;
+        }
+
+        public static implicit operator Vector<#= n #><T>(<#= n == 1 ? "T" : "(" + string.Join(", ", Enumerable.Repeat("T", n)) + ")" #> t)
+        {
+            return new Vector<#= n #><T>(<#= n == 1 ? "t" : string.Join(", ", Enumerable.Range(1, n).Select(x => "t.Item" + x)) #>);
+        }
+
+        public static implicit operator Vector<T>(Vector<#= n #><T> t)
+        {
+            return new Vector<T>(t.Data);
+        }
+
+        public object Clone()
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x))) #>);
+        }
+
+        IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
+        {
+<# for (int i = 0; i < n; i++) { #>
+            yield return <#= componentName(n, i) #>;
+<# } #>
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+<# for (int i = 0; i < n; i++) { #>
+            yield return <#= componentName(n, i) #>.Value;
+<# } #>
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+			return this.GetEnumerator();
+        }
+
+        public bool Equals(Vector<#= n #><T> other)
+        {
+            return <#= string.Join(" && ", Enumerable.Range(0, n).Select(x => componentName(n, x) + ".Equals(other." + componentName(n, x) + ")")) #>;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Vector<#= n #><T> vec)
+                return <#= string.Join(" && ", Enumerable.Range(0, n).Select(x => componentName(n, x) + ".Equals(vec." + componentName(n, x) + ")")) #>;
+
+            return false;
+        }
+
+        public override string ToString()
+        {
+            return $"Vector<#= n #>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "{ " + componentName(n, x) + " }" )) #>)";
+        }
+
+        public override int GetHashCode()
+        {
+            return <#= string.Join(" + ", Enumerable.Range(0, n).Select(x => primes[x] + " * " + componentName(n, x))) #>;
+        }
+
+        public Scalar<T> SqrMagnitude => <#= string.Join(" + ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * " + componentName(n, x))) #>;
+        public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
+        public Vector<#= n #><T> Normalized => this / Magnitude;
+    }
+<# index++; if (index != supportedDimensions.Count) { #>
+
+<# } #>
+<# } #>
+}

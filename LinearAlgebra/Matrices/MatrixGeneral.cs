@@ -114,7 +114,18 @@ namespace LinearAlgebra.Matrices
 
             return new Matrix<T>(data);
         }
-        
+
+        public Matrix<T> Transpose()
+        {
+            Scalar<T>[,] data = new Scalar<T>[Dimensions.y, Dimensions.x];
+
+            for (int i = 0; i < Dimensions.x; i++)
+                for (int j = 0; j < Dimensions.y; j++)
+                    data[j, i] = Data[i, j];
+
+            return new Matrix<T>(data);
+        }
+
         public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
         {
             if (left.Dimensions.y != right.Dimensions.x) throw new ArgumentException("Incompatible dimensions.");

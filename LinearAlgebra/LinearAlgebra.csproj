@@ -48,7 +48,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Matrix.tt</DependentUpon>
     </Compile>
-    <Compile Include="Matrices\MatrixAbstract.cs" />
+    <Compile Include="Matrices\MatrixGeneral.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scalars\Scalar.cs">
       <AutoGen>True</AutoGen>
@@ -60,7 +60,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Vector.tt</DependentUpon>
     </Compile>
-    <Compile Include="Vectors\VectorAbstract.cs" />
+    <Compile Include="Vectors\VetorGeneral.cs" />
     <Compile Include="Vectors\VectorExtensions\VectorExtansions.cs" />
   </ItemGroup>
   <ItemGroup>

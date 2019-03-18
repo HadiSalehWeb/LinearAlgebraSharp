@@ -51,6 +51,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Matrices\GeneralMatrixTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scalars\ScalarTest.cs" />
     <Compile Include="Vectors\VectorTest.cs" />

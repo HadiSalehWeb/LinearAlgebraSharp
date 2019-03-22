@@ -6,7 +6,14 @@ using System.Linq;
 
 namespace LinearAlgebra.Vectors
 {
-    public struct Vector<T> : ICloneable, IEquatable<Vector<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>
+    public interface IVector<T>
+        where T : struct, IComparable
+    {
+        Scalar<int> Dimension { get; }
+        Scalar<T>[] Data { get; }
+    }
+
+    public struct Vector<T> : ICloneable, IEquatable<Vector<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T>
         where T : struct, IComparable
     {
         public Scalar<int> Dimension { get; }
@@ -81,6 +88,16 @@ namespace LinearAlgebra.Vectors
         public static Vector<T> operator -(Vector<T> v)
         {
             return new Vector<T>(v.Data.Select(x => -x).ToArray());
+        }
+
+        public static bool operator ==(Vector<T> left, Vector<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Vector<T> left, Vector<T> right)
+        {
+            return !left.Equals(right);
         }
 
         public static implicit operator Vector<T>(Scalar<T>[] value)

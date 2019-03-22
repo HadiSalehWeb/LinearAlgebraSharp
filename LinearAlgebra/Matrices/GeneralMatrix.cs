@@ -7,7 +7,14 @@ using System.Text;
 
 namespace LinearAlgebra.Matrices
 {
-    public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>
+    public interface IMatrix<T>
+        where T : struct, IComparable
+    {
+        Vector2<int> Dimensions { get; }
+        Scalar<T>[,] Data { get; }
+    }
+
+    public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
         where T : struct, IComparable
     {
         public Vector2<int> Dimensions { get; }
@@ -98,6 +105,16 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Vector<T> Transform(Vector<T> v)
+        {
+            return this * v;
+        }
+
+        public Matrix<T> Transform(Matrix<T> m)
+        {
+            return this * m;
+        }
+
         public Matrix<T> Submatrix(Vector2<int> start, Vector2<int> count)
         {
             if (start.x < 0 || start.y < 0 ||
@@ -138,6 +155,19 @@ namespace LinearAlgebra.Matrices
                         data[i, j] = left[i, k] * right[k, j];
 
             return new Matrix<T>(data);
+        }
+
+        public static Vector<T> operator *(Matrix<T> left, Vector<T> right)
+        {
+            if (left.Dimensions.y != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+
+            Scalar<T>[] data = new Scalar<T>[left.Dimensions.x];
+            int i = 0, j = 0;
+            for (i = 0, data[i] = Scalar<T>.Zero; i < left.Dimensions.x; i++)
+                for (j = 0; j < right.Dimension; j++)
+                    data[i] += left[i, j] * right[j];
+
+            return new Vector<T>(data);
         }
 
         public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)

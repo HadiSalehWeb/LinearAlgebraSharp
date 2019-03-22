@@ -1,85 +1,70 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{78F560E9-61E7-478F-989E-19C3B084DBF2}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinearAlgebra</RootNamespace>
-    <AssemblyName>LinearAlgebra</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Matrices\Matrix.cs">
-      <AutoGen>True</AutoGen>
+    <None Include="Matrices\Matrix.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Matrix.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Matrices\MatrixGeneral.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scalars\Scalar.cs">
-      <AutoGen>True</AutoGen>
+    </None>
+    <None Include="Scalars\Scalar.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Scalar.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Vectors\Vector.cs">
-      <AutoGen>True</AutoGen>
+    </None>
+    <None Include="Vectors\Vector.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Vector.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Vectors\VetorGeneral.cs" />
-    <Compile Include="Vectors\VectorExtensions\VectorExtansions.cs" />
+    </None>
   </ItemGroup>
+
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Content Include="Matrices\Matrix.tt">
+    <None Update="Matrices\Matrix.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Matrix.cs</LastGenOutput>
-    </Content>
-    <Content Include="Scalars\Scalar.tt">
+    </None>
+    <None Update="Scalars\Scalar.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Scalar.cs</LastGenOutput>
-    </Content>
-    <Content Include="Vectors\Vector.tt">
+    </None>
+    <None Update="Vectors\Vector.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Vector.cs</LastGenOutput>
-    </Content>
+    </None>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Matrices\Matrix.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Matrix.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Scalars\Scalar.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Scalar.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Vectors\Vector.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Vector.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

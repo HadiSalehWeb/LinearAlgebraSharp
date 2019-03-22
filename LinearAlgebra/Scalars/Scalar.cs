@@ -254,8 +254,8 @@ namespace LinearAlgebra.Scalars
 
         public T Value { get; }
 
-        public static Scalar<T> Zero { get; private set; }
-        public static Scalar<T> One { get; private set; }
+        public static Scalar<T> Zero { get; }
+        public static Scalar<T> One { get; }
 
         static Scalar()
         {

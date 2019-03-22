@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LinearAlgebra\LinearAlgebra.csproj">
-      <Project>{78F560E9-61E7-478F-989E-19C3B084DBF2}</Project>
+      <Project>{7bd6e644-e2b2-45d2-92d1-b2e6d7f8a30e}</Project>
       <Name>LinearAlgebra</Name>
     </ProjectReference>
   </ItemGroup>

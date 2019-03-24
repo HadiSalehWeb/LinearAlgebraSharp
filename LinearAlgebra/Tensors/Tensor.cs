@@ -31,7 +31,20 @@ namespace LinearAlgebra.Tensors
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return ToString(Data);
+        }
+
+        private static string ToString(Array data, int depth = 0)
+        {
+            var tabs = string.Join("", Enumerable.Repeat("\t", depth));
+
+            if (data is T[] t)
+                return tabs + "{" + string.Join(",", t.Select(x => " " + x.ToString())) + " }";
+
+            var arr = data as Array[];
+            return tabs + "{" + (arr.Any() ? Environment.NewLine : "") +
+                string.Join("," + Environment.NewLine, arr.Select(x => ToString(x, depth + 1))) +
+                (arr.Any() ? Environment.NewLine : "") + tabs + "}";
         }
     }
 }

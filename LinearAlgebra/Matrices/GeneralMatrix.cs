@@ -301,7 +301,7 @@ namespace LinearAlgebra.Matrices
                 res.Append("\t{ ");
                 for (int j = 0; j < Dimensions.y; j++)
                 {
-                    res.Append(Data[i, j]);
+                    res.Append(Data[i, j].ToString());
                     if (j != Dimensions.y - 1)
                         res.Append(", ");
                 }

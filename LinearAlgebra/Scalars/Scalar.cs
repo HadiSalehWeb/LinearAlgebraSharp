@@ -8,21 +8,23 @@ namespace LinearAlgebra.Scalars
     struct TypedValueContainer
     {
         [FieldOffset(0)]
-        public readonly System.SByte sbyteValue;
+        public readonly System.Boolean booleanValue;
+        [FieldOffset(0)]
+        public readonly System.SByte sByteValue;
         [FieldOffset(0)]
         public readonly System.Byte byteValue;
         [FieldOffset(0)]
         public readonly System.Int16 int16Value;
         [FieldOffset(0)]
-        public readonly System.UInt16 uint16Value;
+        public readonly System.UInt16 uInt16Value;
         [FieldOffset(0)]
         public readonly System.Int32 int32Value;
         [FieldOffset(0)]
-        public readonly System.UInt32 uint32Value;
+        public readonly System.UInt32 uInt32Value;
         [FieldOffset(0)]
         public readonly System.Int64 int64Value;
         [FieldOffset(0)]
-        public readonly System.UInt64 uint64Value;
+        public readonly System.UInt64 uInt64Value;
         [FieldOffset(0)]
         public readonly System.Single singleValue;
         [FieldOffset(0)]
@@ -30,31 +32,48 @@ namespace LinearAlgebra.Scalars
         [FieldOffset(0)]
         public readonly System.Decimal decimalValue;
 
-        public TypedValueContainer(System.SByte sbyteValue, System.Byte byteValue, System.Int16 int16Value, System.UInt16 uint16Value, System.Int32 int32Value, System.UInt32 uint32Value, System.Int64 int64Value, System.UInt64 uint64Value, System.Single singleValue, System.Double doubleValue, System.Decimal decimalValue)
+        public TypedValueContainer(System.Boolean booleanValue, System.SByte sByteValue, System.Byte byteValue, System.Int16 int16Value, System.UInt16 uInt16Value, System.Int32 int32Value, System.UInt32 uInt32Value, System.Int64 int64Value, System.UInt64 uInt64Value, System.Single singleValue, System.Double doubleValue, System.Decimal decimalValue)
         {
-            if (sbyteValue != default)
+            if (booleanValue != default)
             {
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
-                this.sbyteValue = sbyteValue;
+                this.booleanValue = booleanValue;
+            }
+            else if (sByteValue != default)
+            {
+                this.booleanValue = default;
+                this.byteValue = default;
+                this.int16Value = default;
+                this.uInt16Value = default;
+                this.int32Value = default;
+                this.uInt32Value = default;
+                this.int64Value = default;
+                this.uInt64Value = default;
+                this.singleValue = default;
+                this.doubleValue = default;
+                this.decimalValue = default;
+                this.sByteValue = sByteValue;
             }
             else if (byteValue != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
@@ -62,140 +81,150 @@ namespace LinearAlgebra.Scalars
             }
             else if (int16Value != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
                 this.int16Value = int16Value;
             }
-            else if (uint16Value != default)
+            else if (uInt16Value != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
-                this.uint16Value = uint16Value;
+                this.uInt16Value = uInt16Value;
             }
             else if (int32Value != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
-                this.uint32Value = default;
+                this.uInt16Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
                 this.int32Value = int32Value;
             }
-            else if (uint32Value != default)
+            else if (uInt32Value != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
-                this.uint32Value = uint32Value;
+                this.uInt32Value = uInt32Value;
             }
             else if (int64Value != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
-                this.uint64Value = default;
+                this.uInt32Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
                 this.int64Value = int64Value;
             }
-            else if (uint64Value != default)
+            else if (uInt64Value != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
-                this.uint64Value = uint64Value;
+                this.uInt64Value = uInt64Value;
             }
             else if (singleValue != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
                 this.singleValue = singleValue;
             }
             else if (doubleValue != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.decimalValue = default;
                 this.doubleValue = doubleValue;
             }
             else if (decimalValue != default)
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = decimalValue;
             }
             else
             {
-                this.sbyteValue = default;
+                this.booleanValue = default;
+                this.sByteValue = default;
                 this.byteValue = default;
                 this.int16Value = default;
-                this.uint16Value = default;
+                this.uInt16Value = default;
                 this.int32Value = default;
-                this.uint32Value = default;
+                this.uInt32Value = default;
                 this.int64Value = default;
-                this.uint64Value = default;
+                this.uInt64Value = default;
                 this.singleValue = default;
                 this.doubleValue = default;
                 this.decimalValue = default;
@@ -208,6 +237,7 @@ namespace LinearAlgebra.Scalars
     {
         private enum ScalarType
         {
+            Boolean,
             SByte,
             Byte,
             Int16,
@@ -223,6 +253,7 @@ namespace LinearAlgebra.Scalars
 
         private static Dictionary<Type, ScalarType> TypeMap = new Dictionary<Type, ScalarType>
         {
+            { typeof(System.Boolean), ScalarType.Boolean },
             { typeof(System.SByte), ScalarType.SByte },
             { typeof(System.Byte), ScalarType.Byte },
             { typeof(System.Int16), ScalarType.Int16 },
@@ -240,14 +271,15 @@ namespace LinearAlgebra.Scalars
 
         private readonly TypedValueContainer tvc;
 
-        private System.SByte SByteValue => tvc.sbyteValue;
+        private System.Boolean BooleanValue => tvc.booleanValue;
+        private System.SByte SByteValue => tvc.sByteValue;
         private System.Byte ByteValue => tvc.byteValue;
         private System.Int16 Int16Value => tvc.int16Value;
-        private System.UInt16 UInt16Value => tvc.uint16Value;
+        private System.UInt16 UInt16Value => tvc.uInt16Value;
         private System.Int32 Int32Value => tvc.int32Value;
-        private System.UInt32 UInt32Value => tvc.uint32Value;
+        private System.UInt32 UInt32Value => tvc.uInt32Value;
         private System.Int64 Int64Value => tvc.int64Value;
-        private System.UInt64 UInt64Value => tvc.uint64Value;
+        private System.UInt64 UInt64Value => tvc.uInt64Value;
         private System.Single SingleValue => tvc.singleValue;
         private System.Double DoubleValue => tvc.doubleValue;
         private System.Decimal DecimalValue => tvc.decimalValue;
@@ -264,6 +296,10 @@ namespace LinearAlgebra.Scalars
 
             switch (scalarType)
             {
+                case ScalarType.Boolean:
+                    Zero = false;
+                    One = true;
+                    break;
                 case ScalarType.SByte:
                     Zero = (sbyte)0;
                     One = (sbyte)1;
@@ -317,28 +353,30 @@ namespace LinearAlgebra.Scalars
         {
             Value = value;
 
-            if (value is System.SByte sbyteValueT)
-                tvc = new TypedValueContainer(sbyteValueT, default, default, default, default, default, default, default, default, default, default);
+            if (value is System.Boolean booleanValueT)
+                tvc = new TypedValueContainer(booleanValueT, default, default, default, default, default, default, default, default, default, default, default);
+            else if (value is System.SByte sByteValueT)
+                tvc = new TypedValueContainer(default, sByteValueT, default, default, default, default, default, default, default, default, default, default);
             else if (value is System.Byte byteValueT)
-                tvc = new TypedValueContainer(default, byteValueT, default, default, default, default, default, default, default, default, default);
+                tvc = new TypedValueContainer(default, default, byteValueT, default, default, default, default, default, default, default, default, default);
             else if (value is System.Int16 int16ValueT)
-                tvc = new TypedValueContainer(default, default, int16ValueT, default, default, default, default, default, default, default, default);
-            else if (value is System.UInt16 uint16ValueT)
-                tvc = new TypedValueContainer(default, default, default, uint16ValueT, default, default, default, default, default, default, default);
+                tvc = new TypedValueContainer(default, default, default, int16ValueT, default, default, default, default, default, default, default, default);
+            else if (value is System.UInt16 uInt16ValueT)
+                tvc = new TypedValueContainer(default, default, default, default, uInt16ValueT, default, default, default, default, default, default, default);
             else if (value is System.Int32 int32ValueT)
-                tvc = new TypedValueContainer(default, default, default, default, int32ValueT, default, default, default, default, default, default);
-            else if (value is System.UInt32 uint32ValueT)
-                tvc = new TypedValueContainer(default, default, default, default, default, uint32ValueT, default, default, default, default, default);
+                tvc = new TypedValueContainer(default, default, default, default, default, int32ValueT, default, default, default, default, default, default);
+            else if (value is System.UInt32 uInt32ValueT)
+                tvc = new TypedValueContainer(default, default, default, default, default, default, uInt32ValueT, default, default, default, default, default);
             else if (value is System.Int64 int64ValueT)
-                tvc = new TypedValueContainer(default, default, default, default, default, default, int64ValueT, default, default, default, default);
-            else if (value is System.UInt64 uint64ValueT)
-                tvc = new TypedValueContainer(default, default, default, default, default, default, default, uint64ValueT, default, default, default);
+                tvc = new TypedValueContainer(default, default, default, default, default, default, default, int64ValueT, default, default, default, default);
+            else if (value is System.UInt64 uInt64ValueT)
+                tvc = new TypedValueContainer(default, default, default, default, default, default, default, default, uInt64ValueT, default, default, default);
             else if (value is System.Single singleValueT)
-                tvc = new TypedValueContainer(default, default, default, default, default, default, default, default, singleValueT, default, default);
+                tvc = new TypedValueContainer(default, default, default, default, default, default, default, default, default, singleValueT, default, default);
             else if (value is System.Double doubleValueT)
-                tvc = new TypedValueContainer(default, default, default, default, default, default, default, default, default, doubleValueT, default);
+                tvc = new TypedValueContainer(default, default, default, default, default, default, default, default, default, default, doubleValueT, default);
             else if (value is System.Decimal decimalValueT)
-                tvc = new TypedValueContainer(default, default, default, default, default, default, default, default, default, default, decimalValueT);
+                tvc = new TypedValueContainer(default, default, default, default, default, default, default, default, default, default, default, decimalValueT);
             else
                 throw new ArgumentException($"Type <{ typeof(T).Name }> not supported for scalar values.");
         }
@@ -357,6 +395,8 @@ namespace LinearAlgebra.Scalars
         {
             switch (scalarType)
             {
+                case ScalarType.Boolean:
+                    return From(t1.BooleanValue || t2.BooleanValue);
                 case ScalarType.SByte:
                     return From(t1.SByteValue + t2.SByteValue);
                 case ScalarType.Byte:
@@ -388,6 +428,8 @@ namespace LinearAlgebra.Scalars
         {
             switch (scalarType)
             {
+                case ScalarType.Boolean:
+                    throw new Exception($"Substraction can't be performed on type System.Boolean.");
                 case ScalarType.SByte:
                     return From(t1.SByteValue - t2.SByteValue);
                 case ScalarType.Byte:
@@ -419,6 +461,8 @@ namespace LinearAlgebra.Scalars
         {
             switch (scalarType)
             {
+                case ScalarType.Boolean:
+                    return From(t1.BooleanValue && t2.BooleanValue);
                 case ScalarType.SByte:
                     return From(t1.SByteValue * t2.SByteValue);
                 case ScalarType.Byte:
@@ -450,6 +494,8 @@ namespace LinearAlgebra.Scalars
         {
             switch (scalarType)
             {
+                case ScalarType.Boolean:
+                    throw new Exception($"Division can't be performed on type System.Boolean.");
                 case ScalarType.SByte:
                     return From(t1.SByteValue / t2.SByteValue);
                 case ScalarType.Byte:
@@ -481,18 +527,20 @@ namespace LinearAlgebra.Scalars
         {
             switch (scalarType)
             {
+                case ScalarType.Boolean:
+                    throw new Exception("Type <System.Boolean> cannot be negated.");
                 case ScalarType.SByte:
                     return From(-t.SByteValue);
                 case ScalarType.Byte:
-                    return From(-t.ByteValue);
+                    throw new Exception("Type <System.Byte> cannot be negated.");
                 case ScalarType.Int16:
                     return From(-t.Int16Value);
                 case ScalarType.UInt16:
-                    return From(-t.UInt16Value);
+                    throw new Exception("Type <System.UInt16> cannot be negated.");
                 case ScalarType.Int32:
                     return From(-t.Int32Value);
                 case ScalarType.UInt32:
-                    return From(-t.UInt32Value);
+                    throw new Exception("Type <System.UInt32> cannot be negated.");
                 case ScalarType.Int64:
                     return From(-t.Int64Value);
                 case ScalarType.UInt64:
@@ -503,6 +551,39 @@ namespace LinearAlgebra.Scalars
                     return From(-t.DoubleValue);
                 case ScalarType.Decimal:
                     return From(-t.DecimalValue);
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static Scalar<T> operator ~(Scalar<T> t)
+        {
+            switch (scalarType)
+            {
+                case ScalarType.Boolean:
+                    return From(!t.BooleanValue);
+                case ScalarType.SByte:
+                    return From(~t.SByteValue);
+                case ScalarType.Byte:
+                    return From(~t.ByteValue);
+                case ScalarType.Int16:
+                    return From(~t.Int16Value);
+                case ScalarType.UInt16:
+                    return From(~t.UInt16Value);
+                case ScalarType.Int32:
+                    return From(~t.Int32Value);
+                case ScalarType.UInt32:
+                    return From(~t.UInt32Value);
+                case ScalarType.Int64:
+                    return From(~t.Int64Value);
+                case ScalarType.UInt64:
+                    return From(~t.UInt64Value);
+                case ScalarType.Single:
+                    throw new Exception("Bitwise complement cannot be performed on type System.Single.");
+                case ScalarType.Double:
+                    throw new Exception("Bitwise complement cannot be performed on type System.Double.");
+                case ScalarType.Decimal:
+                    throw new Exception("Bitwise complement cannot be performed on type System.Decimal.");
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
             }
@@ -532,6 +613,15 @@ namespace LinearAlgebra.Scalars
         public static bool operator >=(Scalar<T> left, Scalar<T> right)
         {
             return (left > right) || (left == right);
+        }
+
+        public static implicit operator Scalar<T>(System.Boolean value)
+        {
+            return From(value);
+        }
+        public static implicit operator System.Boolean(Scalar<T> value)
+        {
+            return value.BooleanValue;
         }
 
         public static implicit operator Scalar<T>(System.SByte value)
@@ -681,37 +771,6 @@ namespace LinearAlgebra.Scalars
         public int CompareTo(Scalar<T> other)
         {
             return Value.CompareTo(other.Value);
-        }
-
-        public Scalar<T> Sqrt()
-        {
-            switch (scalarType)
-            {
-                case ScalarType.SByte:
-                    return From(Math.Sqrt(SByteValue));
-                case ScalarType.Byte:
-                    return From(Math.Sqrt(ByteValue));
-                case ScalarType.Int16:
-                    return From(Math.Sqrt(Int16Value));
-                case ScalarType.UInt16:
-                    return From(Math.Sqrt(UInt16Value));
-                case ScalarType.Int32:
-                    return From(Math.Sqrt(Int32Value));
-                case ScalarType.UInt32:
-                    return From(Math.Sqrt(UInt32Value));
-                case ScalarType.Int64:
-                    return From(Math.Sqrt(Int64Value));
-                case ScalarType.UInt64:
-                    return From(Math.Sqrt(UInt64Value));
-                case ScalarType.Single:
-                    return From(Math.Sqrt(SingleValue));
-                case ScalarType.Double:
-                    return From(Math.Sqrt(DoubleValue));
-                case ScalarType.Decimal:
-                    return From(Math.Sqrt((double)DecimalValue));
-                default:
-                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
-            }
         }
     }
 }

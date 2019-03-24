@@ -841,7 +841,7 @@ namespace LinearAlgebra.Vectors.Extensions
         //}
     }
 
-    public static partial class VectorExtansions
+    public static partial class VectorExtensions
     {
         public static Vector1<TResult> Select<T, TResult>(this Vector1<T> t, Func<T, TResult> func)
             where T : struct, IComparable

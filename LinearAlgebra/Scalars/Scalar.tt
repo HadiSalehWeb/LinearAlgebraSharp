@@ -9,82 +9,23 @@
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#
-	List<Type> supportedTypes = new List<Type> {
-		//typeof(bool),
-		typeof(sbyte),
-		typeof(byte),
-		typeof(short),
-		typeof(ushort),
-		typeof(int),
-		typeof(uint),
-		typeof(long),
-		typeof(ulong),
-		typeof(float),
-		typeof(double),
-		typeof(decimal),
+	List<ScalarType> supportedTypes = new List<ScalarType> {
+		new ScalarType(typeof(bool), "false", "true", false, true, false, false, (x, y) => x + " || " + y,  (x, y) => x + " && " + y, complementOverride: x => "!" + x),
+		new ScalarType(typeof(sbyte), "(sbyte)0", "(sbyte)1", true, true),
+		new ScalarType(typeof(byte), "(byte)0", "(byte)1", false, true),
+		new ScalarType(typeof(short), "(short)0", "(short)1", true, true),
+		new ScalarType(typeof(ushort), "(ushort)0", "(ushort)1", false, true),
+		new ScalarType(typeof(int), "0", "1", true, true),
+		new ScalarType(typeof(uint), "0u", "1u", false, true),
+		new ScalarType(typeof(long), "0L", "1L", true, true),
+		new ScalarType(typeof(ulong), "0uL", "1uL", false, true),
+		new ScalarType(typeof(float), "0f", "1f", true, false, canBeComplemented: false),
+		new ScalarType(typeof(double), "0d", "1d", true, false, canBeComplemented: false),
+		new ScalarType(typeof(decimal), "0m", "1m", true, false, canBeComplemented: false),
 	};
-	Func<Type, string> defaultValue = new Func<Type, string>(t => {
-		if (t.Equals(typeof(bool)))
-			return "false";
-		if (t.Equals(typeof(sbyte)))
-			return "(sbyte)0";
-		if (t.Equals(typeof(byte)))
-			return "(byte)0";
-		if (t.Equals(typeof(short)))
-			return "(short)0";
-		if (t.Equals(typeof(ushort)))
-			return "(ushort)0";
-		if (t.Equals(typeof(int)))
-			return "0";
-		if (t.Equals(typeof(uint)))
-			return "0u";
-		if (t.Equals(typeof(long)))
-			return "0L";
-		if (t.Equals(typeof(ulong)))
-			return "0uL";
-		if (t.Equals(typeof(float)))
-			return "0f";
-		if (t.Equals(typeof(double)))
-			return "0d";
-		if (t.Equals(typeof(decimal)))
-			return "0m";
-		throw new ArgumentException("Type <" + t.ToString() + "> not supported.");
-    });
-
-	Func<Type, string> oneValue = new Func<Type, string>(t => {
-		if (t.Equals(typeof(bool)))
-			return "true";
-		if (t.Equals(typeof(sbyte)))
-			return "(sbyte)1";
-		if (t.Equals(typeof(byte)))
-			return "(byte)1";
-		if (t.Equals(typeof(short)))
-			return "(short)1";
-		if (t.Equals(typeof(ushort)))
-			return "(ushort)1";
-		if (t.Equals(typeof(int)))
-			return "1";
-		if (t.Equals(typeof(uint)))
-			return "1u";
-		if (t.Equals(typeof(long)))
-			return "1L";
-		if (t.Equals(typeof(ulong)))
-			return "1uL";
-		if (t.Equals(typeof(float)))
-			return "1f";
-		if (t.Equals(typeof(double)))
-			return "1d";
-		if (t.Equals(typeof(decimal)))
-			return "1m";
-		throw new ArgumentException("Type <" + t.ToString() + "> not supported.");
-    });
 	
-	Func<Type, string> getFieldName = new Func<Type, string>(t => t.Name.ToLower() + "Value");
-	Func<Type, string> getPropertyName = new Func<Type, string>(t => t.Name + "Value");
-
-	Func<Type, bool> canBeNegated = new Func<Type, bool>(t => !t.Equals(typeof(ulong)) && !t.Equals(typeof(bool)));
-
-	Func<Type, bool> needsCastingToDouble = new Func<Type, bool>(t => t.Equals(typeof(decimal)));
+	Func<string, string> getFieldName = new Func<string, string>(name => char.ToLower(name[0]) + name.Substring(1) + "Value");
+	Func<string, string> getPropertyName = new Func<string, string>(name => name + "Value");
 #>
 using System;
 using System.Collections.Generic;
@@ -97,26 +38,26 @@ namespace LinearAlgebra.Scalars
     {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
         [FieldOffset(0)]
-        public readonly <#= supportedTypes[i].ToString() #> <#= getFieldName(supportedTypes[i]) #>;
+        public readonly <#= supportedTypes[i].type.ToString() #> <#= getFieldName(supportedTypes[i].name) #>;
 <# } #>
 
-        public TypedValueContainer(<#= string.Join(", ", supportedTypes.Select(x => x.ToString() + " " + getFieldName(x))) #>)
+        public TypedValueContainer(<#= string.Join(", ", supportedTypes.Select(x => x.type.ToString() + " " + getFieldName(x.name))) #>)
         {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-            <#= i == 0 ? "if" : "else if" #> (<#= getFieldName(supportedTypes[i]) #> != default)
+            <#= i == 0 ? "if" : "else if" #> (<#= getFieldName(supportedTypes[i].name) #> != default)
             {
 <# for (int j = 0; j < supportedTypes.Count; j++) { #>
 <# if (i != j) { #>
-                this.<#= getFieldName(supportedTypes[j]) #> = default;
+                this.<#= getFieldName(supportedTypes[j].name) #> = default;
 <# } #>
 <# } #>
-                this.<#= getFieldName(supportedTypes[i]) #> = <#= getFieldName(supportedTypes[i]) #>;
+                this.<#= getFieldName(supportedTypes[i].name) #> = <#= getFieldName(supportedTypes[i].name) #>;
             }
 <# } #>
             else
             {
 <# for (int j = 0; j < supportedTypes.Count; j++) { #>
-                this.<#= getFieldName(supportedTypes[j]) #> = default;
+                this.<#= getFieldName(supportedTypes[j].name) #> = default;
 <# } #>
             }
         }
@@ -128,14 +69,14 @@ namespace LinearAlgebra.Scalars
         private enum ScalarType
         {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-            <#= supportedTypes[i].Name #><#= i < supportedTypes.Count - 1 ? "," : "" #>
+            <#= supportedTypes[i].name #><#= i < supportedTypes.Count - 1 ? "," : "" #>
 <# } #>
         }
 
         private static Dictionary<Type, ScalarType> TypeMap = new Dictionary<Type, ScalarType>
         {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-            { typeof(<#= supportedTypes[i].ToString() #>), ScalarType.<#= supportedTypes[i].Name #> }<#= i < supportedTypes.Count - 1 ? "," : "" #>
+            { typeof(<#= supportedTypes[i].type.ToString() #>), ScalarType.<#= supportedTypes[i].name #> }<#= i < supportedTypes.Count - 1 ? "," : "" #>
 <# } #>
         };
 
@@ -144,7 +85,7 @@ namespace LinearAlgebra.Scalars
         private readonly TypedValueContainer tvc;
 
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-        private <#= supportedTypes[i].ToString() #> <#= getPropertyName(supportedTypes[i]) #> => tvc.<#= getFieldName(supportedTypes[i]) #>;
+        private <#= supportedTypes[i].type.ToString() #> <#= getPropertyName(supportedTypes[i].name) #> => tvc.<#= getFieldName(supportedTypes[i].name) #>;
 <# } #>
 
         public T Value { get; }
@@ -160,9 +101,9 @@ namespace LinearAlgebra.Scalars
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-                case ScalarType.<#= supportedTypes[i].Name #>:
-                    Zero = <#= defaultValue(supportedTypes[i]) #>;
-                    One = <#= oneValue(supportedTypes[i]) #>;
+                case ScalarType.<#= supportedTypes[i].name #>:
+                    Zero = <#= supportedTypes[i].defaultValue #>;
+                    One = <#= supportedTypes[i].oneValue #>;
                     break;
 <# } #>
                 default:
@@ -175,8 +116,8 @@ namespace LinearAlgebra.Scalars
             Value = value;
 
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-            <#= i == 0 ? "if" : "else if" #> (value is <#= supportedTypes[i].ToString() #> <#= getFieldName(supportedTypes[i]) + "T" #>)
-                tvc = new TypedValueContainer(<#= string.Join(", ", supportedTypes.Select((x, j) => j == i ? getFieldName(x) + "T" : "default")) #>);
+            <#= i == 0 ? "if" : "else if" #> (value is <#= supportedTypes[i].type.ToString() #> <#= getFieldName(supportedTypes[i].name) + "T" #>)
+                tvc = new TypedValueContainer(<#= string.Join(", ", supportedTypes.Select((x, j) => j == i ? getFieldName(x.name) + "T" : "default")) #>);
 <# } #>
             else
                 throw new ArgumentException($"Type <{ typeof(T).Name }> not supported for scalar values.");
@@ -197,8 +138,12 @@ namespace LinearAlgebra.Scalars
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-                case ScalarType.<#= supportedTypes[i].Name #>:
-                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> + t2.<#= getPropertyName(supportedTypes[i]) #>);
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].additionOverride != null) { #>
+                    return From(<#= supportedTypes[i].additionOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>);
+<# } else { #>
+                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> + t2.<#= getPropertyName(supportedTypes[i].name) #>);
+<# } #>
 <# } #>
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
@@ -210,8 +155,12 @@ namespace LinearAlgebra.Scalars
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-                case ScalarType.<#= supportedTypes[i].Name #>:
-                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> - t2.<#= getPropertyName(supportedTypes[i]) #>);
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].canBeSubstracted) { #>
+                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> - t2.<#= getPropertyName(supportedTypes[i].name) #>);
+<# } else { #>
+                    throw new Exception($"Substraction can't be performed on type <#= supportedTypes[i].type.ToString() #>.");
+<# } #>
 <# } #>
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
@@ -223,8 +172,12 @@ namespace LinearAlgebra.Scalars
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-                case ScalarType.<#= supportedTypes[i].Name #>:
-                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> * t2.<#= getPropertyName(supportedTypes[i]) #>);
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].multiplicationOverride != null) { #>
+                    return From(<#= supportedTypes[i].multiplicationOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>);
+<# } else { #>
+                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> * t2.<#= getPropertyName(supportedTypes[i].name) #>);
+<# } #>
 <# } #>
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
@@ -236,8 +189,12 @@ namespace LinearAlgebra.Scalars
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-                case ScalarType.<#= supportedTypes[i].Name #>:
-                    return From(t1.<#= getPropertyName(supportedTypes[i]) #> / t2.<#= getPropertyName(supportedTypes[i]) #>);
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].canBeDivided) { #>
+                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> / t2.<#= getPropertyName(supportedTypes[i].name) #>);
+<# } else { #>
+                    throw new Exception($"Division can't be performed on type <#= supportedTypes[i].type.ToString() #>.");
+<# } #>
 <# } #>
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
@@ -249,11 +206,32 @@ namespace LinearAlgebra.Scalars
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-                case ScalarType.<#= supportedTypes[i].Name #>:
-<# if (canBeNegated(supportedTypes[i])) { #>
-                    return From(-t.<#= getPropertyName(supportedTypes[i]) #>);
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].canBeNegated) { #>
+                    return From(-t.<#= getPropertyName(supportedTypes[i].name) #>);
 <# } else { #>
-                    throw new Exception("Type <<#= supportedTypes[i].ToString() #>> cannot be negated.");
+                    throw new Exception("Type <<#= supportedTypes[i].type.ToString() #>> cannot be negated.");
+<# } #>
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static Scalar<T> operator ~(Scalar<T> t)
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].canBeComplemented) { #>
+<# if (supportedTypes[i].complementOverride != null) { #>
+                    return From(<#= supportedTypes[i].complementOverride("t." + getPropertyName(supportedTypes[i].name)) #>);
+<# } else { #>
+                    return From(~t.<#= getPropertyName(supportedTypes[i].name) #>);
+<# } #>
+<# } else { #>
+                    throw new Exception("Bitwise complement cannot be performed on type <#= supportedTypes[i].type.ToString() #>.");
 <# } #>
 <# } #>
                 default:
@@ -288,13 +266,13 @@ namespace LinearAlgebra.Scalars
         }
 
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
-        public static implicit operator Scalar<T>(<#= supportedTypes[i].ToString() #> value)
+        public static implicit operator Scalar<T>(<#= supportedTypes[i].type.ToString() #> value)
         {
             return From(value);
         }
-        public static implicit operator <#= supportedTypes[i].ToString() #>(Scalar<T> value)
+        public static implicit operator <#= supportedTypes[i].type.ToString() #>(Scalar<T> value)
         {
-            return value.<#= getPropertyName(supportedTypes[i]) #>;
+            return value.<#= getPropertyName(supportedTypes[i].name) #>;
         }
 
 <# } #>
@@ -347,22 +325,51 @@ namespace LinearAlgebra.Scalars
         {
             return Value.CompareTo(other.Value);
         }
-
-        public Scalar<T> Sqrt()
-        {
-            switch (scalarType)
-            {
-<# for (int i = 0; i < supportedTypes.Count; i++) { #>
-                case ScalarType.<#= supportedTypes[i].Name #>:
-<# if (needsCastingToDouble(supportedTypes[i])) { #>
-                    return From(Math.Sqrt((double)<#= getPropertyName(supportedTypes[i]) #>));
-<# } else { #>
-                    return From(Math.Sqrt(<#= getPropertyName(supportedTypes[i]) #>));
-<# } #>
-<# } #>
-                default:
-                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
-            }
-        }
     }
 }
+<#+
+public struct ScalarType
+{
+	public readonly Type type;
+	public readonly string name;
+	public readonly string defaultValue;// Will be used as a zero value
+	public readonly string oneValue;// "1" for int, "1f" for float, "1.0" for double etc.
+	public readonly bool canBeNegated;// false for unsigned types, true otherwise
+	public readonly bool isNatural;// True for types without a decimal point like int, byte, long etc. False for decimal types float, double, decimal etc.
+	public readonly bool canBeDivided;
+	public readonly bool canBeSubstracted;
+	public readonly Func<string, string, string> additionOverride;// assign this if the addition can't be performed normally with the + sign. It takes two variable names and returns a sentence that adds them.
+	public readonly Func<string, string, string> multiplicationOverride;// assign this if the multiplication can't be performed normally with the + sign. It takes two variable names and returns a sentence that multiplies them.
+	public readonly bool canBeComplemented;
+	public readonly Func<string, string> complementOverride;// assign this if the multiplication can't be performed normally with the + sign. It takes one variable and returns a sentence that performs bitwise complement on it.
+
+	public ScalarType
+	(
+		Type type,
+		string defaultValue,
+		string oneValue,
+		bool canBeNegated,
+		bool isNatural,
+		bool canBeSubstracted = true,
+		bool canBeDivided = true,
+		Func<string, string, string> additionOverride = null,
+		Func<string, string, string> multiplicationOverride = null,
+		bool canBeComplemented = true,
+		Func<string, string> complementOverride = null
+	)
+	{
+		this.type = type;
+		this.name = type.Name;
+		this.defaultValue = defaultValue;
+		this.oneValue = oneValue;
+		this.canBeNegated = canBeNegated;
+		this.isNatural = isNatural;
+		this.canBeSubstracted = canBeSubstracted;
+		this.canBeDivided = canBeDivided;
+		this.additionOverride = additionOverride;
+		this.multiplicationOverride = multiplicationOverride;
+		this.canBeComplemented = canBeComplemented;
+		this.complementOverride = complementOverride;
+	}
+}
+#>

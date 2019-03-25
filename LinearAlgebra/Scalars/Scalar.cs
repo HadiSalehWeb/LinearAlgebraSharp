@@ -232,7 +232,12 @@ namespace LinearAlgebra.Scalars
         }
     }
 
-    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, IComparable, IComparable<T>, IComparable<Scalar<T>>
+    public struct Scalar<T> :
+        ICloneable,
+        IEquatable<Scalar<T>>,
+        IComparable,
+        IComparable<T>,
+        IComparable<Scalar<T>>
         where T : struct, IComparable
     {
         private enum ScalarType

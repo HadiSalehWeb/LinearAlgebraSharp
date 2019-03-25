@@ -6,7 +6,13 @@ using System.Linq;
 
 namespace LinearAlgebra.Vectors
 {
-    public struct Vector<T> : ICloneable, IEquatable<Vector<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector<T>>
+    public struct Vector<T> : 
+        ICloneable, 
+        IEquatable<Vector<T>>,
+        IEnumerable, 
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>, 
+        IVector<T, Vector<T>>
         where T : struct, IComparable
     {
         public Scalar<int> Dimension { get; }
@@ -156,42 +162,6 @@ namespace LinearAlgebra.Vectors
             throw new Exception("Cross product can only be performed on vectors of dimension 0, 1, 3 and 7.");
         }
 
-        public Scalar<T> AngleTo(Vector<T> vec)
-        {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
-        }
-
-        public Vector<T> ProjectionOnto(Vector<T> vec)
-        {
-            return (Dot(vec) / vec.Dot(vec)) * vec;
-        }
-
-        public Scalar<T> SquareDistanceTo(Vector<T> vec)
-        {
-            if (Dimension != vec.Dimension)
-                throw new DimensionMismatchException<Scalar<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
-
-            Scalar<T> result = Scalar<T>.Zero, temp;
-
-            for (int i = 0; i < Dimension; i++)
-            {
-                temp = Data[i] - vec.Data[i];
-                result += temp * temp;
-            }
-
-            return result;
-        }
-
-        public Scalar<T> DistanceTo(Vector<T> vec)
-        {
-            return Math.Sqrt(SquareDistanceTo(vec));
-        }
-
-        public Vector<T> Lerp(Vector<T> vec, Scalar<T> t)
-        {
-            return this + (vec - this) * t;
-        }
-
         public Vector<T> Scale(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
@@ -205,68 +175,39 @@ namespace LinearAlgebra.Vectors
             return new Vector<T>(result);
         }
 
-        public Vector<T> Add(Vector<T> vec)
-        {
-            return this + vec;
-        }
-
-        public Vector<T> Substract(Vector<T> vec)
-        {
-            return this - vec;
-        }
-
-        public Vector<T> Multiply(Scalar<T> s)
-        {
-            return this * s;
-        }
-
-        public Vector<T> Divide(Scalar<T> s)
-        {
-            return this / s;
-        }
-
-        public Vector<T> Negate()
-        {
-            return -this;
-        }
-
         public static Vector<T> operator +(Vector<T> left, Vector<T> right)
         {
-            if (left.Dimension != right.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
-
-            return new Vector<T>(left.Data.Select((x, i) => x + right.Data[i]).ToArray());
+            return left.Add(right);
         }
 
         public static Vector<T> operator -(Vector<T> left, Vector<T> right)
         {
-            if (left.Dimension != right.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
-
-            return new Vector<T>(left.Data.Select((x, i) => x - right.Data[i]).ToArray());
+            return left.Substract(right);
         }
 
         public static Vector<T> operator *(Vector<T> left, Scalar<T> right)
         {
-            return new Vector<T>(left.Data.Select((x, i) => x * right).ToArray());
+            return left.Multiply(right);
         }
 
         public static Vector<T> operator *(Scalar<T> left, Vector<T> right)
         {
-            return right * left;
+            return right.Multiply(left);
         }
 
         public static Vector<T> operator /(Vector<T> left, Scalar<T> right)
         {
-            return new Vector<T>(left.Data.Select((x, i) => x / right).ToArray());
+            return left.Divide(right);
         }
 
         public static Vector<T> operator /(Scalar<T> left, Vector<T> right)
         {
-            return new Vector<T>(right.Data.Select((x, i) => x / left).ToArray());
+            return right.GetDividedBy(left);
         }
 
         public static Vector<T> operator -(Vector<T> v)
         {
-            return new Vector<T>(v.Data.Select(x => -x).ToArray());
+            return v.Negate();
         }
 
         public static bool operator ==(Vector<T> left, Vector<T> right)
@@ -378,6 +319,40 @@ namespace LinearAlgebra.Vectors
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public Vector<T> Add(Vector<T> vec)
+        {
+            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
+
+            return new Vector<T>(Data.Select((x, i) => x + vec.Data[i]).ToArray());
+        }
+
+        public Vector<T> Substract(Vector<T> vec)
+        {
+            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
+
+            return new Vector<T>(Data.Select((x, i) => x - vec.Data[i]).ToArray());
+        }
+
+        public Vector<T> Multiply(Scalar<T> s)
+        {
+            return new Vector<T>(Data.Select((x, i) => x * s).ToArray());
+        }
+
+        public Vector<T> Divide(Scalar<T> s)
+        {
+            return new Vector<T>(Data.Select((x, i) => x / s).ToArray());
+        }
+
+        public Vector<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector<T>(Data.Select((x, i) => s / x).ToArray());
+        }
+
+        public Vector<T> Negate()
+        {
+            return new Vector<T>(Data.Select(x => -x).ToArray());
         }
     }
 }

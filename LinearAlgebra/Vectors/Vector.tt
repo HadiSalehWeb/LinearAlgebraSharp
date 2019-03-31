@@ -29,7 +29,7 @@ using System.Collections.Generic;
 namespace LinearAlgebra.Vectors
 {
 <# foreach (var n in supportedDimensions) { #>
-    public struct Vector<#= n #><T> : ICloneable, IEquatable<Vector<#= n #><T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T>
+    public struct Vector<#= n #><T> : ICloneable, IEquatable<Vector<#= n #><T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
         where T : struct, IComparable
     {
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #>;

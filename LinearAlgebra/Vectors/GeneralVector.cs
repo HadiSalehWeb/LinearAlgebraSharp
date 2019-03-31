@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace LinearAlgebra.Vectors
 {
-    public struct Vector<T> : 
-        ICloneable, 
+    public struct Vector<T> :
+        ICloneable,
         IEquatable<Vector<T>>,
-        IEnumerable, 
+        IEnumerable,
         IEnumerable<Scalar<T>>,
-        IEnumerable<T>, 
+        IEnumerable<T>,
         IVector<T, Vector<T>>
         where T : struct, IComparable
     {
@@ -63,6 +63,16 @@ namespace LinearAlgebra.Vectors
         {
             return new Vector<T>(Enumerable.Range(0, dimension).Select(_ => Scalar<T>.One).ToArray());
         }
+
+        /// <summary>
+        /// (0)
+        /// </summary>
+        Vector<T> IVector<T, Vector<T>>.Zero => new Vector<T>(Scalar<T>.Zero);
+
+        /// <summary>
+        /// (1)
+        /// </summary>
+        Vector<T> IVector<T, Vector<T>>.One => new Vector<T>(Scalar<T>.One);
 
         public static Vector<T> Repeat(T t, int dimension)
         {

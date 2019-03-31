@@ -6,7 +6,7 @@ using System.Linq;
 namespace LinearAlgebra.Tensors
 {
     public class Tensor<TVec, T>
-        where TVec : IVectorBase<int>
+        where TVec : IVector<int, TVec>
         where T : struct, IComparable
     {
         public Array Data { get; }

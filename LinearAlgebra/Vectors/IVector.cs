@@ -9,6 +9,8 @@ namespace LinearAlgebra.Vectors
     {
         Scalar<int> Dimension { get; }
         Scalar<T>[] Data { get; }
+        TThis Zero { get; }
+        TThis One { get; }
         Scalar<T> Magnitude { get; }
         Scalar<T> SqrMagnitude { get; }
         TThis Normalized { get; }

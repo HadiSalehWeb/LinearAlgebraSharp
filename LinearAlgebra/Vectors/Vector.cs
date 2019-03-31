@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LinearAlgebra.Vectors
 {
-    public struct Vector1<T> : ICloneable, IEquatable<Vector1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector1<T>>
+    public struct Vector1<T> : ICloneable, IEquatable<Vector1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
         where T : struct, IComparable
     {
         public readonly Scalar<T> x;
@@ -143,62 +143,12 @@ namespace LinearAlgebra.Vectors
             return 1 * x;
         }
 
-        public Scalar<T> AngleTo(Vector1<T> vec)
-        {
-            return Scalar<T>.Zero;
-        }
-
-        public Vector1<T> ProjectionOnto(Vector1<T> vec)
-        {
-            return this;
-        }
-
-        public Scalar<T> SquareDistanceTo(Vector1<T> vec)
-        {
-            return (x - vec.x) * (x - vec.x);
-        }
-
-        public Scalar<T> DistanceTo(Vector1<T> vec)
-        {
-            return Math.Abs(x - vec.x);
-        }
-
-        public Vector1<T> Lerp(Vector1<T> vec, Scalar<T> t)
-        {
-            return new Vector1<T>(x + (vec.x - x) * t);
-        }
-
-        public Vector1<T> Add(Vector1<T> vec)
-        {
-            return this + vec;
-        }
-
-        public Vector1<T> Substract(Vector1<T> vec)
-        {
-            return this - vec;
-        }
-
-        public Vector1<T> Multiply(Scalar<T> s)
-        {
-            return this * s;
-        }
-
-        public Vector1<T> Divide(Scalar<T> s)
-        {
-            return this / s;
-        }
-
-        public Vector1<T> Negate()
-        {
-            return -this;
-        }
-
         public Scalar<T> SqrMagnitude => x * x;
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector1<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector2<T> : ICloneable, IEquatable<Vector2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVectorBase<T>
+    public struct Vector2<T> : ICloneable, IEquatable<Vector2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
         where T : struct, IComparable
     {
         public readonly Scalar<T> x, y;
@@ -359,7 +309,7 @@ namespace LinearAlgebra.Vectors
         public Vector2<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector3<T> : ICloneable, IEquatable<Vector3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVectorBase<T>
+    public struct Vector3<T> : ICloneable, IEquatable<Vector3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
         where T : struct, IComparable
     {
         public readonly Scalar<T> x, y, z;
@@ -528,7 +478,7 @@ namespace LinearAlgebra.Vectors
         public Vector3<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector4<T> : ICloneable, IEquatable<Vector4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVectorBase<T>
+    public struct Vector4<T> : ICloneable, IEquatable<Vector4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
         where T : struct, IComparable
     {
         public readonly Scalar<T> x, y, z, w;
@@ -705,7 +655,7 @@ namespace LinearAlgebra.Vectors
         public Vector4<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector5<T> : ICloneable, IEquatable<Vector5<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVectorBase<T>
+    public struct Vector5<T> : ICloneable, IEquatable<Vector5<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
         where T : struct, IComparable
     {
         public readonly Scalar<T> v0, v1, v2, v3, v4;
@@ -891,7 +841,7 @@ namespace LinearAlgebra.Vectors.Extensions
         //}
     }
 
-    public static partial class VectorExtensions
+    public static partial class VectorExtansions
     {
         public static Vector1<TResult> Select<T, TResult>(this Vector1<T> t, Func<T, TResult> func)
             where T : struct, IComparable
@@ -930,19 +880,19 @@ namespace LinearAlgebra.Vectors.Extensions
         public static bool All<T>(this Vector1<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value);
+			return pred(v.x.Value);
         }
 
         public static bool Any<T>(this Vector1<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value);
+			return pred(v.x.Value);
         }
 
         public static double Average<T>(this Vector1<T> v)
             where T : struct, IComparable
         {
-            return (new Scalar<double>(v.x) / 1.0).Value;
+			return (new Scalar<double>(v.x) / 1.0).Value;
         }
 
         public static bool Contains<T>(this Vector1<T> v, T t)
@@ -987,19 +937,19 @@ namespace LinearAlgebra.Vectors.Extensions
         public static bool All<T>(this Vector2<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value) && pred(v.y.Value);
+			return pred(v.x.Value) && pred(v.y.Value);
         }
 
         public static bool Any<T>(this Vector2<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value) || pred(v.y.Value);
+			return pred(v.x.Value) || pred(v.y.Value);
         }
 
         public static double Average<T>(this Vector2<T> v)
             where T : struct, IComparable
         {
-            return (new Scalar<double>(v.x + v.y) / 2.0).Value;
+			return (new Scalar<double>(v.x + v.y) / 2.0).Value;
         }
 
         public static bool Contains<T>(this Vector2<T> v, T t)
@@ -1044,19 +994,19 @@ namespace LinearAlgebra.Vectors.Extensions
         public static bool All<T>(this Vector3<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value) && pred(v.y.Value) && pred(v.z.Value);
+			return pred(v.x.Value) && pred(v.y.Value) && pred(v.z.Value);
         }
 
         public static bool Any<T>(this Vector3<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value);
+			return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value);
         }
 
         public static double Average<T>(this Vector3<T> v)
             where T : struct, IComparable
         {
-            return (new Scalar<double>(v.x + v.y + v.z) / 3.0).Value;
+			return (new Scalar<double>(v.x + v.y + v.z) / 3.0).Value;
         }
 
         public static bool Contains<T>(this Vector3<T> v, T t)
@@ -1101,19 +1051,19 @@ namespace LinearAlgebra.Vectors.Extensions
         public static bool All<T>(this Vector4<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value) && pred(v.y.Value) && pred(v.z.Value) && pred(v.w.Value);
+			return pred(v.x.Value) && pred(v.y.Value) && pred(v.z.Value) && pred(v.w.Value);
         }
 
         public static bool Any<T>(this Vector4<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value) || pred(v.w.Value);
+			return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value) || pred(v.w.Value);
         }
 
         public static double Average<T>(this Vector4<T> v)
             where T : struct, IComparable
         {
-            return (new Scalar<double>(v.x + v.y + v.z + v.w) / 4.0).Value;
+			return (new Scalar<double>(v.x + v.y + v.z + v.w) / 4.0).Value;
         }
 
         public static bool Contains<T>(this Vector4<T> v, T t)
@@ -1158,19 +1108,19 @@ namespace LinearAlgebra.Vectors.Extensions
         public static bool All<T>(this Vector5<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.v0.Value) && pred(v.v1.Value) && pred(v.v2.Value) && pred(v.v3.Value) && pred(v.v4.Value);
+			return pred(v.v0.Value) && pred(v.v1.Value) && pred(v.v2.Value) && pred(v.v3.Value) && pred(v.v4.Value);
         }
 
         public static bool Any<T>(this Vector5<T> v, Func<T, bool> pred)
             where T : struct, IComparable
         {
-            return pred(v.v0.Value) || pred(v.v1.Value) || pred(v.v2.Value) || pred(v.v3.Value) || pred(v.v4.Value);
+			return pred(v.v0.Value) || pred(v.v1.Value) || pred(v.v2.Value) || pred(v.v3.Value) || pred(v.v4.Value);
         }
 
         public static double Average<T>(this Vector5<T> v)
             where T : struct, IComparable
         {
-            return (new Scalar<double>(v.v0 + v.v1 + v.v2 + v.v3 + v.v4) / 5.0).Value;
+			return (new Scalar<double>(v.v0 + v.v1 + v.v2 + v.v3 + v.v4) / 5.0).Value;
         }
 
         public static bool Contains<T>(this Vector5<T> v, T t)

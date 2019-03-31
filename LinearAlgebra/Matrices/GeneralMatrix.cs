@@ -78,7 +78,7 @@ namespace LinearAlgebra.Matrices
                     for (int j = 0; j < Dimensions.y; j++)
                         data[j] = Data[i, j];
 
-                    rows[i] = data;
+                    rows[i] = new Vector<T>(data);
                 }
 
                 return rows;
@@ -98,7 +98,7 @@ namespace LinearAlgebra.Matrices
                     for (int i = 0; i < Dimensions.x; i++)
                         data[j] = Data[i, j];
 
-                    columns[j] = data;
+                    columns[j] = new Vector<T>(data);
                 }
 
                 return columns;

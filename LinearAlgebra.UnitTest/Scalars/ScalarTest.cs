@@ -304,5 +304,120 @@ namespace LinearAlgebra.UnitTest.Scalars
             Assert.Throws<Exception>(() => ~doubleV);
             Assert.Throws<Exception>(() => ~decimalV);
         }
+
+        [Fact]
+        public void TestEquality()
+        {
+            Scalar<bool> boolV = new Scalar<bool>(true);
+            Scalar<sbyte> sbyteV = new Scalar<sbyte>(5);
+            Scalar<byte> byteV = new Scalar<byte>(5);
+            Scalar<short> shortV = new Scalar<short>(5);
+            Scalar<ushort> ushortV = new Scalar<ushort>(5);
+            Scalar<int> intV = new Scalar<int>(5);
+            Scalar<uint> uintV = new Scalar<uint>(5);
+            Scalar<long> longV = new Scalar<long>(5);
+            Scalar<ulong> ulongV = new Scalar<ulong>(5);
+            Scalar<float> floatV = new Scalar<float>(5f);
+            Scalar<double> doubleV = new Scalar<double>(5.0);
+            Scalar<decimal> decimalV = new Scalar<decimal>(5m);
+
+            Assert.True(boolV == boolV);
+            Assert.True(sbyteV == sbyteV);
+            Assert.True(byteV == byteV);
+            Assert.True(shortV == shortV);
+            Assert.True(ushortV == ushortV);
+            Assert.True(intV == intV);
+            Assert.True(uintV == uintV);
+            Assert.True(longV == longV);
+            Assert.True(ulongV == ulongV);
+            Assert.True(floatV == floatV);
+            Assert.True(doubleV == doubleV);
+            Assert.True(decimalV == decimalV);
+        }
+
+        [Fact]
+        public void TestGreaterThan()
+        {
+            Scalar<sbyte> sbyteV = new Scalar<sbyte>(5);
+            Scalar<byte> byteV = new Scalar<byte>(5);
+            Scalar<short> shortV = new Scalar<short>(5);
+            Scalar<ushort> ushortV = new Scalar<ushort>(5);
+            Scalar<int> intV = new Scalar<int>(5);
+            Scalar<uint> uintV = new Scalar<uint>(5);
+            Scalar<long> longV = new Scalar<long>(5);
+            Scalar<ulong> ulongV = new Scalar<ulong>(5);
+            Scalar<float> floatV = new Scalar<float>(5f);
+            Scalar<double> doubleV = new Scalar<double>(5.0);
+            Scalar<decimal> decimalV = new Scalar<decimal>(5m);
+
+            Assert.True(new Scalar<bool>(true) > new Scalar<bool>(false));
+            Assert.True(sbyteV + Scalar<sbyte>.One > sbyteV);
+            Assert.True(byteV + Scalar<byte>.One > byteV);
+            Assert.True(shortV + Scalar<short>.One > shortV);
+            Assert.True(ushortV + Scalar<ushort>.One > ushortV);
+            Assert.True(intV + Scalar<int>.One > intV);
+            Assert.True(uintV + Scalar<uint>.One > uintV);
+            Assert.True(longV + Scalar<long>.One > longV);
+            Assert.True(ulongV + Scalar<ulong>.One > ulongV);
+            Assert.True(floatV + Scalar<float>.One > floatV);
+            Assert.True(doubleV + Scalar<double>.One > doubleV);
+            Assert.True(decimalV + Scalar<decimal>.One > decimalV);
+
+            Assert.False(new Scalar<bool>(false) > new Scalar<bool>(true));
+            Assert.False(sbyteV > sbyteV + Scalar<sbyte>.One);
+            Assert.False(byteV > byteV + Scalar<byte>.One);
+            Assert.False(shortV > shortV + Scalar<short>.One);
+            Assert.False(ushortV > ushortV + Scalar<ushort>.One);
+            Assert.False(intV > intV + Scalar<int>.One);
+            Assert.False(uintV > uintV + Scalar<uint>.One);
+            Assert.False(longV > longV + Scalar<long>.One);
+            Assert.False(ulongV > ulongV + Scalar<ulong>.One);
+            Assert.False(floatV > floatV + Scalar<float>.One);
+            Assert.False(doubleV > doubleV + Scalar<double>.One);
+            Assert.False(decimalV > decimalV + Scalar<decimal>.One);
+        }
+
+        [Fact]
+        public void TestLessThan()
+        {
+            Scalar<bool> boolV = new Scalar<bool>(true);
+            Scalar<sbyte> sbyteV = new Scalar<sbyte>(5);
+            Scalar<byte> byteV = new Scalar<byte>(5);
+            Scalar<short> shortV = new Scalar<short>(5);
+            Scalar<ushort> ushortV = new Scalar<ushort>(5);
+            Scalar<int> intV = new Scalar<int>(5);
+            Scalar<uint> uintV = new Scalar<uint>(5);
+            Scalar<long> longV = new Scalar<long>(5);
+            Scalar<ulong> ulongV = new Scalar<ulong>(5);
+            Scalar<float> floatV = new Scalar<float>(5f);
+            Scalar<double> doubleV = new Scalar<double>(5.0);
+            Scalar<decimal> decimalV = new Scalar<decimal>(5m);
+
+            Assert.True(new Scalar<bool>(false) < new Scalar<bool>(true));
+            Assert.True(sbyteV < sbyteV + Scalar<sbyte>.One);
+            Assert.True(byteV < byteV + Scalar<byte>.One);
+            Assert.True(shortV < shortV + Scalar<short>.One);
+            Assert.True(ushortV < ushortV + Scalar<ushort>.One);
+            Assert.True(intV < intV + Scalar<int>.One);
+            Assert.True(uintV < uintV + Scalar<uint>.One);
+            Assert.True(longV < longV + Scalar<long>.One);
+            Assert.True(ulongV < ulongV + Scalar<ulong>.One);
+            Assert.True(floatV < floatV + Scalar<float>.One);
+            Assert.True(doubleV < doubleV + Scalar<double>.One);
+            Assert.True(decimalV < decimalV + Scalar<decimal>.One);
+
+            Assert.False(new Scalar<bool>(true) < new Scalar<bool>(false));
+            Assert.False(sbyteV + Scalar<sbyte>.One < sbyteV);
+            Assert.False(byteV + Scalar<byte>.One < byteV);
+            Assert.False(shortV + Scalar<short>.One < shortV);
+            Assert.False(ushortV + Scalar<ushort>.One < ushortV);
+            Assert.False(intV + Scalar<int>.One < intV);
+            Assert.False(uintV + Scalar<uint>.One < uintV);
+            Assert.False(longV + Scalar<long>.One < longV);
+            Assert.False(ulongV + Scalar<ulong>.One < ulongV);
+            Assert.False(floatV + Scalar<float>.One < floatV);
+            Assert.False(doubleV + Scalar<double>.One < doubleV);
+            Assert.False(decimalV + Scalar<decimal>.One < decimalV);
+        }
     }
 }

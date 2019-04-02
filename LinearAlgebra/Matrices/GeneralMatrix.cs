@@ -8,14 +8,14 @@ using System.Text;
 namespace LinearAlgebra.Matrices
 {
     public interface IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         Vector2<int> Dimensions { get; }
         Scalar<T>[,] Data { get; }
     }
 
     public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public Vector2<int> Dimensions { get; }
         public Scalar<T>[,] Data { get; }

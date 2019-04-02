@@ -30,7 +30,7 @@ namespace LinearAlgebra.UnitTest.Scalars
         [MemberData(nameof(ScalarTestData.DoubleData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.DecimalData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         public void Associativity<T>(T ta, T tb, T tc)
-            where T : struct, IComparable
+            where T : struct
         {
             Scalar<T> a = new Scalar<T>(ta), b = new Scalar<T>(tb), c = new Scalar<T>(tc);
 
@@ -52,7 +52,7 @@ namespace LinearAlgebra.UnitTest.Scalars
         [MemberData(nameof(ScalarTestData.DoubleData), new object[] { 2, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.DecimalData), new object[] { 2, 6 }, MemberType = typeof(ScalarTestData))]
         public void Commutativity<T>(T ta, T tb)
-            where T : struct, IComparable
+            where T : struct
         {
             Scalar<T> a = new Scalar<T>(ta), b = new Scalar<T>(tb);
 
@@ -74,7 +74,7 @@ namespace LinearAlgebra.UnitTest.Scalars
         [MemberData(nameof(ScalarTestData.DoubleData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.DecimalData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         public void Distributivity<T>(T ta, T tb, T tc)
-            where T : struct, IComparable
+            where T : struct
         {
             Scalar<T> a = new Scalar<T>(ta), b = new Scalar<T>(tb), c = new Scalar<T>(tc);
 
@@ -95,7 +95,7 @@ namespace LinearAlgebra.UnitTest.Scalars
         [MemberData(nameof(ScalarTestData.DoubleData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.DecimalData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         public void AdditiveIdentity<T>(T ta)
-            where T : struct, IComparable
+            where T : struct
         {
             Scalar<T> a = new Scalar<T>(ta);
 
@@ -116,7 +116,7 @@ namespace LinearAlgebra.UnitTest.Scalars
         [MemberData(nameof(ScalarTestData.DoubleData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.DecimalData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         public void MultiplicativeIdentity<T>(T ta)
-            where T : struct, IComparable
+            where T : struct
         {
             Scalar<T> a = new Scalar<T>(ta);
 
@@ -137,7 +137,7 @@ namespace LinearAlgebra.UnitTest.Scalars
         [MemberData(nameof(ScalarTestData.DoubleData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.DecimalData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         public void AdditiveInverse<T>(T ta)
-            where T : struct, IComparable
+            where T : struct
         {
             Scalar<T> a = new Scalar<T>(ta);
 
@@ -158,7 +158,7 @@ namespace LinearAlgebra.UnitTest.Scalars
         [MemberData(nameof(ScalarTestData.DoubleData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.DecimalData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         public void MultiplicativeInverse<T>(T ta)
-            where T : struct, IComparable
+            where T : struct
         {
             Scalar<T> a = new Scalar<T>(ta);
 

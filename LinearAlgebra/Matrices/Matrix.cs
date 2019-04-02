@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace LinearAlgebra.Matrices
 {
     public struct Matrix1x1<T> : ICloneable, IEquatable<Matrix1x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00;
 
@@ -183,7 +183,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix2x2<T> : ICloneable, IEquatable<Matrix2x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e10, e11;
 
@@ -393,7 +393,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix3x3<T> : ICloneable, IEquatable<Matrix3x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22;
 
@@ -638,7 +638,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix4x4<T> : ICloneable, IEquatable<Matrix4x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23, e30, e31, e32, e33;
 
@@ -926,7 +926,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix1x2<T> : ICloneable, IEquatable<Matrix1x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01;
 
@@ -1103,7 +1103,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix2x1<T> : ICloneable, IEquatable<Matrix2x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e10;
 
@@ -1290,7 +1290,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix1x3<T> : ICloneable, IEquatable<Matrix1x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02;
 
@@ -1473,7 +1473,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix3x1<T> : ICloneable, IEquatable<Matrix3x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e10, e20;
 
@@ -1676,7 +1676,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix1x4<T> : ICloneable, IEquatable<Matrix1x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02, e03;
 
@@ -1865,7 +1865,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix4x1<T> : ICloneable, IEquatable<Matrix4x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e10, e20, e30;
 
@@ -2084,7 +2084,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix2x3<T> : ICloneable, IEquatable<Matrix2x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12;
 
@@ -2299,7 +2299,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix3x2<T> : ICloneable, IEquatable<Matrix3x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21;
 
@@ -2525,7 +2525,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix2x4<T> : ICloneable, IEquatable<Matrix2x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13;
 
@@ -2750,7 +2750,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix4x2<T> : ICloneable, IEquatable<Matrix4x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21, e30, e31;
 
@@ -2997,7 +2997,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix3x4<T> : ICloneable, IEquatable<Matrix3x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23;
 
@@ -3251,7 +3251,7 @@ namespace LinearAlgebra.Matrices
     }
 
     public struct Matrix4x3<T> : ICloneable, IEquatable<Matrix4x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22, e30, e31, e32;
 

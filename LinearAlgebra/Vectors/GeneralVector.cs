@@ -13,7 +13,7 @@ namespace LinearAlgebra.Vectors
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
         IVector<T, Vector<T>>
-        where T : struct, IComparable
+        where T : struct
     {
         public Scalar<int> Dimension { get; }
         public int Length => Dimension;

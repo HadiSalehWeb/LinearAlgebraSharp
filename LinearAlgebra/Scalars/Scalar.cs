@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 namespace LinearAlgebra.Scalars
 {
     /// <summary>
+    /// This is where the magic happens.
     /// The purpose of this struct is to replicate the behaviour of a union type in C by lining up all its
     /// fields in the same memory address, since only one of them will end up being used at a time.
     /// </summary>
@@ -49,6 +50,8 @@ namespace LinearAlgebra.Scalars
 
         public TypedValueContainer(System.Boolean booleanValue, System.SByte sByteValue, System.Byte byteValue, System.Int16 int16Value, System.UInt16 uInt16Value, System.Int32 int32Value, System.UInt32 uInt32Value, System.Int64 int64Value, System.UInt64 uInt64Value, System.Single singleValue, System.Double doubleValue, System.Decimal decimalValue)
         {
+            //All values must be initialized to zero at first because they're readonly, and the actual value 
+            //is assigned at the very end to ensure it's not overwritten (see FieldOffsetAttribute)
             if (booleanValue != default)
             {
                 this.sByteValue = default;
@@ -247,8 +250,8 @@ namespace LinearAlgebra.Scalars
         }
     }
 
-    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, IComparable, IComparable<T>, IComparable<Scalar<T>>
-        where T : struct, IComparable
+    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>
+        where T : struct
     {
         #region Type Handling
 
@@ -639,18 +642,78 @@ namespace LinearAlgebra.Scalars
         {
             return !left.Equals(right);
         }
-        public static bool operator <(Scalar<T> left, Scalar<T> right)
+
+        public static bool operator <(Scalar<T> t1, Scalar<T> t2)
         {
-            return left.CompareTo(right) < 0;
+            switch (scalarType)
+            {
+                case ScalarType.Boolean:
+                    return t1.BooleanValue.CompareTo(t2.BooleanValue) < 0;
+                case ScalarType.SByte:
+                    return t1.SByteValue.CompareTo(t2.SByteValue) < 0;
+                case ScalarType.Byte:
+                    return t1.ByteValue.CompareTo(t2.ByteValue) < 0;
+                case ScalarType.Int16:
+                    return t1.Int16Value.CompareTo(t2.Int16Value) < 0;
+                case ScalarType.UInt16:
+                    return t1.UInt16Value.CompareTo(t2.UInt16Value) < 0;
+                case ScalarType.Int32:
+                    return t1.Int32Value.CompareTo(t2.Int32Value) < 0;
+                case ScalarType.UInt32:
+                    return t1.UInt32Value.CompareTo(t2.UInt32Value) < 0;
+                case ScalarType.Int64:
+                    return t1.Int64Value.CompareTo(t2.Int64Value) < 0;
+                case ScalarType.UInt64:
+                    return t1.UInt64Value.CompareTo(t2.UInt64Value) < 0;
+                case ScalarType.Single:
+                    return t1.SingleValue.CompareTo(t2.SingleValue) < 0;
+                case ScalarType.Double:
+                    return t1.DoubleValue.CompareTo(t2.DoubleValue) < 0;
+                case ScalarType.Decimal:
+                    return t1.DecimalValue.CompareTo(t2.DecimalValue) < 0;
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
-        public static bool operator >(Scalar<T> left, Scalar<T> right)
+
+        public static bool operator >(Scalar<T> t1, Scalar<T> t2)
         {
-            return left.CompareTo(right) > 0;
+            switch (scalarType)
+            {
+                case ScalarType.Boolean:
+                    return t1.BooleanValue.CompareTo(t2.BooleanValue) > 0;
+                case ScalarType.SByte:
+                    return t1.SByteValue.CompareTo(t2.SByteValue) > 0;
+                case ScalarType.Byte:
+                    return t1.ByteValue.CompareTo(t2.ByteValue) > 0;
+                case ScalarType.Int16:
+                    return t1.Int16Value.CompareTo(t2.Int16Value) > 0;
+                case ScalarType.UInt16:
+                    return t1.UInt16Value.CompareTo(t2.UInt16Value) > 0;
+                case ScalarType.Int32:
+                    return t1.Int32Value.CompareTo(t2.Int32Value) > 0;
+                case ScalarType.UInt32:
+                    return t1.UInt32Value.CompareTo(t2.UInt32Value) > 0;
+                case ScalarType.Int64:
+                    return t1.Int64Value.CompareTo(t2.Int64Value) > 0;
+                case ScalarType.UInt64:
+                    return t1.UInt64Value.CompareTo(t2.UInt64Value) > 0;
+                case ScalarType.Single:
+                    return t1.SingleValue.CompareTo(t2.SingleValue) > 0;
+                case ScalarType.Double:
+                    return t1.DoubleValue.CompareTo(t2.DoubleValue) > 0;
+                case ScalarType.Decimal:
+                    return t1.DecimalValue.CompareTo(t2.DecimalValue) > 0;
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
+
         public static bool operator <=(Scalar<T> left, Scalar<T> right)
         {
             return (left < right) || (left == right);
         }
+
         public static bool operator >=(Scalar<T> left, Scalar<T> right)
         {
             return (left > right) || (left == right);
@@ -803,26 +866,6 @@ namespace LinearAlgebra.Scalars
         public bool Equals(Scalar<T> other)
         {
             return Value.Equals(other.Value);
-        }
-
-        public int CompareTo(object obj)
-        {
-            if (obj is Scalar<T> sc)
-                return sc.Value.CompareTo(Value);
-            if (obj is T t)
-                return t.CompareTo(Value);
-
-            throw new Exception($"Cannot compare type <{ obj.GetType().Name }> to  Scalar<{ typeof(T).Name }>");
-        }
-
-        public int CompareTo(T other)
-        {
-            return Value.CompareTo(other);
-        }
-
-        public int CompareTo(Scalar<T> other)
-        {
-            return Value.CompareTo(other.Value);
         }
 
         #endregion

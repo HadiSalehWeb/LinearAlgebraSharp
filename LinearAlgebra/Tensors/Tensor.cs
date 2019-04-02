@@ -7,7 +7,7 @@ namespace LinearAlgebra.Tensors
 {
     public class Tensor<TVec, T>
         where TVec : IVector<int, TVec>
-        where T : struct, IComparable
+        where T : struct
     {
         public Array Data { get; }
         public TVec Dimensions { get; }

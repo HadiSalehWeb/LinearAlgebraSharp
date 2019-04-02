@@ -35,7 +35,7 @@ namespace LinearAlgebra.Matrices
 {
 <# foreach (var n in supportedDimensions) { #>
     public struct Matrix<#= n[0] #>x<#= n[1] #><T> : ICloneable, IEquatable<Matrix<#= n[0] #>x<#= n[1] #><T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y)))) #>;
 

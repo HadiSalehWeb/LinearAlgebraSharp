@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace LinearAlgebra.Vectors
 {
     public struct Vector1<T> : ICloneable, IEquatable<Vector1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> x;
 
@@ -149,7 +149,7 @@ namespace LinearAlgebra.Vectors
     }
 
     public struct Vector2<T> : ICloneable, IEquatable<Vector2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> x, y;
 
@@ -310,7 +310,7 @@ namespace LinearAlgebra.Vectors
     }
 
     public struct Vector3<T> : ICloneable, IEquatable<Vector3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> x, y, z;
 
@@ -479,7 +479,7 @@ namespace LinearAlgebra.Vectors
     }
 
     public struct Vector4<T> : ICloneable, IEquatable<Vector4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> x, y, z, w;
 
@@ -656,7 +656,7 @@ namespace LinearAlgebra.Vectors
     }
 
     public struct Vector5<T> : ICloneable, IEquatable<Vector5<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> v0, v1, v2, v3, v4;
 
@@ -844,287 +844,287 @@ namespace LinearAlgebra.Vectors.Extensions
     public static partial class VectorExtansions
     {
         public static Vector1<TResult> Select<T, TResult>(this Vector1<T> t, Func<T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector1<TResult>(func(t.x.Value));
         }
 
         public static Vector1<TResult> Select<T, TResult>(this Vector1<T> t, Func<T, int, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector1<TResult>(func(t.x.Value, 0));
         }
 
         public static T Aggregate<T>(this Vector1<T> v, Func<T, T, T> func)
-            where T : struct, IComparable
+            where T : struct
         {
             return v.x.Value;
         }
 
         public static TResult Aggregate<T, TResult>(this Vector1<T> v, TResult seed, Func<TResult, T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return func(seed, v.x.Value);
         }
 
         public static TResult Aggregate<T, TAccumulate, TResult>(this Vector1<T> v, TAccumulate seed, Func<TAccumulate, T, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return resultSelector(func(seed, v.x.Value));
         }
 
         public static bool All<T>(this Vector1<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value);
         }
 
         public static bool Any<T>(this Vector1<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value);
         }
 
         public static double Average<T>(this Vector1<T> v)
-            where T : struct, IComparable
+            where T : struct
         {
 			return (new Scalar<double>(v.x) / 1.0).Value;
         }
 
         public static bool Contains<T>(this Vector1<T> v, T t)
-            where T : struct, IComparable
+            where T : struct
         {
             return v.x.Value.Equals(t);
         }
         public static Vector2<TResult> Select<T, TResult>(this Vector2<T> t, Func<T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector2<TResult>(func(t.x.Value), func(t.y.Value));
         }
 
         public static Vector2<TResult> Select<T, TResult>(this Vector2<T> t, Func<T, int, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector2<TResult>(func(t.x.Value, 0), func(t.y.Value, 1));
         }
 
         public static T Aggregate<T>(this Vector2<T> v, Func<T, T, T> func)
-            where T : struct, IComparable
+            where T : struct
         {
             return func(v.x.Value, v.y.Value);
         }
 
         public static TResult Aggregate<T, TResult>(this Vector2<T> v, TResult seed, Func<TResult, T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return func(func(seed, v.x.Value), v.y.Value);
         }
 
         public static TResult Aggregate<T, TAccumulate, TResult>(this Vector2<T> v, TAccumulate seed, Func<TAccumulate, T, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return resultSelector(func(func(seed, v.x.Value), v.y.Value));
         }
 
         public static bool All<T>(this Vector2<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value) && pred(v.y.Value);
         }
 
         public static bool Any<T>(this Vector2<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value) || pred(v.y.Value);
         }
 
         public static double Average<T>(this Vector2<T> v)
-            where T : struct, IComparable
+            where T : struct
         {
 			return (new Scalar<double>(v.x + v.y) / 2.0).Value;
         }
 
         public static bool Contains<T>(this Vector2<T> v, T t)
-            where T : struct, IComparable
+            where T : struct
         {
             return v.x.Value.Equals(t) || v.y.Value.Equals(t);
         }
         public static Vector3<TResult> Select<T, TResult>(this Vector3<T> t, Func<T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector3<TResult>(func(t.x.Value), func(t.y.Value), func(t.z.Value));
         }
 
         public static Vector3<TResult> Select<T, TResult>(this Vector3<T> t, Func<T, int, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector3<TResult>(func(t.x.Value, 0), func(t.y.Value, 1), func(t.z.Value, 2));
         }
 
         public static T Aggregate<T>(this Vector3<T> v, Func<T, T, T> func)
-            where T : struct, IComparable
+            where T : struct
         {
             return func(func(v.x.Value, v.y.Value), v.z.Value);
         }
 
         public static TResult Aggregate<T, TResult>(this Vector3<T> v, TResult seed, Func<TResult, T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return func(func(func(seed, v.x.Value), v.y.Value), v.z.Value);
         }
 
         public static TResult Aggregate<T, TAccumulate, TResult>(this Vector3<T> v, TAccumulate seed, Func<TAccumulate, T, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return resultSelector(func(func(func(seed, v.x.Value), v.y.Value), v.z.Value));
         }
 
         public static bool All<T>(this Vector3<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value) && pred(v.y.Value) && pred(v.z.Value);
         }
 
         public static bool Any<T>(this Vector3<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value);
         }
 
         public static double Average<T>(this Vector3<T> v)
-            where T : struct, IComparable
+            where T : struct
         {
 			return (new Scalar<double>(v.x + v.y + v.z) / 3.0).Value;
         }
 
         public static bool Contains<T>(this Vector3<T> v, T t)
-            where T : struct, IComparable
+            where T : struct
         {
             return v.x.Value.Equals(t) || v.y.Value.Equals(t) || v.z.Value.Equals(t);
         }
         public static Vector4<TResult> Select<T, TResult>(this Vector4<T> t, Func<T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector4<TResult>(func(t.x.Value), func(t.y.Value), func(t.z.Value), func(t.w.Value));
         }
 
         public static Vector4<TResult> Select<T, TResult>(this Vector4<T> t, Func<T, int, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector4<TResult>(func(t.x.Value, 0), func(t.y.Value, 1), func(t.z.Value, 2), func(t.w.Value, 3));
         }
 
         public static T Aggregate<T>(this Vector4<T> v, Func<T, T, T> func)
-            where T : struct, IComparable
+            where T : struct
         {
             return func(func(func(v.x.Value, v.y.Value), v.z.Value), v.w.Value);
         }
 
         public static TResult Aggregate<T, TResult>(this Vector4<T> v, TResult seed, Func<TResult, T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return func(func(func(func(seed, v.x.Value), v.y.Value), v.z.Value), v.w.Value);
         }
 
         public static TResult Aggregate<T, TAccumulate, TResult>(this Vector4<T> v, TAccumulate seed, Func<TAccumulate, T, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return resultSelector(func(func(func(func(seed, v.x.Value), v.y.Value), v.z.Value), v.w.Value));
         }
 
         public static bool All<T>(this Vector4<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value) && pred(v.y.Value) && pred(v.z.Value) && pred(v.w.Value);
         }
 
         public static bool Any<T>(this Vector4<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value) || pred(v.w.Value);
         }
 
         public static double Average<T>(this Vector4<T> v)
-            where T : struct, IComparable
+            where T : struct
         {
 			return (new Scalar<double>(v.x + v.y + v.z + v.w) / 4.0).Value;
         }
 
         public static bool Contains<T>(this Vector4<T> v, T t)
-            where T : struct, IComparable
+            where T : struct
         {
             return v.x.Value.Equals(t) || v.y.Value.Equals(t) || v.z.Value.Equals(t) || v.w.Value.Equals(t);
         }
         public static Vector5<TResult> Select<T, TResult>(this Vector5<T> t, Func<T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector5<TResult>(func(t.v0.Value), func(t.v1.Value), func(t.v2.Value), func(t.v3.Value), func(t.v4.Value));
         }
 
         public static Vector5<TResult> Select<T, TResult>(this Vector5<T> t, Func<T, int, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector5<TResult>(func(t.v0.Value, 0), func(t.v1.Value, 1), func(t.v2.Value, 2), func(t.v3.Value, 3), func(t.v4.Value, 4));
         }
 
         public static T Aggregate<T>(this Vector5<T> v, Func<T, T, T> func)
-            where T : struct, IComparable
+            where T : struct
         {
             return func(func(func(func(v.v0.Value, v.v1.Value), v.v2.Value), v.v3.Value), v.v4.Value);
         }
 
         public static TResult Aggregate<T, TResult>(this Vector5<T> v, TResult seed, Func<TResult, T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return func(func(func(func(func(seed, v.v0.Value), v.v1.Value), v.v2.Value), v.v3.Value), v.v4.Value);
         }
 
         public static TResult Aggregate<T, TAccumulate, TResult>(this Vector5<T> v, TAccumulate seed, Func<TAccumulate, T, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return resultSelector(func(func(func(func(func(seed, v.v0.Value), v.v1.Value), v.v2.Value), v.v3.Value), v.v4.Value));
         }
 
         public static bool All<T>(this Vector5<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.v0.Value) && pred(v.v1.Value) && pred(v.v2.Value) && pred(v.v3.Value) && pred(v.v4.Value);
         }
 
         public static bool Any<T>(this Vector5<T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return pred(v.v0.Value) || pred(v.v1.Value) || pred(v.v2.Value) || pred(v.v3.Value) || pred(v.v4.Value);
         }
 
         public static double Average<T>(this Vector5<T> v)
-            where T : struct, IComparable
+            where T : struct
         {
 			return (new Scalar<double>(v.v0 + v.v1 + v.v2 + v.v3 + v.v4) / 5.0).Value;
         }
 
         public static bool Contains<T>(this Vector5<T> v, T t)
-            where T : struct, IComparable
+            where T : struct
         {
             return v.v0.Value.Equals(t) || v.v1.Value.Equals(t) || v.v2.Value.Equals(t) || v.v3.Value.Equals(t) || v.v4.Value.Equals(t);
         }

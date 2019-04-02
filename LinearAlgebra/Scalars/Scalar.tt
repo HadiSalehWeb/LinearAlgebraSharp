@@ -45,6 +45,7 @@ using System.Runtime.InteropServices;
 namespace LinearAlgebra.Scalars
 {
     /// <summary>
+    /// This is where the magic happens.
     /// The purpose of this struct is to replicate the behaviour of a union type in C by lining up all its
     /// fields in the same memory address, since only one of them will end up being used at a time.
     /// </summary>
@@ -58,6 +59,8 @@ namespace LinearAlgebra.Scalars
 
         public TypedValueContainer(<#= string.Join(", ", supportedTypes.Select(x => x.type.ToString() + " " + getFieldName(x.name))) #>)
         {
+            //All values must be initialized to zero at first because they're readonly, and the actual value 
+            //is assigned at the very end to ensure it's not overwritten (see FieldOffsetAttribute)
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
             <#= i == 0 ? "if" : "else if" #> (<#= getFieldName(supportedTypes[i].name) #> != default)
             {
@@ -78,8 +81,8 @@ namespace LinearAlgebra.Scalars
         }
     }
 
-    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, IComparable, IComparable<T>, IComparable<Scalar<T>>
-        where T : struct, IComparable
+    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>
+        where T : struct
     {
         #region Type Handling
 
@@ -289,18 +292,46 @@ namespace LinearAlgebra.Scalars
         {
             return !left.Equals(right);
         }
-        public static bool operator <(Scalar<T> left, Scalar<T> right)
+
+        public static bool operator <(Scalar<T> t1, Scalar<T> t2)
         {
-            return left.CompareTo(right) < 0;
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].greaterThanOverride != null) { #>
+                    return <#= supportedTypes[i].greaterThanOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>;
+<# } else { #>
+                    return t1.<#= getPropertyName(supportedTypes[i].name) #>.CompareTo(t2.<#= getPropertyName(supportedTypes[i].name) #>) < 0;
+<# } #>
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
-        public static bool operator >(Scalar<T> left, Scalar<T> right)
+
+        public static bool operator >(Scalar<T> t1, Scalar<T> t2)
         {
-            return left.CompareTo(right) > 0;
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].greaterThanOverride != null) { #>
+                    return <#= supportedTypes[i].greaterThanOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>;
+<# } else { #>
+                    return t1.<#= getPropertyName(supportedTypes[i].name) #>.CompareTo(t2.<#= getPropertyName(supportedTypes[i].name) #>) > 0;
+<# } #>
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
+
         public static bool operator <=(Scalar<T> left, Scalar<T> right)
         {
             return (left < right) || (left == right);
         }
+
         public static bool operator >=(Scalar<T> left, Scalar<T> right)
         {
             return (left > right) || (left == right);
@@ -358,26 +389,6 @@ namespace LinearAlgebra.Scalars
             return Value.Equals(other.Value);
         }
 
-        public int CompareTo(object obj)
-        {
-            if (obj is Scalar<T> sc)
-                return sc.Value.CompareTo(Value);
-            if (obj is T t)
-                return t.CompareTo(Value);
-
-            throw new Exception($"Cannot compare type <{ obj.GetType().Name }> to  Scalar<{ typeof(T).Name }>");
-        }
-
-        public int CompareTo(T other)
-        {
-            return Value.CompareTo(other);
-        }
-
-        public int CompareTo(Scalar<T> other)
-        {
-            return Value.CompareTo(other.Value);
-        }
-
         #endregion
     }
 }
@@ -393,7 +404,9 @@ public struct ScalarType
 	public readonly bool canBeDivided;
 	public readonly bool canBeSubstracted;
 	public readonly Func<string, string, string> additionOverride;// assign this if the addition can't be performed normally with the + sign. It takes two variable names and returns a sentence that adds them.
-	public readonly Func<string, string, string> multiplicationOverride;// assign this if the multiplication can't be performed normally with the + sign. It takes two variable names and returns a sentence that multiplies them.
+	public readonly Func<string, string, string> multiplicationOverride;// assign this if the multiplication can't be performed normally with the * sign. It takes two variable names and returns a sentence that multiplies them.
+	public readonly Func<string, string, string> greaterThanOverride;// assign this if the comparison can't be performed normally with the > sign. It takes two variable names and returns a sentence that compares them and returns that greatest.
+	public readonly Func<string, string, string> lessThanOverride;// assign this if the comparison can't be performed normally with the > sign. It takes two variable names and returns a sentence that compares them and returns that greatest.
 	public readonly bool canBeComplemented;
 	public readonly Func<string, string> complementOverride;// assign this if the multiplication can't be performed normally with the + sign. It takes one variable and returns a sentence that performs bitwise complement on it.
 
@@ -408,6 +421,8 @@ public struct ScalarType
 		bool canBeDivided = true,
 		Func<string, string, string> additionOverride = null,
 		Func<string, string, string> multiplicationOverride = null,
+		Func<string, string, string> greaterThanOverride = null,
+		Func<string, string, string> lessThanOverride = null,
 		bool canBeComplemented = true,
 		Func<string, string> complementOverride = null
 	)
@@ -422,6 +437,8 @@ public struct ScalarType
 		this.canBeDivided = canBeDivided;
 		this.additionOverride = additionOverride;
 		this.multiplicationOverride = multiplicationOverride;
+		this.greaterThanOverride = greaterThanOverride;
+		this.lessThanOverride = lessThanOverride;
 		this.canBeComplemented = canBeComplemented;
 		this.complementOverride = complementOverride;
 	}

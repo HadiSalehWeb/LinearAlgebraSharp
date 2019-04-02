@@ -4,7 +4,7 @@ using System;
 namespace LinearAlgebra.Vectors
 {
     public interface IVector<T, TThis>
-        where T : struct, IComparable
+        where T : struct
         where TThis : IVector<T, TThis>
     {
         Scalar<int> Dimension { get; }

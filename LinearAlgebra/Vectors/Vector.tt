@@ -30,7 +30,7 @@ namespace LinearAlgebra.Vectors
 {
 <# foreach (var n in supportedDimensions) { #>
     public struct Vector<#= n #><T> : ICloneable, IEquatable<Vector<#= n #><T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
-        where T : struct, IComparable
+        where T : struct
     {
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #>;
 
@@ -219,59 +219,59 @@ namespace LinearAlgebra.Vectors.Extensions
     {
 <# foreach (var n in supportedDimensions) { #>
         public static Vector<#= n #><TResult> Select<T, TResult>(this Vector<#= n #><T> t, Func<T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector<#= n #><TResult>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "func(t." + componentName(n, x) + ".Value)")) #>);
         }
 
         public static Vector<#= n #><TResult> Select<T, TResult>(this Vector<#= n #><T> t, Func<T, int, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return new Vector<#= n #><TResult>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "func(t." + componentName(n, x) + ".Value, " + x + ")")) #>);
         }
 
         public static T Aggregate<T>(this Vector<#= n #><T> v, Func<T, T, T> func)
-            where T : struct, IComparable
+            where T : struct
         {
             return <#= Enumerable.Range(0, n - 1).Aggregate("v." + componentName(n, 0) + ".Value", (a, c) => "func(" + a + ", v." + componentName(n, c + 1) + ".Value)") #>;
         }
 
         public static TResult Aggregate<T, TResult>(this Vector<#= n #><T> v, TResult seed, Func<TResult, T, TResult> func)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return <#= Enumerable.Range(0, n).Aggregate("seed", (a, c) => "func(" + a + ", v." + componentName(n, c) + ".Value)") #>;
         }
 
         public static TResult Aggregate<T, TAccumulate, TResult>(this Vector<#= n #><T> v, TAccumulate seed, Func<TAccumulate, T, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-            where T : struct, IComparable
-            where TResult : struct, IComparable
+            where T : struct
+            where TResult : struct
         {
             return resultSelector(<#= Enumerable.Range(0, n).Aggregate("seed", (a, c) => "func(" + a + ", v." + componentName(n, c) + ".Value)") #>);
         }
 
         public static bool All<T>(this Vector<#= n #><T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return <#= string.Join(" && ", Enumerable.Range(0, n).Select(x => "pred(v." + componentName(n, x) + ".Value)")) #>;
         }
 
         public static bool Any<T>(this Vector<#= n #><T> v, Func<T, bool> pred)
-            where T : struct, IComparable
+            where T : struct
         {
 			return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "pred(v." + componentName(n, x) + ".Value)")) #>;
         }
 
         public static double Average<T>(this Vector<#= n #><T> v)
-            where T : struct, IComparable
+            where T : struct
         {
 			return (new Scalar<double>(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>) / <#= n #>.0).Value;
         }
 
         public static bool Contains<T>(this Vector<#= n #><T> v, T t)
-            where T : struct, IComparable
+            where T : struct
         {
             return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x) + ".Value.Equals(t)")) #>;
         }

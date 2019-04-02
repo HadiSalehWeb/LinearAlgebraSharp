@@ -5,7 +5,161 @@ using System.Collections.Generic;
 
 namespace LinearAlgebra.Vectors
 {
-    public struct Vector1<T> : ICloneable, IEquatable<Vector1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
+    public struct Vector0<T> : ICloneable, IEquatable<Vector0<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector0<T>>
+        where T : struct
+    {
+        public static readonly Vector0<T> zero = new Vector0<T>();
+        public static readonly Vector0<T> one = new Vector0<T>();
+
+        public Scalar<int> Rank => 1;
+        public Vector1<int> Dimension => 0;
+        public Scalar<T>[] Data => new Scalar<T>[0] {  };
+        public Scalar<T> this[int i] => Data[i];
+		
+        public Vector0<T> Add(Vector0<T> vec)
+        {
+            return new Vector0<T>();
+        }
+
+        public static Vector0<T> operator +(Vector0<T> left, Vector0<T> right)
+        {
+            return left.Add(right);
+        }
+		
+        public Vector0<T> Substract(Vector0<T> vec)
+        {
+            return new Vector0<T>();
+        }
+
+        public static Vector0<T> operator -(Vector0<T> left, Vector0<T> right)
+        {
+			return left.Substract(right);
+        }
+
+        public Vector0<T> Multiply(Scalar<T> s)
+        {
+            return new Vector0<T>();
+        }
+
+        public static Vector0<T> operator *(Vector0<T> left, Scalar<T> right)
+        {
+			return left.Multiply(right);
+        }
+
+        public static Vector0<T> operator *(Scalar<T> left, Vector0<T> right)
+        {
+			return right.Multiply(left);
+        }
+
+        public Vector0<T> Divide(Scalar<T> s)
+        {
+            return new Vector0<T>();
+        }
+
+        public static Vector0<T> operator /(Vector0<T> left, Scalar<T> right)
+        {
+            return left.Divide(right);
+        }
+
+        public Vector0<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector0<T>();
+        }
+
+        public static Vector0<T> operator /(Scalar<T> left, Vector0<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Vector0<T> Negate()
+        {
+            return new Vector0<T>();
+        }
+
+        public static Vector0<T> operator -(Vector0<T> v)
+        {
+            return v.Negate();
+		}
+
+        public static bool operator ==(Vector0<T> left, Vector0<T> right)
+        {
+            return true;
+        }
+
+        public static bool operator !=(Vector0<T> left, Vector0<T> right)
+        {
+            return false;
+        }
+
+        public Vector0<T> Scale(Vector0<T> vec)
+        {
+            return new Vector0<T>();
+        }
+
+        public Scalar<T> Dot(Vector0<T> vec)
+        {
+            return Scalar<T>.Zero;
+        }
+		
+        public static implicit operator Vector<T>(Vector0<T> t)
+        {
+            return new Vector<T>(t.Data);
+        }
+
+        public static implicit operator T[] (Vector0<T> t)
+        {
+            return new T[0] {  };
+        }
+
+        public object Clone()
+        {
+            return new Vector0<T>();
+        }
+
+        IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
+        {
+            yield break;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            yield break;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public bool Equals(Vector0<T> other)
+        {
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Vector0<T> vec)
+                return true;
+
+            return false;
+        }
+
+        public override string ToString()
+        {
+            return $"Vector0()";
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        public Scalar<T> SqrMagnitude => Scalar<T>.Zero;
+        public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
+        public Vector0<T> Normalized => this / Magnitude;
+    }
+
+    public struct Vector1<T> : ICloneable, IEquatable<Vector1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector1<T>>
         where T : struct
     {
         public readonly Scalar<T> x;
@@ -16,10 +170,11 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector1<T> right = new Vector1<T>(Scalar<T>.One);
         public static readonly Vector1<T> left = new Vector1<T>(-Scalar<T>.One);
 
-        public Scalar<int> Dimension => 1;
+        public Scalar<int> Rank => 1;
+        public Vector1<int> Dimension => 1;
         public Scalar<T>[] Data => new Scalar<T>[1] { x };
         public Scalar<T> this[int i] => Data[i];
-
+		
         public Vector1(Scalar<T> x)
         {
             this.x = x;
@@ -30,40 +185,71 @@ namespace LinearAlgebra.Vectors
             this.x = new Scalar<T>(x);
         }
 
+
+        public Vector1<T> Add(Vector1<T> vec)
+        {
+            return new Vector1<T>(x + vec.x);
+        }
+
         public static Vector1<T> operator +(Vector1<T> left, Vector1<T> right)
         {
-            return new Vector1<T>(left.x + right.x);
+            return left.Add(right);
+        }
+		
+        public Vector1<T> Substract(Vector1<T> vec)
+        {
+            return new Vector1<T>(x - vec.x);
         }
 
         public static Vector1<T> operator -(Vector1<T> left, Vector1<T> right)
         {
-            return new Vector1<T>(left.x - right.x);
+			return left.Substract(right);
+        }
+
+        public Vector1<T> Multiply(Scalar<T> s)
+        {
+            return new Vector1<T>(x * s);
         }
 
         public static Vector1<T> operator *(Vector1<T> left, Scalar<T> right)
         {
-            return new Vector1<T>(left.x * right);
+			return left.Multiply(right);
         }
 
         public static Vector1<T> operator *(Scalar<T> left, Vector1<T> right)
         {
-            return new Vector1<T>(left * right.x);
+			return right.Multiply(left);
+        }
+
+        public Vector1<T> Divide(Scalar<T> s)
+        {
+            return new Vector1<T>(x / s);
         }
 
         public static Vector1<T> operator /(Vector1<T> left, Scalar<T> right)
         {
-            return new Vector1<T>(left.x / right);
+            return left.Divide(right);
+        }
+
+        public Vector1<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector1<T>(s / x);
         }
 
         public static Vector1<T> operator /(Scalar<T> left, Vector1<T> right)
         {
-            return new Vector1<T>(left / right.x);
+            return right.GetDividedBy(left);
+        }
+
+        public Vector1<T> Negate()
+        {
+            return new Vector1<T>(-x);
         }
 
         public static Vector1<T> operator -(Vector1<T> v)
         {
-            return new Vector1<T>(-v.x);
-        }
+            return v.Negate();
+		}
 
         public static bool operator ==(Vector1<T> left, Vector1<T> right)
         {
@@ -84,10 +270,15 @@ namespace LinearAlgebra.Vectors
         {
             return x * vec.x;
         }
-
+		
         public static implicit operator Vector1<T>(T t)
         {
             return new Vector1<T>(t);
+        }
+
+        public static implicit operator T(Vector1<T> vec)
+        {
+            return vec.x.Value;
         }
 
         public static implicit operator Vector<T>(Vector1<T> t)
@@ -148,7 +339,7 @@ namespace LinearAlgebra.Vectors
         public Vector1<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector2<T> : ICloneable, IEquatable<Vector2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
+    public struct Vector2<T> : ICloneable, IEquatable<Vector2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector2<T>>
         where T : struct
     {
         public readonly Scalar<T> x, y;
@@ -161,10 +352,11 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector2<T> up = new Vector2<T>(Scalar<T>.Zero, Scalar<T>.One);
         public static readonly Vector2<T> down = new Vector2<T>(Scalar<T>.Zero, -Scalar<T>.One);
 
-        public Scalar<int> Dimension => 2;
+        public Scalar<int> Rank => 1;
+        public Vector1<int> Dimension => 2;
         public Scalar<T>[] Data => new Scalar<T>[2] { x, y };
         public Scalar<T> this[int i] => Data[i];
-
+		
         public Vector2(Scalar<T> x, Scalar<T> y)
         {
             this.x = x;
@@ -189,40 +381,70 @@ namespace LinearAlgebra.Vectors
             this.y = new Scalar<T>(t);
         }
 
+        public Vector2<T> Add(Vector2<T> vec)
+        {
+            return new Vector2<T>(x + vec.x, y + vec.y);
+        }
+
         public static Vector2<T> operator +(Vector2<T> left, Vector2<T> right)
         {
-            return new Vector2<T>(left.x + right.x, left.y + right.y);
+            return left.Add(right);
+        }
+		
+        public Vector2<T> Substract(Vector2<T> vec)
+        {
+            return new Vector2<T>(x - vec.x, y - vec.y);
         }
 
         public static Vector2<T> operator -(Vector2<T> left, Vector2<T> right)
         {
-            return new Vector2<T>(left.x - right.x, left.y - right.y);
+			return left.Substract(right);
+        }
+
+        public Vector2<T> Multiply(Scalar<T> s)
+        {
+            return new Vector2<T>(x * s, y * s);
         }
 
         public static Vector2<T> operator *(Vector2<T> left, Scalar<T> right)
         {
-            return new Vector2<T>(left.x * right, left.y * right);
+			return left.Multiply(right);
         }
 
         public static Vector2<T> operator *(Scalar<T> left, Vector2<T> right)
         {
-            return new Vector2<T>(left * right.x, left * right.y);
+			return right.Multiply(left);
+        }
+
+        public Vector2<T> Divide(Scalar<T> s)
+        {
+            return new Vector2<T>(x / s, y / s);
         }
 
         public static Vector2<T> operator /(Vector2<T> left, Scalar<T> right)
         {
-            return new Vector2<T>(left.x / right, left.y / right);
+            return left.Divide(right);
+        }
+
+        public Vector2<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector2<T>(s / x, s / y);
         }
 
         public static Vector2<T> operator /(Scalar<T> left, Vector2<T> right)
         {
-            return new Vector2<T>(left / right.x, left / right.y);
+            return right.GetDividedBy(left);
+        }
+
+        public Vector2<T> Negate()
+        {
+            return new Vector2<T>(-x, -y);
         }
 
         public static Vector2<T> operator -(Vector2<T> v)
         {
-            return new Vector2<T>(-v.x, -v.y);
-        }
+            return v.Negate();
+		}
 
         public static bool operator ==(Vector2<T> left, Vector2<T> right)
         {
@@ -243,10 +465,15 @@ namespace LinearAlgebra.Vectors
         {
             return x * vec.x + y * vec.y;
         }
-
+		
         public static implicit operator Vector2<T>((T, T) t)
         {
             return new Vector2<T>(t.Item1, t.Item2);
+        }
+
+        public static implicit operator (T, T)(Vector2<T> vec)
+        {
+            return (vec.x.Value, vec.y.Value);
         }
 
         public static implicit operator Vector<T>(Vector2<T> t)
@@ -309,7 +536,7 @@ namespace LinearAlgebra.Vectors
         public Vector2<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector3<T> : ICloneable, IEquatable<Vector3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
+    public struct Vector3<T> : ICloneable, IEquatable<Vector3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector3<T>>
         where T : struct
     {
         public readonly Scalar<T> x, y, z;
@@ -324,10 +551,11 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector3<T> forward = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
         public static readonly Vector3<T> backward = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One);
 
-        public Scalar<int> Dimension => 3;
+        public Scalar<int> Rank => 1;
+        public Vector1<int> Dimension => 3;
         public Scalar<T>[] Data => new Scalar<T>[3] { x, y, z };
         public Scalar<T> this[int i] => Data[i];
-
+		
         public Vector3(Scalar<T> x, Scalar<T> y, Scalar<T> z)
         {
             this.x = x;
@@ -356,40 +584,70 @@ namespace LinearAlgebra.Vectors
             this.z = new Scalar<T>(t);
         }
 
+        public Vector3<T> Add(Vector3<T> vec)
+        {
+            return new Vector3<T>(x + vec.x, y + vec.y, z + vec.z);
+        }
+
         public static Vector3<T> operator +(Vector3<T> left, Vector3<T> right)
         {
-            return new Vector3<T>(left.x + right.x, left.y + right.y, left.z + right.z);
+            return left.Add(right);
+        }
+		
+        public Vector3<T> Substract(Vector3<T> vec)
+        {
+            return new Vector3<T>(x - vec.x, y - vec.y, z - vec.z);
         }
 
         public static Vector3<T> operator -(Vector3<T> left, Vector3<T> right)
         {
-            return new Vector3<T>(left.x - right.x, left.y - right.y, left.z - right.z);
+			return left.Substract(right);
+        }
+
+        public Vector3<T> Multiply(Scalar<T> s)
+        {
+            return new Vector3<T>(x * s, y * s, z * s);
         }
 
         public static Vector3<T> operator *(Vector3<T> left, Scalar<T> right)
         {
-            return new Vector3<T>(left.x * right, left.y * right, left.z * right);
+			return left.Multiply(right);
         }
 
         public static Vector3<T> operator *(Scalar<T> left, Vector3<T> right)
         {
-            return new Vector3<T>(left * right.x, left * right.y, left * right.z);
+			return right.Multiply(left);
+        }
+
+        public Vector3<T> Divide(Scalar<T> s)
+        {
+            return new Vector3<T>(x / s, y / s, z / s);
         }
 
         public static Vector3<T> operator /(Vector3<T> left, Scalar<T> right)
         {
-            return new Vector3<T>(left.x / right, left.y / right, left.z / right);
+            return left.Divide(right);
+        }
+
+        public Vector3<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector3<T>(s / x, s / y, s / z);
         }
 
         public static Vector3<T> operator /(Scalar<T> left, Vector3<T> right)
         {
-            return new Vector3<T>(left / right.x, left / right.y, left / right.z);
+            return right.GetDividedBy(left);
+        }
+
+        public Vector3<T> Negate()
+        {
+            return new Vector3<T>(-x, -y, -z);
         }
 
         public static Vector3<T> operator -(Vector3<T> v)
         {
-            return new Vector3<T>(-v.x, -v.y, -v.z);
-        }
+            return v.Negate();
+		}
 
         public static bool operator ==(Vector3<T> left, Vector3<T> right)
         {
@@ -410,10 +668,15 @@ namespace LinearAlgebra.Vectors
         {
             return x * vec.x + y * vec.y + z * vec.z;
         }
-
+		
         public static implicit operator Vector3<T>((T, T, T) t)
         {
             return new Vector3<T>(t.Item1, t.Item2, t.Item3);
+        }
+
+        public static implicit operator (T, T, T)(Vector3<T> vec)
+        {
+            return (vec.x.Value, vec.y.Value, vec.z.Value);
         }
 
         public static implicit operator Vector<T>(Vector3<T> t)
@@ -478,7 +741,7 @@ namespace LinearAlgebra.Vectors
         public Vector3<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector4<T> : ICloneable, IEquatable<Vector4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
+    public struct Vector4<T> : ICloneable, IEquatable<Vector4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector4<T>>
         where T : struct
     {
         public readonly Scalar<T> x, y, z, w;
@@ -495,10 +758,11 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector4<T> ana = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
         public static readonly Vector4<T> kata = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One);
 
-        public Scalar<int> Dimension => 4;
+        public Scalar<int> Rank => 1;
+        public Vector1<int> Dimension => 4;
         public Scalar<T>[] Data => new Scalar<T>[4] { x, y, z, w };
         public Scalar<T> this[int i] => Data[i];
-
+		
         public Vector4(Scalar<T> x, Scalar<T> y, Scalar<T> z, Scalar<T> w)
         {
             this.x = x;
@@ -531,40 +795,70 @@ namespace LinearAlgebra.Vectors
             this.w = new Scalar<T>(t);
         }
 
+        public Vector4<T> Add(Vector4<T> vec)
+        {
+            return new Vector4<T>(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
+        }
+
         public static Vector4<T> operator +(Vector4<T> left, Vector4<T> right)
         {
-            return new Vector4<T>(left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w);
+            return left.Add(right);
+        }
+		
+        public Vector4<T> Substract(Vector4<T> vec)
+        {
+            return new Vector4<T>(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
         }
 
         public static Vector4<T> operator -(Vector4<T> left, Vector4<T> right)
         {
-            return new Vector4<T>(left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w);
+			return left.Substract(right);
+        }
+
+        public Vector4<T> Multiply(Scalar<T> s)
+        {
+            return new Vector4<T>(x * s, y * s, z * s, w * s);
         }
 
         public static Vector4<T> operator *(Vector4<T> left, Scalar<T> right)
         {
-            return new Vector4<T>(left.x * right, left.y * right, left.z * right, left.w * right);
+			return left.Multiply(right);
         }
 
         public static Vector4<T> operator *(Scalar<T> left, Vector4<T> right)
         {
-            return new Vector4<T>(left * right.x, left * right.y, left * right.z, left * right.w);
+			return right.Multiply(left);
+        }
+
+        public Vector4<T> Divide(Scalar<T> s)
+        {
+            return new Vector4<T>(x / s, y / s, z / s, w / s);
         }
 
         public static Vector4<T> operator /(Vector4<T> left, Scalar<T> right)
         {
-            return new Vector4<T>(left.x / right, left.y / right, left.z / right, left.w / right);
+            return left.Divide(right);
+        }
+
+        public Vector4<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector4<T>(s / x, s / y, s / z, s / w);
         }
 
         public static Vector4<T> operator /(Scalar<T> left, Vector4<T> right)
         {
-            return new Vector4<T>(left / right.x, left / right.y, left / right.z, left / right.w);
+            return right.GetDividedBy(left);
+        }
+
+        public Vector4<T> Negate()
+        {
+            return new Vector4<T>(-x, -y, -z, -w);
         }
 
         public static Vector4<T> operator -(Vector4<T> v)
         {
-            return new Vector4<T>(-v.x, -v.y, -v.z, -v.w);
-        }
+            return v.Negate();
+		}
 
         public static bool operator ==(Vector4<T> left, Vector4<T> right)
         {
@@ -585,10 +879,15 @@ namespace LinearAlgebra.Vectors
         {
             return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
         }
-
+		
         public static implicit operator Vector4<T>((T, T, T, T) t)
         {
             return new Vector4<T>(t.Item1, t.Item2, t.Item3, t.Item4);
+        }
+
+        public static implicit operator (T, T, T, T)(Vector4<T> vec)
+        {
+            return (vec.x.Value, vec.y.Value, vec.z.Value, vec.w.Value);
         }
 
         public static implicit operator Vector<T>(Vector4<T> t)
@@ -655,7 +954,7 @@ namespace LinearAlgebra.Vectors
         public Vector4<T> Normalized => this / Magnitude;
     }
 
-    public struct Vector5<T> : ICloneable, IEquatable<Vector5<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>//, IVector<T>
+    public struct Vector5<T> : ICloneable, IEquatable<Vector5<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector5<T>>
         where T : struct
     {
         public readonly Scalar<T> v0, v1, v2, v3, v4;
@@ -663,11 +962,11 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector5<T> zero = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
         public static readonly Vector5<T> one = new Vector5<T>(Scalar<T>.One, Scalar<T>.One, Scalar<T>.One, Scalar<T>.One, Scalar<T>.One);
 
-
-        public Scalar<int> Dimension => 5;
+        public Scalar<int> Rank => 1;
+        public Vector1<int> Dimension => 5;
         public Scalar<T>[] Data => new Scalar<T>[5] { v0, v1, v2, v3, v4 };
         public Scalar<T> this[int i] => Data[i];
-
+		
         public Vector5(Scalar<T> v0, Scalar<T> v1, Scalar<T> v2, Scalar<T> v3, Scalar<T> v4)
         {
             this.v0 = v0;
@@ -704,40 +1003,70 @@ namespace LinearAlgebra.Vectors
             this.v4 = new Scalar<T>(t);
         }
 
+        public Vector5<T> Add(Vector5<T> vec)
+        {
+            return new Vector5<T>(v0 + vec.v0, v1 + vec.v1, v2 + vec.v2, v3 + vec.v3, v4 + vec.v4);
+        }
+
         public static Vector5<T> operator +(Vector5<T> left, Vector5<T> right)
         {
-            return new Vector5<T>(left.v0 + right.v0, left.v1 + right.v1, left.v2 + right.v2, left.v3 + right.v3, left.v4 + right.v4);
+            return left.Add(right);
+        }
+		
+        public Vector5<T> Substract(Vector5<T> vec)
+        {
+            return new Vector5<T>(v0 - vec.v0, v1 - vec.v1, v2 - vec.v2, v3 - vec.v3, v4 - vec.v4);
         }
 
         public static Vector5<T> operator -(Vector5<T> left, Vector5<T> right)
         {
-            return new Vector5<T>(left.v0 - right.v0, left.v1 - right.v1, left.v2 - right.v2, left.v3 - right.v3, left.v4 - right.v4);
+			return left.Substract(right);
+        }
+
+        public Vector5<T> Multiply(Scalar<T> s)
+        {
+            return new Vector5<T>(v0 * s, v1 * s, v2 * s, v3 * s, v4 * s);
         }
 
         public static Vector5<T> operator *(Vector5<T> left, Scalar<T> right)
         {
-            return new Vector5<T>(left.v0 * right, left.v1 * right, left.v2 * right, left.v3 * right, left.v4 * right);
+			return left.Multiply(right);
         }
 
         public static Vector5<T> operator *(Scalar<T> left, Vector5<T> right)
         {
-            return new Vector5<T>(left * right.v0, left * right.v1, left * right.v2, left * right.v3, left * right.v4);
+			return right.Multiply(left);
+        }
+
+        public Vector5<T> Divide(Scalar<T> s)
+        {
+            return new Vector5<T>(v0 / s, v1 / s, v2 / s, v3 / s, v4 / s);
         }
 
         public static Vector5<T> operator /(Vector5<T> left, Scalar<T> right)
         {
-            return new Vector5<T>(left.v0 / right, left.v1 / right, left.v2 / right, left.v3 / right, left.v4 / right);
+            return left.Divide(right);
+        }
+
+        public Vector5<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector5<T>(s / v0, s / v1, s / v2, s / v3, s / v4);
         }
 
         public static Vector5<T> operator /(Scalar<T> left, Vector5<T> right)
         {
-            return new Vector5<T>(left / right.v0, left / right.v1, left / right.v2, left / right.v3, left / right.v4);
+            return right.GetDividedBy(left);
+        }
+
+        public Vector5<T> Negate()
+        {
+            return new Vector5<T>(-v0, -v1, -v2, -v3, -v4);
         }
 
         public static Vector5<T> operator -(Vector5<T> v)
         {
-            return new Vector5<T>(-v.v0, -v.v1, -v.v2, -v.v3, -v.v4);
-        }
+            return v.Negate();
+		}
 
         public static bool operator ==(Vector5<T> left, Vector5<T> right)
         {
@@ -758,10 +1087,15 @@ namespace LinearAlgebra.Vectors
         {
             return v0 * vec.v0 + v1 * vec.v1 + v2 * vec.v2 + v3 * vec.v3 + v4 * vec.v4;
         }
-
+		
         public static implicit operator Vector5<T>((T, T, T, T, T) t)
         {
             return new Vector5<T>(t.Item1, t.Item2, t.Item3, t.Item4, t.Item5);
+        }
+
+        public static implicit operator (T, T, T, T, T)(Vector5<T> vec)
+        {
+            return (vec.v0.Value, vec.v1.Value, vec.v2.Value, vec.v3.Value, vec.v4.Value);
         }
 
         public static implicit operator Vector<T>(Vector5<T> t)

@@ -28,6 +28,7 @@
 	Func<string, string> getPropertyName = new Func<string, string>(name => name + "Value");
 #>
 using System;
+using LinearAlgebra.Vectors;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -81,7 +82,7 @@ namespace LinearAlgebra.Scalars
         }
     }
 
-    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>
+    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, ITensor<T, Vector0<int>, Scalar<T>>
         where T : struct
     {
         #region Type Handling
@@ -106,7 +107,8 @@ namespace LinearAlgebra.Scalars
 
         #region Fields and Properties
 
-        public int Rank => 0;
+        public Scalar<int> Rank => Scalar<int>.Zero;
+        public Vector0<int> Dimension => Vector0<int>.zero;
 
         private readonly TypedValueContainer tvc;
 
@@ -173,16 +175,16 @@ namespace LinearAlgebra.Scalars
 
         #region Arithmetic
 
-        public static Scalar<T> operator +(Scalar<T> t1, Scalar<T> t2)
+        public static Scalar<T> operator +(Scalar<T> left, Scalar<T> right)
         {
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
                 case ScalarType.<#= supportedTypes[i].name #>:
 <# if (supportedTypes[i].additionOverride != null) { #>
-                    return From(<#= supportedTypes[i].additionOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>);
+                    return From(<#= supportedTypes[i].additionOverride("left." + getPropertyName(supportedTypes[i].name), "right." + getPropertyName(supportedTypes[i].name)) #>);
 <# } else { #>
-                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> + t2.<#= getPropertyName(supportedTypes[i].name) #>);
+                    return From(left.<#= getPropertyName(supportedTypes[i].name) #> + right.<#= getPropertyName(supportedTypes[i].name) #>);
 <# } #>
 <# } #>
                 default:
@@ -190,14 +192,14 @@ namespace LinearAlgebra.Scalars
             }
         }
 
-        public static Scalar<T> operator -(Scalar<T> t1, Scalar<T> t2)
+        public static Scalar<T> operator -(Scalar<T> left, Scalar<T> right)
         {
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
                 case ScalarType.<#= supportedTypes[i].name #>:
 <# if (supportedTypes[i].canBeSubstracted) { #>
-                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> - t2.<#= getPropertyName(supportedTypes[i].name) #>);
+                    return From(left.<#= getPropertyName(supportedTypes[i].name) #> - right.<#= getPropertyName(supportedTypes[i].name) #>);
 <# } else { #>
                     throw new Exception($"Substraction can't be performed on type <#= supportedTypes[i].type.ToString() #>.");
 <# } #>
@@ -207,16 +209,16 @@ namespace LinearAlgebra.Scalars
             }
         }
 
-        public static Scalar<T> operator *(Scalar<T> t1, Scalar<T> t2)
+        public static Scalar<T> operator *(Scalar<T> left, Scalar<T> right)
         {
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
                 case ScalarType.<#= supportedTypes[i].name #>:
 <# if (supportedTypes[i].multiplicationOverride != null) { #>
-                    return From(<#= supportedTypes[i].multiplicationOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>);
+                    return From(<#= supportedTypes[i].multiplicationOverride("left." + getPropertyName(supportedTypes[i].name), "right." + getPropertyName(supportedTypes[i].name)) #>);
 <# } else { #>
-                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> * t2.<#= getPropertyName(supportedTypes[i].name) #>);
+                    return From(left.<#= getPropertyName(supportedTypes[i].name) #> * right.<#= getPropertyName(supportedTypes[i].name) #>);
 <# } #>
 <# } #>
                 default:
@@ -224,14 +226,14 @@ namespace LinearAlgebra.Scalars
             }
         }
 
-        public static Scalar<T> operator /(Scalar<T> t1, Scalar<T> t2)
+        public static Scalar<T> operator /(Scalar<T> left, Scalar<T> right)
         {
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
                 case ScalarType.<#= supportedTypes[i].name #>:
 <# if (supportedTypes[i].canBeDivided) { #>
-                    return From(t1.<#= getPropertyName(supportedTypes[i].name) #> / t2.<#= getPropertyName(supportedTypes[i].name) #>);
+                    return From(left.<#= getPropertyName(supportedTypes[i].name) #> / right.<#= getPropertyName(supportedTypes[i].name) #>);
 <# } else { #>
                     throw new Exception($"Division can't be performed on type <#= supportedTypes[i].type.ToString() #>.");
 <# } #>
@@ -293,16 +295,16 @@ namespace LinearAlgebra.Scalars
             return !left.Equals(right);
         }
 
-        public static bool operator <(Scalar<T> t1, Scalar<T> t2)
+        public static bool operator <(Scalar<T> left, Scalar<T> right)
         {
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
                 case ScalarType.<#= supportedTypes[i].name #>:
 <# if (supportedTypes[i].greaterThanOverride != null) { #>
-                    return <#= supportedTypes[i].greaterThanOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>;
+                    return <#= supportedTypes[i].greaterThanOverride("left." + getPropertyName(supportedTypes[i].name), "right." + getPropertyName(supportedTypes[i].name)) #>;
 <# } else { #>
-                    return t1.<#= getPropertyName(supportedTypes[i].name) #>.CompareTo(t2.<#= getPropertyName(supportedTypes[i].name) #>) < 0;
+                    return left.<#= getPropertyName(supportedTypes[i].name) #>.CompareTo(right.<#= getPropertyName(supportedTypes[i].name) #>) < 0;
 <# } #>
 <# } #>
                 default:
@@ -310,16 +312,16 @@ namespace LinearAlgebra.Scalars
             }
         }
 
-        public static bool operator >(Scalar<T> t1, Scalar<T> t2)
+        public static bool operator >(Scalar<T> left, Scalar<T> right)
         {
             switch (scalarType)
             {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
                 case ScalarType.<#= supportedTypes[i].name #>:
 <# if (supportedTypes[i].greaterThanOverride != null) { #>
-                    return <#= supportedTypes[i].greaterThanOverride("t1." + getPropertyName(supportedTypes[i].name), "t2." + getPropertyName(supportedTypes[i].name)) #>;
+                    return <#= supportedTypes[i].greaterThanOverride("left." + getPropertyName(supportedTypes[i].name), "right." + getPropertyName(supportedTypes[i].name)) #>;
 <# } else { #>
-                    return t1.<#= getPropertyName(supportedTypes[i].name) #>.CompareTo(t2.<#= getPropertyName(supportedTypes[i].name) #>) > 0;
+                    return left.<#= getPropertyName(supportedTypes[i].name) #>.CompareTo(right.<#= getPropertyName(supportedTypes[i].name) #>) > 0;
 <# } #>
 <# } #>
                 default:

@@ -1,16 +1,13 @@
 ﻿using LinearAlgebra.Scalars;
-using System;
 
 namespace LinearAlgebra.Vectors
 {
-    public interface IVector<T, TThis>
+    public interface IVector<T, TThis> : ITensor<T, Vector1<int>, IVector<T, TThis>>
         where T : struct
         where TThis : IVector<T, TThis>
     {
-        Scalar<int> Dimension { get; }
+        //Vector1<int> Dimension { get; }
         Scalar<T>[] Data { get; }
-        TThis Zero { get; }
-        TThis One { get; }
         Scalar<T> Magnitude { get; }
         Scalar<T> SqrMagnitude { get; }
         TThis Normalized { get; }

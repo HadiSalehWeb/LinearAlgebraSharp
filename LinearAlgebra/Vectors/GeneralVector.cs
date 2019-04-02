@@ -15,7 +15,8 @@ namespace LinearAlgebra.Vectors
         IVector<T, Vector<T>>
         where T : struct
     {
-        public Scalar<int> Dimension { get; }
+        public Scalar<int> Rank => 1;
+        public Vector1<int> Dimension { get; }
         public int Length => Dimension;
 
         public Scalar<T>[] Data { get; }
@@ -65,14 +66,15 @@ namespace LinearAlgebra.Vectors
         }
 
         /// <summary>
-        /// (0)
+        /// Retrurns an n-dimensional vector with the i-th element set to one
         /// </summary>
-        Vector<T> IVector<T, Vector<T>>.Zero => new Vector<T>(Scalar<T>.Zero);
-
-        /// <summary>
-        /// (1)
-        /// </summary>
-        Vector<T> IVector<T, Vector<T>>.One => new Vector<T>(Scalar<T>.One);
+        /// <param name="dimension">the 'n' in n-dimensional, the dimension of the vector</param>
+        /// <param name="basis">the 'i' in i-th element, the 1-based axis of the vector</param>
+        /// <returns></returns>
+        public static Vector<T> Basis(int dimension, int basis)
+        {
+            return new Vector<T>(Enumerable.Range(0, dimension).Select(i => i == basis + 1 ? Scalar<T>.One : Scalar<T>.Zero).ToArray());
+        }
 
         public static Vector<T> Repeat(T t, int dimension)
         {
@@ -135,7 +137,7 @@ namespace LinearAlgebra.Vectors
         public Scalar<T> Dot(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
-                throw new DimensionMismatchException<Scalar<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
+                throw new DimensionMismatchException<Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             Scalar<T> result = Scalar<T>.Zero;
 
@@ -150,7 +152,7 @@ namespace LinearAlgebra.Vectors
         public Vector<T> Cross(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
-                throw new DimensionMismatchException<Scalar<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
+                throw new DimensionMismatchException<Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             if (Dimension == 0) return new Vector<T>(new Scalar<T>[0]);
             if (Dimension == 1) return new Vector<T>(Scalar<T>.Zero);
@@ -175,7 +177,7 @@ namespace LinearAlgebra.Vectors
         public Vector<T> Scale(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
-                throw new DimensionMismatchException<Scalar<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
+                throw new DimensionMismatchException<Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             Scalar<T>[] result = new Scalar<T>[Dimension];
 
@@ -235,55 +237,55 @@ namespace LinearAlgebra.Vectors
             return new Vector<T>(value);
         }
 
-        public static implicit operator Vector<T>(T t)
-        {
-            return new Vector<T>(t);
-        }
+        //public static implicit operator Vector<T>(T t)
+        //{
+        //    return new Vector<T>(t);
+        //}
 
-        public static implicit operator Vector<T>((T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2);
-        }
+        //public static implicit operator Vector<T>((T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3);
-        }
+        //public static implicit operator Vector<T>((T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
-        }
+        //public static implicit operator Vector<T>((T, T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5);
-        }
+        //public static implicit operator Vector<T>((T, T, T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T, T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6);
-        }
+        //public static implicit operator Vector<T>((T, T, T, T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T, T, T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7);
-        }
+        //public static implicit operator Vector<T>((T, T, T, T, T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T, T, T, T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8);
-        }
+        //public static implicit operator Vector<T>((T, T, T, T, T, T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T, T, T, T, T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9);
-        }
+        //public static implicit operator Vector<T>((T, T, T, T, T, T, T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9);
+        //}
 
-        public static implicit operator Vector<T>((T, T, T, T, T, T, T, T, T, T) tuple)
-        {
-            return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10);
-        }
+        //public static implicit operator Vector<T>((T, T, T, T, T, T, T, T, T, T) tuple)
+        //{
+        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10);
+        //}
 
         public object Clone()
         {

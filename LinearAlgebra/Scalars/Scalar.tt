@@ -81,7 +81,8 @@ namespace LinearAlgebra.Scalars
             }
         }
     }
-
+	
+    /// <typeparam name="T"><#= string.Join(", ", supportedTypes.Select(x => x.type.Name)) #></typeparam>
     public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, ITensor<T, Vector0<int>, Scalar<T>>
         where T : struct
     {
@@ -107,7 +108,7 @@ namespace LinearAlgebra.Scalars
 
         #region Fields and Properties
 
-        public Scalar<int> Rank => Scalar<int>.Zero;
+        //public Scalar<int> Rank => Scalar<int>.Zero;
         public Vector0<int> Dimension => Vector0<int>.zero;
 
         private readonly TypedValueContainer tvc;

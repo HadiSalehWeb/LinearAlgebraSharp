@@ -250,7 +250,8 @@ namespace LinearAlgebra.Scalars
             }
         }
     }
-
+	
+    /// <typeparam name="T">Boolean, SByte, Byte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Single, Double, Decimal</typeparam>
     public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, ITensor<T, Vector0<int>, Scalar<T>>
         where T : struct
     {
@@ -294,7 +295,7 @@ namespace LinearAlgebra.Scalars
 
         #region Fields and Properties
 
-        public Scalar<int> Rank => Scalar<int>.Zero;
+        //public Scalar<int> Rank => Scalar<int>.Zero;
         public Vector0<int> Dimension => Vector0<int>.zero;
 
         private readonly TypedValueContainer tvc;

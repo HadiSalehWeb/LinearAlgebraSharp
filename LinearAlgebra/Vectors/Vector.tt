@@ -9,16 +9,16 @@
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#
-	var supportedDimensions = new List<int> { 0, 1, 2, 3, 4, 5 };
-	var componentName = new Func<int, int, string>((n, i) => n < 5 ? "xyzw"[i].ToString() : "v" + i);
-	var index = 0;
-	var directionVocabulary = new List<Tuple<string, string>> 
-	{
-		Tuple.Create("right", "left"),
-		Tuple.Create("up", "down"),
-		Tuple.Create("forward", "backward"),
-		Tuple.Create("ana", "kata")
-	};
+    var supportedDimensions = new List<int> { 0, 1, 2, 3, 4, 5 };
+    var componentName = new Func<int, int, string>((n, i) => n < 5 ? "xyzw"[i].ToString() : "v" + i);
+    var index = 0;
+    var directionVocabulary = new List<Tuple<string, string>> 
+    {
+        Tuple.Create("right", "left"),
+        Tuple.Create("up", "down"),
+        Tuple.Create("forward", "backward"),
+        Tuple.Create("ana", "kata")
+    };
     var primes = new List<int> { 1, 2136537719, 298955857, 421235453, 311692756, 270262448, 374968597, 956762603 };
 #>
 using LinearAlgebra.Scalars;
@@ -29,29 +29,48 @@ using System.Collections.Generic;
 namespace LinearAlgebra.Vectors
 {
 <# foreach (var n in supportedDimensions) { #>
-    public struct Vector<#= n #><T> : ICloneable, IEquatable<Vector<#= n #><T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IVector<T, Vector<#= n #><T>>
+    public struct Vector<#= n #><T> :
+        ICloneable,
+        IEquatable<Vector<#= n #><T>>,
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IVector<T, Vector<#= n #><T>>
         where T : struct
     {
+        #region Fields and Properties
+
 <# if (n > 0) { #>
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #>;
 
 <# } #>
+        public Vector1<int> Dimension => <#= n #>;
+        public int Length => <#= n #>;
+        public Scalar<T>[] Data => new Scalar<T>[<#= n #>] {<#= string.Join(",", Enumerable.Range(0, n).Select(i => " " + componentName(n, i))) #> };
+        public Scalar<T> this[int i] => Data[i];
+
+        #endregion
+
+        #region Static
+
         public static readonly Vector<#= n #><T> zero = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(i => "Scalar<T>.Zero")) #>);
         public static readonly Vector<#= n #><T> one = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(i => "Scalar<T>.One")) #>);
 
-<# if (n > 0 && n <= directionVocabulary.Count) { #>
 <# for (int i = 0; i < n; i++) { #>
+<# if (i < directionVocabulary.Count) { #>
         public static readonly Vector<#= n #><T> <#= directionVocabulary[i].Item1 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "Scalar<T>.One" : "Scalar<T>.Zero")) #>);
         public static readonly Vector<#= n #><T> <#= directionVocabulary[i].Item2 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "-Scalar<T>.One" : "Scalar<T>.Zero")) #>);
-<# } #>
+
+<# } else { #>
+        public static readonly Vector<#= n #><T> basis<#= i + 1 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "Scalar<T>.One" : "Scalar<T>.Zero")) #>);
 
 <# } #>
-        public Scalar<int> Rank => 1;
-        public Vector1<int> Dimension => <#= n #>;
-        public Scalar<T>[] Data => new Scalar<T>[<#= n #>] { <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #> };
-        public Scalar<T> this[int i] => Data[i];
-		
+<# } #>
+        #endregion
+
 <# if (n > 0) { #>
+        #region Constructors
+
         public Vector<#= n #>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "Scalar<T> " + componentName(n, x))) #>)
         {
 <# for (int i = 0; i < n; i++) { #>
@@ -70,19 +89,41 @@ namespace LinearAlgebra.Vectors
         public Vector<#= n #>(Scalar<T> s)
         {
 <# for (int i = 0; i < n; i++) { #>
-            this.<#= componentName(n, i) #> = s;
+            <#= componentName(n, i) #> = s;
 <# } #>
         }
 
         public Vector<#= n #>(T t)
         {
 <# for (int i = 0; i < n; i++) { #>
-            this.<#= componentName(n, i) #> = new Scalar<T>(t);
+            <#= componentName(n, i) #> = new Scalar<T>(t);
 <# } #>
         }
-<# } #>
 
 <# } #>
+        #endregion
+
+<# } #>
+        #region Functions
+
+        public Scalar<T> SqrMagnitude => <#= n > 0 ? string.Join(" + ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * " + componentName(n, x))) : "Scalar<T>.Zero" #>;
+        public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
+        public Vector<#= n #><T> Normalized => this / Magnitude;
+
+        public Vector<#= n #><T> Scale(Vector<#= n #><T> vec)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) #>);
+        }
+
+        public Scalar<T> Dot(Vector<#= n #><T> vec)
+        {
+            return <#= n > 0 ? string.Join(" + ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) : "Scalar<T>.Zero" #>;
+        }
+
+        #endregion
+
+        #region Operators
+
         public Vector<#= n #><T> Add(Vector<#= n #><T> vec)
         {
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " + vec." + componentName(n, x))) #>);
@@ -92,7 +133,7 @@ namespace LinearAlgebra.Vectors
         {
             return left.Add(right);
         }
-		
+
         public Vector<#= n #><T> Substract(Vector<#= n #><T> vec)
         {
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " - vec." + componentName(n, x))) #>);
@@ -100,7 +141,7 @@ namespace LinearAlgebra.Vectors
 
         public static Vector<#= n #><T> operator -(Vector<#= n #><T> left, Vector<#= n #><T> right)
         {
-			return left.Substract(right);
+            return left.Substract(right);
         }
 
         public Vector<#= n #><T> Multiply(Scalar<T> s)
@@ -110,12 +151,12 @@ namespace LinearAlgebra.Vectors
 
         public static Vector<#= n #><T> operator *(Vector<#= n #><T> left, Scalar<T> right)
         {
-			return left.Multiply(right);
+            return left.Multiply(right);
         }
 
         public static Vector<#= n #><T> operator *(Scalar<T> left, Vector<#= n #><T> right)
         {
-			return right.Multiply(left);
+            return right.Multiply(left);
         }
 
         public Vector<#= n #><T> Divide(Scalar<T> s)
@@ -133,6 +174,11 @@ namespace LinearAlgebra.Vectors
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "s / " + componentName(n, x))) #>);
         }
 
+        public Vector<#= n #><T> Reciprocal()
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "Scalar<T>.One / " + componentName(n, x))) #>);
+        }
+
         public static Vector<#= n #><T> operator /(Scalar<T> left, Vector<#= n #><T> right)
         {
             return right.GetDividedBy(left);
@@ -146,7 +192,11 @@ namespace LinearAlgebra.Vectors
         public static Vector<#= n #><T> operator -(Vector<#= n #><T> v)
         {
             return v.Negate();
-		}
+        }
+
+        #endregion
+
+        #region Identity
 
         public static bool operator ==(Vector<#= n #><T> left, Vector<#= n #><T> right)
         {
@@ -158,23 +208,17 @@ namespace LinearAlgebra.Vectors
             return <#= n > 0 ? string.Join(" || ", Enumerable.Range(0, n).Select(x => "left." + componentName(n, x) + " != right." + componentName(n, x))) : "false" #>;
         }
 
-        public Vector<#= n #><T> Scale(Vector<#= n #><T> vec)
-        {
-            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) #>);
-        }
+        #endregion
 
-        public Scalar<T> Dot(Vector<#= n #><T> vec)
-        {
-            return <#= n > 0 ? string.Join(" + ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) : "Scalar<T>.Zero" #>;
-        }
-		
+        #region Implicit Conversion
+
 <# if (n > 0) { #>
         public static implicit operator Vector<#= n #><T>(<#= n == 1 ? "T" : "(" + string.Join(", ", Enumerable.Repeat("T", n)) + ")" #> t)
         {
             return new Vector<#= n #><T>(<#= n == 1 ? "t" : string.Join(", ", Enumerable.Range(1, n).Select(x => "t.Item" + x)) #>);
         }
 
-        public static implicit operator <#= n == 1 ? "T" : "(" + string.Join(", ", Enumerable.Repeat("T", n)) + ")" #>(Vector<#= n #><T> vec)
+        public static implicit operator <#= n == 1 ? "T" : "(" + string.Join(", ", Enumerable.Repeat("T", n)) + ") " #>(Vector<#= n #><T> vec)
         {
             return <#= n == 1 ? "vec.x.Value" : "(" + string.Join(", ", Enumerable.Range(0, n).Select(i => "vec." + componentName(n, i) + ".Value")) + ")" #>;
         }
@@ -187,8 +231,12 @@ namespace LinearAlgebra.Vectors
 
         public static implicit operator T[] (Vector<#= n #><T> t)
         {
-            return new T[<#= n #>] { <#= string.Join(", ", Enumerable.Range(0, n).Select(x => "t." + componentName(n, x) + ".Value")) #> };
+            return new T[<#= n #>] {<#= string.Join(",", Enumerable.Range(0, n).Select(x => " t." + componentName(n, x) + ".Value")) #> };
         }
+
+        #endregion
+
+        #region Interface Implementation
 
         public object Clone()
         {
@@ -245,9 +293,7 @@ namespace LinearAlgebra.Vectors
             return <#= n > 0 ? string.Join(" + ", Enumerable.Range(0, n).Select(x => primes[x] + " * " + componentName(n, x))) : "0" #>;
         }
 
-        public Scalar<T> SqrMagnitude => <#= n > 0 ? string.Join(" + ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * " + componentName(n, x))) : "Scalar<T>.Zero" #>;
-        public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
-        public Vector<#= n #><T> Normalized => this / Magnitude;
+        #endregion
     }
 <# index++; if (index != supportedDimensions.Count) { #>
 
@@ -257,18 +303,12 @@ namespace LinearAlgebra.Vectors
 
 namespace LinearAlgebra.Vectors.Extensions
 {
-    public static class VectorMath
-    {
-        //public static Vector1<float> Sqrt(Vector1<float> v)
-        //{
-        //    return new Vector1<float>(Math.Sqrt(v.x));
-        //}
-    }
-
     public static partial class VectorExtansions
     {
-<# foreach (var n in supportedDimensions) { #>
+<# index = 0; foreach (var n in supportedDimensions) { index++; #>
 <# if (n > 0) { #>
+        #region Vector<#= n #> Extensions
+
         public static Vector<#= n #><TResult> Select<T, TResult>(this Vector<#= n #><T> t, Func<T, TResult> func)
             where T : struct
             where TResult : struct
@@ -306,19 +346,19 @@ namespace LinearAlgebra.Vectors.Extensions
         public static bool All<T>(this Vector<#= n #><T> v, Func<T, bool> pred)
             where T : struct
         {
-			return <#= string.Join(" && ", Enumerable.Range(0, n).Select(x => "pred(v." + componentName(n, x) + ".Value)")) #>;
+            return <#= string.Join(" && ", Enumerable.Range(0, n).Select(x => "pred(v." + componentName(n, x) + ".Value)")) #>;
         }
 
         public static bool Any<T>(this Vector<#= n #><T> v, Func<T, bool> pred)
             where T : struct
         {
-			return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "pred(v." + componentName(n, x) + ".Value)")) #>;
+            return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "pred(v." + componentName(n, x) + ".Value)")) #>;
         }
 
         public static double Average<T>(this Vector<#= n #><T> v)
             where T : struct
         {
-			return (new Scalar<double>(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>) / <#= n #>.0).Value;
+            return (new Scalar<double>(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>) / <#= n #>.0).Value;
         }
 
         public static bool Contains<T>(this Vector<#= n #><T> v, T t)
@@ -326,6 +366,11 @@ namespace LinearAlgebra.Vectors.Extensions
         {
             return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x) + ".Value.Equals(t)")) #>;
         }
+
+        #endregion
+<# if (index != supportedDimensions.Count) { #>
+
+<# } #>
 <# } #>
 <# } #>
     }

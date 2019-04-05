@@ -2,11 +2,11 @@
 
 namespace LinearAlgebra.Vectors
 {
-    public interface IVector<T, TThis> : ITensor<T, Vector1<int>, IVector<T, TThis>>
+    public interface IVector<T, TThis> : ITensor<T, Vector1<int>, TThis>
         where T : struct
         where TThis : IVector<T, TThis>
     {
-        //Vector1<int> Dimension { get; }
+        int Length { get; }
         Scalar<T>[] Data { get; }
         Scalar<T> Magnitude { get; }
         Scalar<T> SqrMagnitude { get; }
@@ -19,5 +19,6 @@ namespace LinearAlgebra.Vectors
         TThis Divide(Scalar<T> s);
         TThis GetDividedBy(Scalar<T> s);
         TThis Negate();
+        TThis Reciprocal();
     }
 }

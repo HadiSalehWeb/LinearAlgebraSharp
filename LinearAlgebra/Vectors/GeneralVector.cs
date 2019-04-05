@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using LinearAlgebra.Vectors.Extensions;
 
 namespace LinearAlgebra.Vectors
 {
@@ -12,15 +13,21 @@ namespace LinearAlgebra.Vectors
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
-        IVector<T, Vector<T>>
+        IVector<T, Vector<T>>,
+        ITensor<T, Vector1<int>, Vector<T>>
         where T : struct
     {
-        public Scalar<int> Rank => 1;
+        #region Fields and Properties
+
         public Vector1<int> Dimension { get; }
-        public int Length => Dimension;
+        public int Length => Dimension.x.Value;
 
         public Scalar<T>[] Data { get; }
         public Scalar<T> this[int i] => Data[i];
+
+        #endregion
+
+        #region Static
 
         /// <summary>
         /// (1)
@@ -97,6 +104,10 @@ namespace LinearAlgebra.Vectors
             return new Vector<T>(arr);
         }
 
+        #endregion
+
+        #region Constructors
+
         public Vector(params Scalar<T>[] data)
         {
             Dimension = data.Length;
@@ -109,9 +120,24 @@ namespace LinearAlgebra.Vectors
             Data = data.Select(x => new Scalar<T>(x)).ToArray();
         }
 
+        #endregion
+
+        #region Functions
+
         public Scalar<T> SqrMagnitude => Dot(this);
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector<T> Normalized => this / Magnitude;
+
+        public Scalar<T> Norm(int p)
+        {
+            if (p < 1) throw new ArgumentException("p must be greater than 1.");
+            return Math.Pow(Data.Aggregate(Scalar<T>.Zero, (a, c) => a + Math.Pow(c, p)), 1 / p);
+        }
+
+        public Scalar<T> MaximumNorm()
+        {
+            return Data.Max();
+        }
 
         public Vector<T> Subvector(int start, int count)
         {
@@ -128,10 +154,10 @@ namespace LinearAlgebra.Vectors
 
         public Vector<T> ExpandTo(int targetLength)
         {
-            if (targetLength >= Length)
-                return new Vector<T>(Data.Concat(Zero(targetLength - Length).Data).ToArray());
+            if (targetLength <= Length)
+                throw new ArgumentException($"{ nameof(targetLength) } must be greater than or equal to the length of this vector.");
 
-            throw new ArgumentException($"{ nameof(targetLength) } must be greater than or equal to the length of this vector.");
+            return new Vector<T>(Data.Concat(Zero(targetLength - Length).Data).ToArray());
         }
 
         public Scalar<T> Dot(Vector<T> vec)
@@ -187,14 +213,37 @@ namespace LinearAlgebra.Vectors
             return new Vector<T>(result);
         }
 
+        #endregion
+
+        #region Operators
+
+        public Vector<T> Add(Vector<T> vec)
+        {
+            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
+
+            return new Vector<T>(Data.Select((x, i) => x + vec.Data[i]).ToArray());
+        }
+
         public static Vector<T> operator +(Vector<T> left, Vector<T> right)
         {
             return left.Add(right);
         }
 
+        public Vector<T> Substract(Vector<T> vec)
+        {
+            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
+
+            return new Vector<T>(Data.Select((x, i) => x - vec.Data[i]).ToArray());
+        }
+
         public static Vector<T> operator -(Vector<T> left, Vector<T> right)
         {
             return left.Substract(right);
+        }
+
+        public Vector<T> Multiply(Scalar<T> s)
+        {
+            return new Vector<T>(Data.Select((x, i) => x * s).ToArray());
         }
 
         public static Vector<T> operator *(Vector<T> left, Scalar<T> right)
@@ -207,9 +256,19 @@ namespace LinearAlgebra.Vectors
             return right.Multiply(left);
         }
 
+        public Vector<T> Divide(Scalar<T> s)
+        {
+            return new Vector<T>(Data.Select((x, i) => x / s).ToArray());
+        }
+
         public static Vector<T> operator /(Vector<T> left, Scalar<T> right)
         {
             return left.Divide(right);
+        }
+
+        public Vector<T> GetDividedBy(Scalar<T> s)
+        {
+            return new Vector<T>(Data.Select((x, i) => s / x).ToArray());
         }
 
         public static Vector<T> operator /(Scalar<T> left, Vector<T> right)
@@ -217,9 +276,19 @@ namespace LinearAlgebra.Vectors
             return right.GetDividedBy(left);
         }
 
+        public Vector<T> Negate()
+        {
+            return new Vector<T>(Data.Select(x => -x).ToArray());
+        }
+
         public static Vector<T> operator -(Vector<T> v)
         {
             return v.Negate();
+        }
+
+        public Vector<T> Reciprocal()
+        {
+            return new Vector<T>(Data.Select(x => Scalar<T>.One / x).ToArray());
         }
 
         public static bool operator ==(Vector<T> left, Vector<T> right)
@@ -237,55 +306,9 @@ namespace LinearAlgebra.Vectors
             return new Vector<T>(value);
         }
 
-        //public static implicit operator Vector<T>(T t)
-        //{
-        //    return new Vector<T>(t);
-        //}
+        #endregion
 
-        //public static implicit operator Vector<T>((T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T, T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T, T, T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T, T, T, T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T, T, T, T, T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9);
-        //}
-
-        //public static implicit operator Vector<T>((T, T, T, T, T, T, T, T, T, T) tuple)
-        //{
-        //    return new Vector<T>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10);
-        //}
+        #region Interface Implementations
 
         public object Clone()
         {
@@ -333,38 +356,6 @@ namespace LinearAlgebra.Vectors
             return base.GetHashCode();
         }
 
-        public Vector<T> Add(Vector<T> vec)
-        {
-            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
-
-            return new Vector<T>(Data.Select((x, i) => x + vec.Data[i]).ToArray());
-        }
-
-        public Vector<T> Substract(Vector<T> vec)
-        {
-            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
-
-            return new Vector<T>(Data.Select((x, i) => x - vec.Data[i]).ToArray());
-        }
-
-        public Vector<T> Multiply(Scalar<T> s)
-        {
-            return new Vector<T>(Data.Select((x, i) => x * s).ToArray());
-        }
-
-        public Vector<T> Divide(Scalar<T> s)
-        {
-            return new Vector<T>(Data.Select((x, i) => x / s).ToArray());
-        }
-
-        public Vector<T> GetDividedBy(Scalar<T> s)
-        {
-            return new Vector<T>(Data.Select((x, i) => s / x).ToArray());
-        }
-
-        public Vector<T> Negate()
-        {
-            return new Vector<T>(Data.Select(x => -x).ToArray());
-        }
+        #endregion
     }
 }

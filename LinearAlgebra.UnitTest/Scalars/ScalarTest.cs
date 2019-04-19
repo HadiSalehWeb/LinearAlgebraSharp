@@ -321,6 +321,7 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV = new Scalar<double>(5.0);
             Scalar<decimal> decimalV = new Scalar<decimal>(5m);
 
+#pragma warning disable CS1718 // Comparison made to same variable // which is the point of the test
             Assert.True(boolV == boolV);
             Assert.True(sbyteV == sbyteV);
             Assert.True(byteV == byteV);
@@ -333,6 +334,7 @@ namespace LinearAlgebra.UnitTest.Scalars
             Assert.True(floatV == floatV);
             Assert.True(doubleV == doubleV);
             Assert.True(decimalV == decimalV);
+#pragma warning restore CS1718 // Comparison made to same variable
         }
 
         [Fact]

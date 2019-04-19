@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace LinearAlgebra.Vectors
 {
+    [Serializable]
     public struct Vector0<T> :
         ICloneable,
         IEquatable<Vector0<T>>,
@@ -16,6 +17,7 @@ namespace LinearAlgebra.Vectors
     {
         #region Fields and Properties
 
+        public Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 0;
         public int Length => 0;
         public Scalar<T>[] Data => new Scalar<T>[0] { };
@@ -36,6 +38,17 @@ namespace LinearAlgebra.Vectors
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector0<T> Normalized => this / Magnitude;
 
+        public Scalar<T> Norm(int p)
+        {
+            if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
+            return Scalar<T>.Zero;
+        }
+
+        public Scalar<T> MaximumNorm()
+        {
+            return Scalar<T>.Zero;
+        }
+
         public Vector0<T> Scale(Vector0<T> vec)
         {
             return new Vector0<T>();
@@ -46,9 +59,36 @@ namespace LinearAlgebra.Vectors
             return Scalar<T>.Zero;
         }
 
+        public Scalar<T> AngleTo(Vector0<T> vec)
+        {
+            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+        }
+
+        public Vector0<T> ProjectionOnto(Vector0<T> vec)
+        {
+            return vec.Multiply(Dot(vec) / vec.Dot(vec));
+        }
+
+        public Scalar<T> SquareDistanceTo(Vector0<T> vec)
+        {
+            return Substract(vec).SqrMagnitude;
+        }
+
+        public Scalar<T> DistanceTo(Vector0<T> vec)
+        {
+            return Substract(vec).Magnitude;
+        }
+
+        public Vector0<T> Lerp(Vector0<T> vec, Scalar<T> t)
+        {
+            return Add(vec.Substract(this).Multiply(t));
+        }
+
         #endregion
 
         #region Operators
+
+        #region Arithmetic
 
         public Vector0<T> Add(Vector0<T> vec)
         {
@@ -136,6 +176,8 @@ namespace LinearAlgebra.Vectors
 
         #endregion
 
+        #endregion
+
         #region Implicit Conversion
 
         public static implicit operator Vector<T>(Vector0<T> t)
@@ -198,6 +240,7 @@ namespace LinearAlgebra.Vectors
         #endregion
     }
 
+    [Serializable]
     public struct Vector1<T> :
         ICloneable,
         IEquatable<Vector1<T>>,
@@ -211,6 +254,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x;
 
+        public Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 1;
         public int Length => 1;
         public Scalar<T>[] Data => new Scalar<T>[1] { x };
@@ -248,6 +292,17 @@ namespace LinearAlgebra.Vectors
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector1<T> Normalized => this / Magnitude;
 
+        public Scalar<T> Norm(int p)
+        {
+            if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
+            return x;
+        }
+
+        public Scalar<T> MaximumNorm()
+        {
+            return x;
+        }
+
         public Vector1<T> Scale(Vector1<T> vec)
         {
             return new Vector1<T>(x * vec.x);
@@ -258,9 +313,36 @@ namespace LinearAlgebra.Vectors
             return x * vec.x;
         }
 
+        public Scalar<T> AngleTo(Vector1<T> vec)
+        {
+            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+        }
+
+        public Vector1<T> ProjectionOnto(Vector1<T> vec)
+        {
+            return vec.Multiply(Dot(vec) / vec.Dot(vec));
+        }
+
+        public Scalar<T> SquareDistanceTo(Vector1<T> vec)
+        {
+            return Substract(vec).SqrMagnitude;
+        }
+
+        public Scalar<T> DistanceTo(Vector1<T> vec)
+        {
+            return Substract(vec).Magnitude;
+        }
+
+        public Vector1<T> Lerp(Vector1<T> vec, Scalar<T> t)
+        {
+            return Add(vec.Substract(this).Multiply(t));
+        }
+
         #endregion
 
         #region Operators
+
+        #region Arithmetic
 
         public Vector1<T> Add(Vector1<T> vec)
         {
@@ -348,6 +430,8 @@ namespace LinearAlgebra.Vectors
 
         #endregion
 
+        #endregion
+
         #region Implicit Conversion
 
         public static implicit operator Vector1<T>(T t)
@@ -368,6 +452,11 @@ namespace LinearAlgebra.Vectors
         public static implicit operator T[] (Vector1<T> t)
         {
             return new T[1] { t.x.Value };
+        }
+
+        public void Deconstruct(out T x)
+        {
+            x = this.x.Value;
         }
 
         #endregion
@@ -420,6 +509,7 @@ namespace LinearAlgebra.Vectors
         #endregion
     }
 
+    [Serializable]
     public struct Vector2<T> :
         ICloneable,
         IEquatable<Vector2<T>>,
@@ -433,6 +523,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x, y;
 
+        public Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 2;
         public int Length => 2;
         public Scalar<T>[] Data => new Scalar<T>[2] { x, y };
@@ -487,6 +578,22 @@ namespace LinearAlgebra.Vectors
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector2<T> Normalized => this / Magnitude;
 
+        public Scalar<T> Norm(int p)
+        {
+            if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
+            return Math.Pow(Math.Pow(x, p) + Math.Pow(y, p), 1d / p);
+        }
+
+        public Scalar<T> MaximumNorm()
+        {
+            Scalar<T> max = x;
+
+            if (y > max)
+                max = y;
+
+            return max;
+        }
+
         public Vector2<T> Scale(Vector2<T> vec)
         {
             return new Vector2<T>(x * vec.x, y * vec.y);
@@ -497,9 +604,36 @@ namespace LinearAlgebra.Vectors
             return x * vec.x + y * vec.y;
         }
 
+        public Scalar<T> AngleTo(Vector2<T> vec)
+        {
+            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+        }
+
+        public Vector2<T> ProjectionOnto(Vector2<T> vec)
+        {
+            return vec.Multiply(Dot(vec) / vec.Dot(vec));
+        }
+
+        public Scalar<T> SquareDistanceTo(Vector2<T> vec)
+        {
+            return Substract(vec).SqrMagnitude;
+        }
+
+        public Scalar<T> DistanceTo(Vector2<T> vec)
+        {
+            return Substract(vec).Magnitude;
+        }
+
+        public Vector2<T> Lerp(Vector2<T> vec, Scalar<T> t)
+        {
+            return Add(vec.Substract(this).Multiply(t));
+        }
+
         #endregion
 
         #region Operators
+
+        #region Arithmetic
 
         public Vector2<T> Add(Vector2<T> vec)
         {
@@ -587,6 +721,8 @@ namespace LinearAlgebra.Vectors
 
         #endregion
 
+        #endregion
+
         #region Implicit Conversion
 
         public static implicit operator Vector2<T>((T, T) t)
@@ -607,6 +743,12 @@ namespace LinearAlgebra.Vectors
         public static implicit operator T[] (Vector2<T> t)
         {
             return new T[2] { t.x.Value, t.y.Value };
+        }
+
+        public void Deconstruct(out T x, out T y)
+        {
+            x = this.x.Value;
+            y = this.y.Value;
         }
 
         #endregion
@@ -661,6 +803,7 @@ namespace LinearAlgebra.Vectors
         #endregion
     }
 
+    [Serializable]
     public struct Vector3<T> :
         ICloneable,
         IEquatable<Vector3<T>>,
@@ -674,6 +817,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x, y, z;
 
+        public Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 3;
         public int Length => 3;
         public Scalar<T>[] Data => new Scalar<T>[3] { x, y, z };
@@ -735,6 +879,24 @@ namespace LinearAlgebra.Vectors
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector3<T> Normalized => this / Magnitude;
 
+        public Scalar<T> Norm(int p)
+        {
+            if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
+            return Math.Pow(Math.Pow(x, p) + Math.Pow(y, p) + Math.Pow(z, p), 1d / p);
+        }
+
+        public Scalar<T> MaximumNorm()
+        {
+            Scalar<T> max = x;
+
+            if (y > max)
+                max = y;
+            if (z > max)
+                max = z;
+
+            return max;
+        }
+
         public Vector3<T> Scale(Vector3<T> vec)
         {
             return new Vector3<T>(x * vec.x, y * vec.y, z * vec.z);
@@ -745,9 +907,36 @@ namespace LinearAlgebra.Vectors
             return x * vec.x + y * vec.y + z * vec.z;
         }
 
+        public Scalar<T> AngleTo(Vector3<T> vec)
+        {
+            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+        }
+
+        public Vector3<T> ProjectionOnto(Vector3<T> vec)
+        {
+            return vec.Multiply(Dot(vec) / vec.Dot(vec));
+        }
+
+        public Scalar<T> SquareDistanceTo(Vector3<T> vec)
+        {
+            return Substract(vec).SqrMagnitude;
+        }
+
+        public Scalar<T> DistanceTo(Vector3<T> vec)
+        {
+            return Substract(vec).Magnitude;
+        }
+
+        public Vector3<T> Lerp(Vector3<T> vec, Scalar<T> t)
+        {
+            return Add(vec.Substract(this).Multiply(t));
+        }
+
         #endregion
 
         #region Operators
+
+        #region Arithmetic
 
         public Vector3<T> Add(Vector3<T> vec)
         {
@@ -835,6 +1024,8 @@ namespace LinearAlgebra.Vectors
 
         #endregion
 
+        #endregion
+
         #region Implicit Conversion
 
         public static implicit operator Vector3<T>((T, T, T) t)
@@ -855,6 +1046,13 @@ namespace LinearAlgebra.Vectors
         public static implicit operator T[] (Vector3<T> t)
         {
             return new T[3] { t.x.Value, t.y.Value, t.z.Value };
+        }
+
+        public void Deconstruct(out T x, out T y, out T z)
+        {
+            x = this.x.Value;
+            y = this.y.Value;
+            z = this.z.Value;
         }
 
         #endregion
@@ -911,6 +1109,7 @@ namespace LinearAlgebra.Vectors
         #endregion
     }
 
+    [Serializable]
     public struct Vector4<T> :
         ICloneable,
         IEquatable<Vector4<T>>,
@@ -924,6 +1123,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x, y, z, w;
 
+        public Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 4;
         public int Length => 4;
         public Scalar<T>[] Data => new Scalar<T>[4] { x, y, z, w };
@@ -992,6 +1192,26 @@ namespace LinearAlgebra.Vectors
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector4<T> Normalized => this / Magnitude;
 
+        public Scalar<T> Norm(int p)
+        {
+            if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
+            return Math.Pow(Math.Pow(x, p) + Math.Pow(y, p) + Math.Pow(z, p) + Math.Pow(w, p), 1d / p);
+        }
+
+        public Scalar<T> MaximumNorm()
+        {
+            Scalar<T> max = x;
+
+            if (y > max)
+                max = y;
+            if (z > max)
+                max = z;
+            if (w > max)
+                max = w;
+
+            return max;
+        }
+
         public Vector4<T> Scale(Vector4<T> vec)
         {
             return new Vector4<T>(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
@@ -1002,9 +1222,36 @@ namespace LinearAlgebra.Vectors
             return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
         }
 
+        public Scalar<T> AngleTo(Vector4<T> vec)
+        {
+            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+        }
+
+        public Vector4<T> ProjectionOnto(Vector4<T> vec)
+        {
+            return vec.Multiply(Dot(vec) / vec.Dot(vec));
+        }
+
+        public Scalar<T> SquareDistanceTo(Vector4<T> vec)
+        {
+            return Substract(vec).SqrMagnitude;
+        }
+
+        public Scalar<T> DistanceTo(Vector4<T> vec)
+        {
+            return Substract(vec).Magnitude;
+        }
+
+        public Vector4<T> Lerp(Vector4<T> vec, Scalar<T> t)
+        {
+            return Add(vec.Substract(this).Multiply(t));
+        }
+
         #endregion
 
         #region Operators
+
+        #region Arithmetic
 
         public Vector4<T> Add(Vector4<T> vec)
         {
@@ -1092,6 +1339,8 @@ namespace LinearAlgebra.Vectors
 
         #endregion
 
+        #endregion
+
         #region Implicit Conversion
 
         public static implicit operator Vector4<T>((T, T, T, T) t)
@@ -1112,6 +1361,14 @@ namespace LinearAlgebra.Vectors
         public static implicit operator T[] (Vector4<T> t)
         {
             return new T[4] { t.x.Value, t.y.Value, t.z.Value, t.w.Value };
+        }
+
+        public void Deconstruct(out T x, out T y, out T z, out T w)
+        {
+            x = this.x.Value;
+            y = this.y.Value;
+            z = this.z.Value;
+            w = this.w.Value;
         }
 
         #endregion
@@ -1170,6 +1427,7 @@ namespace LinearAlgebra.Vectors
         #endregion
     }
 
+    [Serializable]
     public struct Vector5<T> :
         ICloneable,
         IEquatable<Vector5<T>>,
@@ -1183,6 +1441,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> v0, v1, v2, v3, v4;
 
+        public Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 5;
         public int Length => 5;
         public Scalar<T>[] Data => new Scalar<T>[5] { v0, v1, v2, v3, v4 };
@@ -1257,6 +1516,28 @@ namespace LinearAlgebra.Vectors
         public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
         public Vector5<T> Normalized => this / Magnitude;
 
+        public Scalar<T> Norm(int p)
+        {
+            if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
+            return Math.Pow(Math.Pow(v0, p) + Math.Pow(v1, p) + Math.Pow(v2, p) + Math.Pow(v3, p) + Math.Pow(v4, p), 1d / p);
+        }
+
+        public Scalar<T> MaximumNorm()
+        {
+            Scalar<T> max = v0;
+
+            if (v1 > max)
+                max = v1;
+            if (v2 > max)
+                max = v2;
+            if (v3 > max)
+                max = v3;
+            if (v4 > max)
+                max = v4;
+
+            return max;
+        }
+
         public Vector5<T> Scale(Vector5<T> vec)
         {
             return new Vector5<T>(v0 * vec.v0, v1 * vec.v1, v2 * vec.v2, v3 * vec.v3, v4 * vec.v4);
@@ -1267,9 +1548,36 @@ namespace LinearAlgebra.Vectors
             return v0 * vec.v0 + v1 * vec.v1 + v2 * vec.v2 + v3 * vec.v3 + v4 * vec.v4;
         }
 
+        public Scalar<T> AngleTo(Vector5<T> vec)
+        {
+            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+        }
+
+        public Vector5<T> ProjectionOnto(Vector5<T> vec)
+        {
+            return vec.Multiply(Dot(vec) / vec.Dot(vec));
+        }
+
+        public Scalar<T> SquareDistanceTo(Vector5<T> vec)
+        {
+            return Substract(vec).SqrMagnitude;
+        }
+
+        public Scalar<T> DistanceTo(Vector5<T> vec)
+        {
+            return Substract(vec).Magnitude;
+        }
+
+        public Vector5<T> Lerp(Vector5<T> vec, Scalar<T> t)
+        {
+            return Add(vec.Substract(this).Multiply(t));
+        }
+
         #endregion
 
         #region Operators
+
+        #region Arithmetic
 
         public Vector5<T> Add(Vector5<T> vec)
         {
@@ -1357,6 +1665,8 @@ namespace LinearAlgebra.Vectors
 
         #endregion
 
+        #endregion
+
         #region Implicit Conversion
 
         public static implicit operator Vector5<T>((T, T, T, T, T) t)
@@ -1377,6 +1687,15 @@ namespace LinearAlgebra.Vectors
         public static implicit operator T[] (Vector5<T> t)
         {
             return new T[5] { t.v0.Value, t.v1.Value, t.v2.Value, t.v3.Value, t.v4.Value };
+        }
+
+        public void Deconstruct(out T v0, out T v1, out T v2, out T v3, out T v4)
+        {
+            v0 = this.v0.Value;
+            v1 = this.v1.Value;
+            v2 = this.v2.Value;
+            v3 = this.v3.Value;
+            v4 = this.v4.Value;
         }
 
         #endregion

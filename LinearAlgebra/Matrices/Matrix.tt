@@ -39,7 +39,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y)))) #>;
 
-        public Vector2<int> Dimensions => new Vector2<int>(<#= n[0] #>, <#= n[1] #>);
+        public Vector2<int> Dimension => new Vector2<int>(<#= n[0] #>, <#= n[1] #>);
 
         public Scalar<T>[,] Data => new Scalar<T>[<#= n[0] #>, <#= n[1] #>] {
 <# for(int x = 0; x < n[0]; x++) { #>

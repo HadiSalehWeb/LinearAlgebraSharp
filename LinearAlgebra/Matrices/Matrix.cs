@@ -11,7 +11,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00;
 
-        public Vector2<int> Dimensions => new Vector2<int>(1, 1);
+        public Vector2<int> Dimension => new Vector2<int>(1, 1);
 
         public Scalar<T>[,] Data => new Scalar<T>[1, 1] {
             { e00 }
@@ -187,7 +187,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e10, e11;
 
-        public Vector2<int> Dimensions => new Vector2<int>(2, 2);
+        public Vector2<int> Dimension => new Vector2<int>(2, 2);
 
         public Scalar<T>[,] Data => new Scalar<T>[2, 2] {
             { e00, e01 },
@@ -397,7 +397,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22;
 
-        public Vector2<int> Dimensions => new Vector2<int>(3, 3);
+        public Vector2<int> Dimension => new Vector2<int>(3, 3);
 
         public Scalar<T>[,] Data => new Scalar<T>[3, 3] {
             { e00, e01, e02 },
@@ -642,7 +642,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23, e30, e31, e32, e33;
 
-        public Vector2<int> Dimensions => new Vector2<int>(4, 4);
+        public Vector2<int> Dimension => new Vector2<int>(4, 4);
 
         public Scalar<T>[,] Data => new Scalar<T>[4, 4] {
             { e00, e01, e02, e03 },
@@ -930,7 +930,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01;
 
-        public Vector2<int> Dimensions => new Vector2<int>(1, 2);
+        public Vector2<int> Dimension => new Vector2<int>(1, 2);
 
         public Scalar<T>[,] Data => new Scalar<T>[1, 2] {
             { e00, e01 }
@@ -1107,7 +1107,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e10;
 
-        public Vector2<int> Dimensions => new Vector2<int>(2, 1);
+        public Vector2<int> Dimension => new Vector2<int>(2, 1);
 
         public Scalar<T>[,] Data => new Scalar<T>[2, 1] {
             { e00 },
@@ -1294,7 +1294,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02;
 
-        public Vector2<int> Dimensions => new Vector2<int>(1, 3);
+        public Vector2<int> Dimension => new Vector2<int>(1, 3);
 
         public Scalar<T>[,] Data => new Scalar<T>[1, 3] {
             { e00, e01, e02 }
@@ -1477,7 +1477,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e10, e20;
 
-        public Vector2<int> Dimensions => new Vector2<int>(3, 1);
+        public Vector2<int> Dimension => new Vector2<int>(3, 1);
 
         public Scalar<T>[,] Data => new Scalar<T>[3, 1] {
             { e00 },
@@ -1680,7 +1680,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02, e03;
 
-        public Vector2<int> Dimensions => new Vector2<int>(1, 4);
+        public Vector2<int> Dimension => new Vector2<int>(1, 4);
 
         public Scalar<T>[,] Data => new Scalar<T>[1, 4] {
             { e00, e01, e02, e03 }
@@ -1869,7 +1869,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e10, e20, e30;
 
-        public Vector2<int> Dimensions => new Vector2<int>(4, 1);
+        public Vector2<int> Dimension => new Vector2<int>(4, 1);
 
         public Scalar<T>[,] Data => new Scalar<T>[4, 1] {
             { e00 },
@@ -2088,7 +2088,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12;
 
-        public Vector2<int> Dimensions => new Vector2<int>(2, 3);
+        public Vector2<int> Dimension => new Vector2<int>(2, 3);
 
         public Scalar<T>[,] Data => new Scalar<T>[2, 3] {
             { e00, e01, e02 },
@@ -2303,7 +2303,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21;
 
-        public Vector2<int> Dimensions => new Vector2<int>(3, 2);
+        public Vector2<int> Dimension => new Vector2<int>(3, 2);
 
         public Scalar<T>[,] Data => new Scalar<T>[3, 2] {
             { e00, e01 },
@@ -2529,7 +2529,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13;
 
-        public Vector2<int> Dimensions => new Vector2<int>(2, 4);
+        public Vector2<int> Dimension => new Vector2<int>(2, 4);
 
         public Scalar<T>[,] Data => new Scalar<T>[2, 4] {
             { e00, e01, e02, e03 },
@@ -2754,7 +2754,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21, e30, e31;
 
-        public Vector2<int> Dimensions => new Vector2<int>(4, 2);
+        public Vector2<int> Dimension => new Vector2<int>(4, 2);
 
         public Scalar<T>[,] Data => new Scalar<T>[4, 2] {
             { e00, e01 },
@@ -3001,7 +3001,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23;
 
-        public Vector2<int> Dimensions => new Vector2<int>(3, 4);
+        public Vector2<int> Dimension => new Vector2<int>(3, 4);
 
         public Scalar<T>[,] Data => new Scalar<T>[3, 4] {
             { e00, e01, e02, e03 },
@@ -3255,7 +3255,7 @@ namespace LinearAlgebra.Matrices
     {
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22, e30, e31, e32;
 
-        public Vector2<int> Dimensions => new Vector2<int>(4, 3);
+        public Vector2<int> Dimension => new Vector2<int>(4, 3);
 
         public Scalar<T>[,] Data => new Scalar<T>[4, 3] {
             { e00, e01, e02 },

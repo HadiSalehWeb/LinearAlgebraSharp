@@ -11,6 +11,8 @@ namespace LinearAlgebra.Vectors
         Scalar<T> Magnitude { get; }
         Scalar<T> SqrMagnitude { get; }
         TThis Normalized { get; }
+        Scalar<T> Norm(int p);
+        Scalar<T> MaximumNorm();
         Scalar<T> Dot(TThis vec);
         TThis Scale(TThis vec);
         TThis Add(TThis vec);
@@ -20,5 +22,11 @@ namespace LinearAlgebra.Vectors
         TThis GetDividedBy(Scalar<T> s);
         TThis Negate();
         TThis Reciprocal();
+
+        Scalar<T> AngleTo(TThis vec);
+        TThis ProjectionOnto(TThis vec);
+        Scalar<T> SquareDistanceTo(TThis vec);
+        Scalar<T> DistanceTo(TThis vec);
+        TThis Lerp(TThis vec, Scalar<T> t);
     }
 }

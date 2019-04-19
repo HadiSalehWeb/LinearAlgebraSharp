@@ -7,6 +7,7 @@ using LinearAlgebra.Vectors.Extensions;
 
 namespace LinearAlgebra.Vectors
 {
+    [Serializable]
     public struct Vector<T> :
         ICloneable,
         IEquatable<Vector<T>>,
@@ -19,6 +20,7 @@ namespace LinearAlgebra.Vectors
     {
         #region Fields and Properties
 
+        public Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension { get; }
         public int Length => Dimension.x.Value;
 
@@ -76,7 +78,7 @@ namespace LinearAlgebra.Vectors
         /// Retrurns an n-dimensional vector with the i-th element set to one
         /// </summary>
         /// <param name="dimension">the 'n' in n-dimensional, the dimension of the vector</param>
-        /// <param name="basis">the 'i' in i-th element, the 1-based axis of the vector</param>
+        /// <param name="basis">the 'i' in i-th element, the 1-indexed axis of the vector (1 for x, 2 for y etc.)</param>
         /// <returns></returns>
         public static Vector<T> Basis(int dimension, int basis)
         {
@@ -114,11 +116,7 @@ namespace LinearAlgebra.Vectors
             Data = data;
         }
 
-        public Vector(params T[] data)
-        {
-            Dimension = data.Length;
-            Data = data.Select(x => new Scalar<T>(x)).ToArray();
-        }
+        public Vector(params T[] data) : this(data.Select(x => new Scalar<T>(x)).ToArray()) { }
 
         #endregion
 
@@ -130,19 +128,19 @@ namespace LinearAlgebra.Vectors
 
         public Scalar<T> Norm(int p)
         {
-            if (p < 1) throw new ArgumentException("p must be greater than 1.");
-            return Math.Pow(Data.Aggregate(Scalar<T>.Zero, (a, c) => a + Math.Pow(c, p)), 1 / p);
+            if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
+            return Math.Pow(Data.Aggregate(Scalar<T>.Zero, (a, c) => a + Math.Pow(c, p)), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
         {
-            return Data.Max();
+            return new Scalar<T>(Data.Max(x => x.Value));
         }
 
         public Vector<T> Subvector(int start, int count)
         {
             if (start < 0 || start >= Dimension || count < 0 || start + count > Dimension)
-                throw new Exception("make a message here");
+                throw new ArgumentException("Arguments outside vector bounds.");
 
             return new Vector<T>(Data.Skip(start).Take(count).ToArray());
         }
@@ -168,9 +166,7 @@ namespace LinearAlgebra.Vectors
             Scalar<T> result = Scalar<T>.Zero;
 
             for (int i = 0; i < Dimension; i++)
-            {
                 result += Data[i] * vec.Data[i];
-            }
 
             return result;
         }
@@ -213,9 +209,36 @@ namespace LinearAlgebra.Vectors
             return new Vector<T>(result);
         }
 
+        public Scalar<T> AngleTo(Vector<T> vec)
+        {
+            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+        }
+
+        public Vector<T> ProjectionOnto(Vector<T> vec)
+        {
+            return vec.Multiply(Dot(vec) / vec.Dot(vec));
+        }
+
+        public Scalar<T> SquareDistanceTo(Vector<T> vec)
+        {
+            return Substract(vec).SqrMagnitude;
+        }
+
+        public Scalar<T> DistanceTo(Vector<T> vec)
+        {
+            return Substract(vec).Magnitude;
+        }
+
+        public Vector<T> Lerp(Vector<T> vec, Scalar<T> t)
+        {
+            return Add(vec.Substract(this).Multiply(t));
+        }
+
         #endregion
 
         #region Operators
+
+        #region Arithmetic
 
         public Vector<T> Add(Vector<T> vec)
         {
@@ -291,6 +314,10 @@ namespace LinearAlgebra.Vectors
             return new Vector<T>(Data.Select(x => Scalar<T>.One / x).ToArray());
         }
 
+        #endregion
+
+        #region Identity
+
         public static bool operator ==(Vector<T> left, Vector<T> right)
         {
             return left.Equals(right);
@@ -300,6 +327,12 @@ namespace LinearAlgebra.Vectors
         {
             return !left.Equals(right);
         }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Vector<T>(T[] value)
         {

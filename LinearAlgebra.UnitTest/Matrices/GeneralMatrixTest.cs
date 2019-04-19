@@ -64,5 +64,33 @@ namespace LinearAlgebra.UnitTest.Matrices
             Assert.AreEqual(m3, m3.Transpose().Transpose());
             Assert.AreEqual(m4, m4.Transpose().Transpose());
         }
+
+        [TestMethod]
+        public void TestMatrixAugmentation()
+        {
+            Matrix<int> m1 = new Matrix<int>(new int[,] {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            }), m2 = new Matrix<int>(new int[,] {
+                { 1, 2 },
+                { 3, 4 }
+            }), m3 = new Matrix<int>(new int[,] {
+                { 1 },
+                { 2 }
+            });
+
+            Assert.AreEqual(m1 | m2, new Matrix<int>(new int[,] {
+                { 1, 2, 3, 1, 2 },
+                { 4, 5, 6, 3, 4 }
+            }));
+            Assert.AreEqual(m1 | m3, new Matrix<int>(new int[,] {
+                { 1, 2, 3, 1 },
+                { 4, 5, 6, 2 }
+            }));
+            Assert.AreEqual(m2 | m3, new Matrix<int>(new int[,] {
+                { 1, 2, 1 },
+                { 3, 4, 2 }
+            }));
+        }
     }
 }

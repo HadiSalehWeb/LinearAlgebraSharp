@@ -40,8 +40,6 @@ namespace LinearAlgebra.Vectors
 <# foreach (var n in supportedDimensions) { #>
     [Serializable]
     public struct Vector<#= n #><T> :
-        ICloneable,
-        IEquatable<Vector<#= n #><T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
@@ -54,7 +52,7 @@ namespace LinearAlgebra.Vectors
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #>;
 
 <# } #>
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => <#= n #>;
         public int Length => <#= n #>;
         public Scalar<T>[] Data => new Scalar<T>[<#= n #>] {<#= string.Join(",", Enumerable.Range(0, n).Select(i => " " + componentName(n, i))) #> };

@@ -9,18 +9,15 @@ namespace LinearAlgebra.Vectors
 {
     [Serializable]
     public struct Vector<T> :
-        ICloneable,
-        IEquatable<Vector<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
-        IVector<T, Vector<T>>,
-        ITensor<T, Vector1<int>, Vector<T>>
+        IVector<T, Vector<T>>
         where T : struct
     {
         #region Fields and Properties
 
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension { get; }
         public int Length => Dimension.x.Value;
 

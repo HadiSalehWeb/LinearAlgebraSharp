@@ -6,10 +6,19 @@ using System.Text;
 
 namespace LinearAlgebra.Matrices
 {
-    public interface IMatrix<T>
+    /// <typeparam name="T">Element type</typeparam>
+    /// <typeparam name="TThis">This type</typeparam>
+    /// <typeparam name="TRow">The row shape (Vector2 for a 3x2 matrix)</typeparam>
+    /// <typeparam name="TColumn">The column shape (Vector3 for a 3x2 matrix)</typeparam>
+    public interface IMatrix<T, TThis, TRow, TColumn> : ITensor<T, Vector2<int>, TThis>
         where T : struct
+        where TThis : IMatrix<T, TThis, TRow, TColumn>
+        where TRow : IVector<T, TRow>
+        where TColumn : IVector<T, TColumn>
     {
-        Vector2<int> Dimension { get; }
         Scalar<T>[,] Data { get; }
+        TRow[] Rows { get; }
+        TColumn[] Columns { get; }
+        TColumn Multiply(TRow vec);
     }
 }

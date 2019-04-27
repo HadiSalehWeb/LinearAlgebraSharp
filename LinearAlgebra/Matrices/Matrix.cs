@@ -6,9 +6,17 @@ using System.Collections.Generic;
 
 namespace LinearAlgebra.Matrices
 {
-    public struct Matrix1x1<T> : ICloneable, IEquatable<Matrix1x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix1x1<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix1x1<T>, Vector1<T>, Vector1<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00;
 
         public Vector2<int> Dimension => new Vector2<int>(1, 1);
@@ -16,28 +24,6 @@ namespace LinearAlgebra.Matrices
         public Scalar<T>[,] Data => new Scalar<T>[1, 1] {
             { e00 }
         };
-
-        public static Matrix1x1<T> Zero()
-        {
-            return new Matrix1x1<T>(0);
-        }
-
-        public static Matrix1x1<T> One()
-        {
-            return new Matrix1x1<T>(1);
-        }
-
-        public Matrix1x1(Scalar<T> e00)
-        {
-            this.e00 = e00;
-        }
-
-        public Matrix1x1(T e00)
-        {
-            this.e00 = new Scalar<T>(e00);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector1<T>[] Rows
         {
@@ -61,6 +47,42 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector1<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix1x1<T> Zero()
+        {
+            return new Matrix1x1<T>(0);
+        }
+
+        public static Matrix1x1<T> One()
+        {
+            return new Matrix1x1<T>(1);
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public Matrix1x1(Scalar<T> e00)
+        {
+            this.e00 = e00;
+        }
+
+        public Matrix1x1(T e00)
+        {
+            this.e00 = new Scalar<T>(e00);
+        }
+
+        #endregion
+
+        #region Functions
+
         public Vector1<T> Transform(Vector1<T> vec)
         {
             return new Vector1<T>(
@@ -82,59 +104,136 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix1x1<T> Scale(Matrix1x1<T> mat)
+        {
+            return new Matrix1x1<T>(
+                e00 * mat.e00
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector1<T> Multiply(Vector1<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector1<T> operator *(Matrix1x1<T> left, Vector1<T> right)
         {
-            return new Vector1<T>(
-                left.e00 * right.x
+            return left.Transform(right);
+        }
+
+        public Matrix1x1<T> Add(Matrix1x1<T> mat)
+        {
+            return new Matrix1x1<T>(
+                e00 + mat.e00
             );
         }
 
         public static Matrix1x1<T> operator +(Matrix1x1<T> left, Matrix1x1<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix1x1<T> Substract(Matrix1x1<T> mat)
+        {
             return new Matrix1x1<T>(
-                left.e00 + right.e00
+                e00 - mat.e00
             );
         }
 
         public static Matrix1x1<T> operator -(Matrix1x1<T> left, Matrix1x1<T> right)
         {
-            return new Matrix1x1<T>(
-                left.e00 - right.e00
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix1x1<T> operator *(Scalar<T> left, Matrix1x1<T> right)
+        public Matrix1x1<T> Multiply(Scalar<T> s)
         {
             return new Matrix1x1<T>(
-                left * right.e00
+                s * e00
             );
         }
 
         public static Matrix1x1<T> operator *(Matrix1x1<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix1x1<T> operator /(Scalar<T> left, Matrix1x1<T> right)
+        public static Matrix1x1<T> operator *(Scalar<T> left, Matrix1x1<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix1x1<T> Reciprocal()
         {
             return new Matrix1x1<T>(
-                left / right.e00
+                e00 / Scalar<T>.One
+            );
+        }
+
+        public Matrix1x1<T> Divide(Scalar<T> s)
+        {
+            return new Matrix1x1<T>(
+                e00 / s
             );
         }
 
         public static Matrix1x1<T> operator /(Matrix1x1<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix1x1<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix1x1<T>(
-                left.e00 / right
+                s / e00
             );
         }
 
-        public static Matrix1x1<T> operator -(Matrix1x1<T> m)
+        public static Matrix1x1<T> operator /(Scalar<T> left, Matrix1x1<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix1x1<T> Negate()
         {
             return new Matrix1x1<T>(
-                -m.e00
+                -e00
             );
         }
+
+        public static Matrix1x1<T> operator -(Matrix1x1<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix1x1<T> left, Matrix1x1<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix1x1<T> left, Matrix1x1<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -180,11 +279,21 @@ namespace LinearAlgebra.Matrices
         {
             yield return e00.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix2x2<T> : ICloneable, IEquatable<Matrix2x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix2x2<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix2x2<T>, Vector2<T>, Vector2<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e10, e11;
 
         public Vector2<int> Dimension => new Vector2<int>(2, 2);
@@ -193,34 +302,6 @@ namespace LinearAlgebra.Matrices
             { e00, e01 },
             { e10, e11 }
         };
-
-        public static Matrix2x2<T> Zero()
-        {
-            return new Matrix2x2<T>(0, 0, 0, 0);
-        }
-
-        public static Matrix2x2<T> One()
-        {
-            return new Matrix2x2<T>(1, 0, 0, 1);
-        }
-
-        public Matrix2x2(Scalar<T> e00, Scalar<T> e01, Scalar<T> e10, Scalar<T> e11)
-        {
-            this.e00 = e00;
-            this.e01 = e01;
-            this.e10 = e10;
-            this.e11 = e11;
-        }
-
-        public Matrix2x2(T e00, T e01, T e10, T e11)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e01 = new Scalar<T>(e01);
-            this.e10 = new Scalar<T>(e10);
-            this.e11 = new Scalar<T>(e11);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector2<T>[] Rows
         {
@@ -246,6 +327,48 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector2<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix2x2<T> Zero()
+        {
+            return new Matrix2x2<T>(0, 0, 0, 0);
+        }
+
+        public static Matrix2x2<T> One()
+        {
+            return new Matrix2x2<T>(1, 0, 0, 1);
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public Matrix2x2(Scalar<T> e00, Scalar<T> e01, Scalar<T> e10, Scalar<T> e11)
+        {
+            this.e00 = e00;
+            this.e01 = e01;
+            this.e10 = e10;
+            this.e11 = e11;
+        }
+
+        public Matrix2x2(T e00, T e01, T e10, T e11)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e01 = new Scalar<T>(e01);
+            this.e10 = new Scalar<T>(e10);
+            this.e11 = new Scalar<T>(e11);
+        }
+
+        #endregion
+
+        #region Functions
+
         public Vector2<T> Transform(Vector2<T> vec)
         {
             return new Vector2<T>(
@@ -270,66 +393,144 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix2x2<T> Scale(Matrix2x2<T> mat)
+        {
+            return new Matrix2x2<T>(
+                e00 * mat.e00, e01 * mat.e01,
+                e10 * mat.e10, e11 * mat.e11
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector2<T> Multiply(Vector2<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector2<T> operator *(Matrix2x2<T> left, Vector2<T> right)
         {
-            return new Vector2<T>(
-                left.e00 * right.x + left.e01 * right.y,
-                left.e10 * right.x + left.e11 * right.y
+            return left.Transform(right);
+        }
+
+        public Matrix2x2<T> Add(Matrix2x2<T> mat)
+        {
+            return new Matrix2x2<T>(
+                e00 + mat.e00, e01 + mat.e01,
+                e10 + mat.e10, e11 + mat.e11
             );
         }
 
         public static Matrix2x2<T> operator +(Matrix2x2<T> left, Matrix2x2<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix2x2<T> Substract(Matrix2x2<T> mat)
+        {
             return new Matrix2x2<T>(
-                left.e00 + right.e00, left.e01 + right.e01,
-                left.e10 + right.e10, left.e11 + right.e11
+                e00 - mat.e00, e01 - mat.e01,
+                e10 - mat.e10, e11 - mat.e11
             );
         }
 
         public static Matrix2x2<T> operator -(Matrix2x2<T> left, Matrix2x2<T> right)
         {
-            return new Matrix2x2<T>(
-                left.e00 - right.e00, left.e01 - right.e01,
-                left.e10 - right.e10, left.e11 - right.e11
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix2x2<T> operator *(Scalar<T> left, Matrix2x2<T> right)
+        public Matrix2x2<T> Multiply(Scalar<T> s)
         {
             return new Matrix2x2<T>(
-                left * right.e00, left * right.e01,
-                left * right.e10, left * right.e11
+                s * e00, s * e01,
+                s * e10, s * e11
             );
         }
 
         public static Matrix2x2<T> operator *(Matrix2x2<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix2x2<T> operator /(Scalar<T> left, Matrix2x2<T> right)
+        public static Matrix2x2<T> operator *(Scalar<T> left, Matrix2x2<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix2x2<T> Reciprocal()
         {
             return new Matrix2x2<T>(
-                left / right.e00, left / right.e01,
-                left / right.e10, left / right.e11
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One
+            );
+        }
+
+        public Matrix2x2<T> Divide(Scalar<T> s)
+        {
+            return new Matrix2x2<T>(
+                e00 / s, e01 / s,
+                e10 / s, e11 / s
             );
         }
 
         public static Matrix2x2<T> operator /(Matrix2x2<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix2x2<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix2x2<T>(
-                left.e00 / right, left.e01 / right,
-                left.e10 / right, left.e11 / right
+                s / e00, s / e01,
+                s / e10, s / e11
             );
         }
 
-        public static Matrix2x2<T> operator -(Matrix2x2<T> m)
+        public static Matrix2x2<T> operator /(Scalar<T> left, Matrix2x2<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix2x2<T> Negate()
         {
             return new Matrix2x2<T>(
-                -m.e00, -m.e01,
-                -m.e10, -m.e11
+                -e00, -e01,
+                -e10, -e11
             );
         }
+
+        public static Matrix2x2<T> operator -(Matrix2x2<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix2x2<T> left, Matrix2x2<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix2x2<T> left, Matrix2x2<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix2x2<T>(((T, T), (T, T)) t)
         {
@@ -338,6 +539,10 @@ namespace LinearAlgebra.Matrices
                 t.Item2.Item1, t.Item2.Item2
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -390,11 +595,21 @@ namespace LinearAlgebra.Matrices
             yield return e10.Value;
             yield return e11.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix3x3<T> : ICloneable, IEquatable<Matrix3x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix3x3<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix3x3<T>, Vector3<T>, Vector3<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22;
 
         public Vector2<int> Dimension => new Vector2<int>(3, 3);
@@ -405,6 +620,40 @@ namespace LinearAlgebra.Matrices
             { e20, e21, e22 }
         };
 
+        public Vector3<T>[] Rows
+        {
+            get
+            {
+                return new Vector3<T>[]
+                {
+                    new Vector3<T>(e00, e01, e02),
+                    new Vector3<T>(e10, e11, e12),
+                    new Vector3<T>(e20, e21, e22)
+                };
+            }
+        }
+
+        public Vector3<T>[] Columns
+        {
+            get
+            {
+                return new Vector3<T>[]
+                {
+                    new Vector3<T>(e00, e10, e20),
+                    new Vector3<T>(e01, e11, e21),
+                    new Vector3<T>(e02, e12, e22)
+                };
+            }
+        }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector3<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
         public static Matrix3x3<T> Zero()
         {
             return new Matrix3x3<T>(0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -414,6 +663,10 @@ namespace LinearAlgebra.Matrices
         {
             return new Matrix3x3<T>(1, 0, 0, 0, 1, 0, 0, 0, 1);
         }
+
+        #endregion
+
+        #region Constructors
 
         public Matrix3x3(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02, Scalar<T> e10, Scalar<T> e11, Scalar<T> e12, Scalar<T> e20, Scalar<T> e21, Scalar<T> e22)
         {
@@ -441,33 +694,9 @@ namespace LinearAlgebra.Matrices
             this.e22 = new Scalar<T>(e22);
         }
 
-        public Scalar<T> this[int i, int j] => Data[i, j];
+        #endregion
 
-        public Vector3<T>[] Rows
-        {
-            get
-            {
-                return new Vector3<T>[]
-                {
-                    new Vector3<T>(e00, e01, e02),
-                    new Vector3<T>(e10, e11, e12),
-                    new Vector3<T>(e20, e21, e22)
-                };
-            }
-        }
-
-        public Vector3<T>[] Columns
-        {
-            get
-            {
-                return new Vector3<T>[]
-                {
-                    new Vector3<T>(e00, e10, e20),
-                    new Vector3<T>(e01, e11, e21),
-                    new Vector3<T>(e02, e12, e22)
-                };
-            }
-        }
+        #region Functions
 
         public Vector3<T> Transform(Vector3<T> vec)
         {
@@ -496,73 +725,152 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix3x3<T> Scale(Matrix3x3<T> mat)
+        {
+            return new Matrix3x3<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02,
+                e10 * mat.e10, e11 * mat.e11, e12 * mat.e12,
+                e20 * mat.e20, e21 * mat.e21, e22 * mat.e22
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector3<T> Multiply(Vector3<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector3<T> operator *(Matrix3x3<T> left, Vector3<T> right)
         {
-            return new Vector3<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z,
-                left.e10 * right.x + left.e11 * right.y + left.e12 * right.z,
-                left.e20 * right.x + left.e21 * right.y + left.e22 * right.z
+            return left.Transform(right);
+        }
+
+        public Matrix3x3<T> Add(Matrix3x3<T> mat)
+        {
+            return new Matrix3x3<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02,
+                e10 + mat.e10, e11 + mat.e11, e12 + mat.e12,
+                e20 + mat.e20, e21 + mat.e21, e22 + mat.e22
             );
         }
 
         public static Matrix3x3<T> operator +(Matrix3x3<T> left, Matrix3x3<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix3x3<T> Substract(Matrix3x3<T> mat)
+        {
             return new Matrix3x3<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02,
-                left.e10 + right.e10, left.e11 + right.e11, left.e12 + right.e12,
-                left.e20 + right.e20, left.e21 + right.e21, left.e22 + right.e22
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02,
+                e10 - mat.e10, e11 - mat.e11, e12 - mat.e12,
+                e20 - mat.e20, e21 - mat.e21, e22 - mat.e22
             );
         }
 
         public static Matrix3x3<T> operator -(Matrix3x3<T> left, Matrix3x3<T> right)
         {
-            return new Matrix3x3<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02,
-                left.e10 - right.e10, left.e11 - right.e11, left.e12 - right.e12,
-                left.e20 - right.e20, left.e21 - right.e21, left.e22 - right.e22
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix3x3<T> operator *(Scalar<T> left, Matrix3x3<T> right)
+        public Matrix3x3<T> Multiply(Scalar<T> s)
         {
             return new Matrix3x3<T>(
-                left * right.e00, left * right.e01, left * right.e02,
-                left * right.e10, left * right.e11, left * right.e12,
-                left * right.e20, left * right.e21, left * right.e22
+                s * e00, s * e01, s * e02,
+                s * e10, s * e11, s * e12,
+                s * e20, s * e21, s * e22
             );
         }
 
         public static Matrix3x3<T> operator *(Matrix3x3<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix3x3<T> operator /(Scalar<T> left, Matrix3x3<T> right)
+        public static Matrix3x3<T> operator *(Scalar<T> left, Matrix3x3<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix3x3<T> Reciprocal()
         {
             return new Matrix3x3<T>(
-                left / right.e00, left / right.e01, left / right.e02,
-                left / right.e10, left / right.e11, left / right.e12,
-                left / right.e20, left / right.e21, left / right.e22
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One, e12 / Scalar<T>.One,
+                e20 / Scalar<T>.One, e21 / Scalar<T>.One, e22 / Scalar<T>.One
+            );
+        }
+
+        public Matrix3x3<T> Divide(Scalar<T> s)
+        {
+            return new Matrix3x3<T>(
+                e00 / s, e01 / s, e02 / s,
+                e10 / s, e11 / s, e12 / s,
+                e20 / s, e21 / s, e22 / s
             );
         }
 
         public static Matrix3x3<T> operator /(Matrix3x3<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix3x3<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix3x3<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right,
-                left.e10 / right, left.e11 / right, left.e12 / right,
-                left.e20 / right, left.e21 / right, left.e22 / right
+                s / e00, s / e01, s / e02,
+                s / e10, s / e11, s / e12,
+                s / e20, s / e21, s / e22
             );
         }
 
-        public static Matrix3x3<T> operator -(Matrix3x3<T> m)
+        public static Matrix3x3<T> operator /(Scalar<T> left, Matrix3x3<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix3x3<T> Negate()
         {
             return new Matrix3x3<T>(
-                -m.e00, -m.e01, -m.e02,
-                -m.e10, -m.e11, -m.e12,
-                -m.e20, -m.e21, -m.e22
+                -e00, -e01, -e02,
+                -e10, -e11, -e12,
+                -e20, -e21, -e22
             );
         }
+
+        public static Matrix3x3<T> operator -(Matrix3x3<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix3x3<T> left, Matrix3x3<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix3x3<T> left, Matrix3x3<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix3x3<T>(((T, T, T), (T, T, T), (T, T, T)) t)
         {
@@ -572,6 +880,10 @@ namespace LinearAlgebra.Matrices
                 t.Item3.Item1, t.Item3.Item2, t.Item3.Item3
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -635,11 +947,21 @@ namespace LinearAlgebra.Matrices
             yield return e21.Value;
             yield return e22.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix4x4<T> : ICloneable, IEquatable<Matrix4x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix4x4<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix4x4<T>, Vector4<T>, Vector4<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23, e30, e31, e32, e33;
 
         public Vector2<int> Dimension => new Vector2<int>(4, 4);
@@ -651,6 +973,42 @@ namespace LinearAlgebra.Matrices
             { e30, e31, e32, e33 }
         };
 
+        public Vector4<T>[] Rows
+        {
+            get
+            {
+                return new Vector4<T>[]
+                {
+                    new Vector4<T>(e00, e01, e02, e03),
+                    new Vector4<T>(e10, e11, e12, e13),
+                    new Vector4<T>(e20, e21, e22, e23),
+                    new Vector4<T>(e30, e31, e32, e33)
+                };
+            }
+        }
+
+        public Vector4<T>[] Columns
+        {
+            get
+            {
+                return new Vector4<T>[]
+                {
+                    new Vector4<T>(e00, e10, e20, e30),
+                    new Vector4<T>(e01, e11, e21, e31),
+                    new Vector4<T>(e02, e12, e22, e32),
+                    new Vector4<T>(e03, e13, e23, e33)
+                };
+            }
+        }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector4<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
         public static Matrix4x4<T> Zero()
         {
             return new Matrix4x4<T>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -660,6 +1018,10 @@ namespace LinearAlgebra.Matrices
         {
             return new Matrix4x4<T>(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
         }
+
+        #endregion
+
+        #region Constructors
 
         public Matrix4x4(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02, Scalar<T> e03, Scalar<T> e10, Scalar<T> e11, Scalar<T> e12, Scalar<T> e13, Scalar<T> e20, Scalar<T> e21, Scalar<T> e22, Scalar<T> e23, Scalar<T> e30, Scalar<T> e31, Scalar<T> e32, Scalar<T> e33)
         {
@@ -701,35 +1063,9 @@ namespace LinearAlgebra.Matrices
             this.e33 = new Scalar<T>(e33);
         }
 
-        public Scalar<T> this[int i, int j] => Data[i, j];
+        #endregion
 
-        public Vector4<T>[] Rows
-        {
-            get
-            {
-                return new Vector4<T>[]
-                {
-                    new Vector4<T>(e00, e01, e02, e03),
-                    new Vector4<T>(e10, e11, e12, e13),
-                    new Vector4<T>(e20, e21, e22, e23),
-                    new Vector4<T>(e30, e31, e32, e33)
-                };
-            }
-        }
-
-        public Vector4<T>[] Columns
-        {
-            get
-            {
-                return new Vector4<T>[]
-                {
-                    new Vector4<T>(e00, e10, e20, e30),
-                    new Vector4<T>(e01, e11, e21, e31),
-                    new Vector4<T>(e02, e12, e22, e32),
-                    new Vector4<T>(e03, e13, e23, e33)
-                };
-            }
-        }
+        #region Functions
 
         public Vector4<T> Transform(Vector4<T> vec)
         {
@@ -761,80 +1097,160 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix4x4<T> Scale(Matrix4x4<T> mat)
+        {
+            return new Matrix4x4<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02, e03 * mat.e03,
+                e10 * mat.e10, e11 * mat.e11, e12 * mat.e12, e13 * mat.e13,
+                e20 * mat.e20, e21 * mat.e21, e22 * mat.e22, e23 * mat.e23,
+                e30 * mat.e30, e31 * mat.e31, e32 * mat.e32, e33 * mat.e33
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector4<T> Multiply(Vector4<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector4<T> operator *(Matrix4x4<T> left, Vector4<T> right)
         {
-            return new Vector4<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z + left.e03 * right.w,
-                left.e10 * right.x + left.e11 * right.y + left.e12 * right.z + left.e13 * right.w,
-                left.e20 * right.x + left.e21 * right.y + left.e22 * right.z + left.e23 * right.w,
-                left.e30 * right.x + left.e31 * right.y + left.e32 * right.z + left.e33 * right.w
+            return left.Transform(right);
+        }
+
+        public Matrix4x4<T> Add(Matrix4x4<T> mat)
+        {
+            return new Matrix4x4<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02, e03 + mat.e03,
+                e10 + mat.e10, e11 + mat.e11, e12 + mat.e12, e13 + mat.e13,
+                e20 + mat.e20, e21 + mat.e21, e22 + mat.e22, e23 + mat.e23,
+                e30 + mat.e30, e31 + mat.e31, e32 + mat.e32, e33 + mat.e33
             );
         }
 
         public static Matrix4x4<T> operator +(Matrix4x4<T> left, Matrix4x4<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix4x4<T> Substract(Matrix4x4<T> mat)
+        {
             return new Matrix4x4<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02, left.e03 + right.e03,
-                left.e10 + right.e10, left.e11 + right.e11, left.e12 + right.e12, left.e13 + right.e13,
-                left.e20 + right.e20, left.e21 + right.e21, left.e22 + right.e22, left.e23 + right.e23,
-                left.e30 + right.e30, left.e31 + right.e31, left.e32 + right.e32, left.e33 + right.e33
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02, e03 - mat.e03,
+                e10 - mat.e10, e11 - mat.e11, e12 - mat.e12, e13 - mat.e13,
+                e20 - mat.e20, e21 - mat.e21, e22 - mat.e22, e23 - mat.e23,
+                e30 - mat.e30, e31 - mat.e31, e32 - mat.e32, e33 - mat.e33
             );
         }
 
         public static Matrix4x4<T> operator -(Matrix4x4<T> left, Matrix4x4<T> right)
         {
-            return new Matrix4x4<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02, left.e03 - right.e03,
-                left.e10 - right.e10, left.e11 - right.e11, left.e12 - right.e12, left.e13 - right.e13,
-                left.e20 - right.e20, left.e21 - right.e21, left.e22 - right.e22, left.e23 - right.e23,
-                left.e30 - right.e30, left.e31 - right.e31, left.e32 - right.e32, left.e33 - right.e33
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix4x4<T> operator *(Scalar<T> left, Matrix4x4<T> right)
+        public Matrix4x4<T> Multiply(Scalar<T> s)
         {
             return new Matrix4x4<T>(
-                left * right.e00, left * right.e01, left * right.e02, left * right.e03,
-                left * right.e10, left * right.e11, left * right.e12, left * right.e13,
-                left * right.e20, left * right.e21, left * right.e22, left * right.e23,
-                left * right.e30, left * right.e31, left * right.e32, left * right.e33
+                s * e00, s * e01, s * e02, s * e03,
+                s * e10, s * e11, s * e12, s * e13,
+                s * e20, s * e21, s * e22, s * e23,
+                s * e30, s * e31, s * e32, s * e33
             );
         }
 
         public static Matrix4x4<T> operator *(Matrix4x4<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix4x4<T> operator /(Scalar<T> left, Matrix4x4<T> right)
+        public static Matrix4x4<T> operator *(Scalar<T> left, Matrix4x4<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix4x4<T> Reciprocal()
         {
             return new Matrix4x4<T>(
-                left / right.e00, left / right.e01, left / right.e02, left / right.e03,
-                left / right.e10, left / right.e11, left / right.e12, left / right.e13,
-                left / right.e20, left / right.e21, left / right.e22, left / right.e23,
-                left / right.e30, left / right.e31, left / right.e32, left / right.e33
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One, e03 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One, e12 / Scalar<T>.One, e13 / Scalar<T>.One,
+                e20 / Scalar<T>.One, e21 / Scalar<T>.One, e22 / Scalar<T>.One, e23 / Scalar<T>.One,
+                e30 / Scalar<T>.One, e31 / Scalar<T>.One, e32 / Scalar<T>.One, e33 / Scalar<T>.One
+            );
+        }
+
+        public Matrix4x4<T> Divide(Scalar<T> s)
+        {
+            return new Matrix4x4<T>(
+                e00 / s, e01 / s, e02 / s, e03 / s,
+                e10 / s, e11 / s, e12 / s, e13 / s,
+                e20 / s, e21 / s, e22 / s, e23 / s,
+                e30 / s, e31 / s, e32 / s, e33 / s
             );
         }
 
         public static Matrix4x4<T> operator /(Matrix4x4<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix4x4<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix4x4<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right, left.e03 / right,
-                left.e10 / right, left.e11 / right, left.e12 / right, left.e13 / right,
-                left.e20 / right, left.e21 / right, left.e22 / right, left.e23 / right,
-                left.e30 / right, left.e31 / right, left.e32 / right, left.e33 / right
+                s / e00, s / e01, s / e02, s / e03,
+                s / e10, s / e11, s / e12, s / e13,
+                s / e20, s / e21, s / e22, s / e23,
+                s / e30, s / e31, s / e32, s / e33
             );
         }
 
-        public static Matrix4x4<T> operator -(Matrix4x4<T> m)
+        public static Matrix4x4<T> operator /(Scalar<T> left, Matrix4x4<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix4x4<T> Negate()
         {
             return new Matrix4x4<T>(
-                -m.e00, -m.e01, -m.e02, -m.e03,
-                -m.e10, -m.e11, -m.e12, -m.e13,
-                -m.e20, -m.e21, -m.e22, -m.e23,
-                -m.e30, -m.e31, -m.e32, -m.e33
+                -e00, -e01, -e02, -e03,
+                -e10, -e11, -e12, -e13,
+                -e20, -e21, -e22, -e23,
+                -e30, -e31, -e32, -e33
             );
         }
+
+        public static Matrix4x4<T> operator -(Matrix4x4<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix4x4<T> left, Matrix4x4<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix4x4<T> left, Matrix4x4<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix4x4<T>(((T, T, T, T), (T, T, T, T), (T, T, T, T), (T, T, T, T)) t)
         {
@@ -845,6 +1261,10 @@ namespace LinearAlgebra.Matrices
                 t.Item4.Item1, t.Item4.Item2, t.Item4.Item3, t.Item4.Item4
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -923,11 +1343,21 @@ namespace LinearAlgebra.Matrices
             yield return e32.Value;
             yield return e33.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix1x2<T> : ICloneable, IEquatable<Matrix1x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix1x2<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix1x2<T>, Vector2<T>, Vector1<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01;
 
         public Vector2<int> Dimension => new Vector2<int>(1, 2);
@@ -935,25 +1365,6 @@ namespace LinearAlgebra.Matrices
         public Scalar<T>[,] Data => new Scalar<T>[1, 2] {
             { e00, e01 }
         };
-
-        public static Matrix1x2<T> Zero()
-        {
-            return new Matrix1x2<T>(0, 0);
-        }
-
-        public Matrix1x2(Scalar<T> e00, Scalar<T> e01)
-        {
-            this.e00 = e00;
-            this.e01 = e01;
-        }
-
-        public Matrix1x2(T e00, T e01)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e01 = new Scalar<T>(e01);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector2<T>[] Rows
         {
@@ -978,6 +1389,35 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector2<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix1x2<T> Zero()
+        {
+            return new Matrix1x2<T>(0, 0);
+        }
+
+        public Matrix1x2(Scalar<T> e00, Scalar<T> e01)
+        {
+            this.e00 = e00;
+            this.e01 = e01;
+        }
+
+        public Matrix1x2(T e00, T e01)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e01 = new Scalar<T>(e01);
+        }
+
+        #endregion
+
+        #region Functions
+
         public Vector1<T> Transform(Vector2<T> vec)
         {
             return new Vector1<T>(
@@ -1000,59 +1440,136 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix1x2<T> Scale(Matrix1x2<T> mat)
+        {
+            return new Matrix1x2<T>(
+                e00 * mat.e00, e01 * mat.e01
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector1<T> Multiply(Vector2<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector1<T> operator *(Matrix1x2<T> left, Vector2<T> right)
         {
-            return new Vector1<T>(
-                left.e00 * right.x + left.e01 * right.y
+            return left.Transform(right);
+        }
+
+        public Matrix1x2<T> Add(Matrix1x2<T> mat)
+        {
+            return new Matrix1x2<T>(
+                e00 + mat.e00, e01 + mat.e01
             );
         }
 
         public static Matrix1x2<T> operator +(Matrix1x2<T> left, Matrix1x2<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix1x2<T> Substract(Matrix1x2<T> mat)
+        {
             return new Matrix1x2<T>(
-                left.e00 + right.e00, left.e01 + right.e01
+                e00 - mat.e00, e01 - mat.e01
             );
         }
 
         public static Matrix1x2<T> operator -(Matrix1x2<T> left, Matrix1x2<T> right)
         {
-            return new Matrix1x2<T>(
-                left.e00 - right.e00, left.e01 - right.e01
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix1x2<T> operator *(Scalar<T> left, Matrix1x2<T> right)
+        public Matrix1x2<T> Multiply(Scalar<T> s)
         {
             return new Matrix1x2<T>(
-                left * right.e00, left * right.e01
+                s * e00, s * e01
             );
         }
 
         public static Matrix1x2<T> operator *(Matrix1x2<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix1x2<T> operator /(Scalar<T> left, Matrix1x2<T> right)
+        public static Matrix1x2<T> operator *(Scalar<T> left, Matrix1x2<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix1x2<T> Reciprocal()
         {
             return new Matrix1x2<T>(
-                left / right.e00, left / right.e01
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One
+            );
+        }
+
+        public Matrix1x2<T> Divide(Scalar<T> s)
+        {
+            return new Matrix1x2<T>(
+                e00 / s, e01 / s
             );
         }
 
         public static Matrix1x2<T> operator /(Matrix1x2<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix1x2<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix1x2<T>(
-                left.e00 / right, left.e01 / right
+                s / e00, s / e01
             );
         }
 
-        public static Matrix1x2<T> operator -(Matrix1x2<T> m)
+        public static Matrix1x2<T> operator /(Scalar<T> left, Matrix1x2<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix1x2<T> Negate()
         {
             return new Matrix1x2<T>(
-                -m.e00, -m.e01
+                -e00, -e01
             );
         }
+
+        public static Matrix1x2<T> operator -(Matrix1x2<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix1x2<T> left, Matrix1x2<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix1x2<T> left, Matrix1x2<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -1100,11 +1617,21 @@ namespace LinearAlgebra.Matrices
             yield return e00.Value;
             yield return e01.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix2x1<T> : ICloneable, IEquatable<Matrix2x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix2x1<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix2x1<T>, Vector1<T>, Vector2<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e10;
 
         public Vector2<int> Dimension => new Vector2<int>(2, 1);
@@ -1113,25 +1640,6 @@ namespace LinearAlgebra.Matrices
             { e00 },
             { e10 }
         };
-
-        public static Matrix2x1<T> Zero()
-        {
-            return new Matrix2x1<T>(0, 0);
-        }
-
-        public Matrix2x1(Scalar<T> e00, Scalar<T> e10)
-        {
-            this.e00 = e00;
-            this.e10 = e10;
-        }
-
-        public Matrix2x1(T e00, T e10)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e10 = new Scalar<T>(e10);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector1<T>[] Rows
         {
@@ -1156,6 +1664,35 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector1<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix2x1<T> Zero()
+        {
+            return new Matrix2x1<T>(0, 0);
+        }
+
+        public Matrix2x1(Scalar<T> e00, Scalar<T> e10)
+        {
+            this.e00 = e00;
+            this.e10 = e10;
+        }
+
+        public Matrix2x1(T e00, T e10)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e10 = new Scalar<T>(e10);
+        }
+
+        #endregion
+
+        #region Functions
+
         public Vector2<T> Transform(Vector1<T> vec)
         {
             return new Vector2<T>(
@@ -1179,66 +1716,144 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix2x1<T> Scale(Matrix2x1<T> mat)
+        {
+            return new Matrix2x1<T>(
+                e00 * mat.e00,
+                e10 * mat.e10
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector2<T> Multiply(Vector1<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector2<T> operator *(Matrix2x1<T> left, Vector1<T> right)
         {
-            return new Vector2<T>(
-                left.e00 * right.x,
-                left.e10 * right.x
+            return left.Transform(right);
+        }
+
+        public Matrix2x1<T> Add(Matrix2x1<T> mat)
+        {
+            return new Matrix2x1<T>(
+                e00 + mat.e00,
+                e10 + mat.e10
             );
         }
 
         public static Matrix2x1<T> operator +(Matrix2x1<T> left, Matrix2x1<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix2x1<T> Substract(Matrix2x1<T> mat)
+        {
             return new Matrix2x1<T>(
-                left.e00 + right.e00,
-                left.e10 + right.e10
+                e00 - mat.e00,
+                e10 - mat.e10
             );
         }
 
         public static Matrix2x1<T> operator -(Matrix2x1<T> left, Matrix2x1<T> right)
         {
-            return new Matrix2x1<T>(
-                left.e00 - right.e00,
-                left.e10 - right.e10
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix2x1<T> operator *(Scalar<T> left, Matrix2x1<T> right)
+        public Matrix2x1<T> Multiply(Scalar<T> s)
         {
             return new Matrix2x1<T>(
-                left * right.e00,
-                left * right.e10
+                s * e00,
+                s * e10
             );
         }
 
         public static Matrix2x1<T> operator *(Matrix2x1<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix2x1<T> operator /(Scalar<T> left, Matrix2x1<T> right)
+        public static Matrix2x1<T> operator *(Scalar<T> left, Matrix2x1<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix2x1<T> Reciprocal()
         {
             return new Matrix2x1<T>(
-                left / right.e00,
-                left / right.e10
+                e00 / Scalar<T>.One,
+                e10 / Scalar<T>.One
+            );
+        }
+
+        public Matrix2x1<T> Divide(Scalar<T> s)
+        {
+            return new Matrix2x1<T>(
+                e00 / s,
+                e10 / s
             );
         }
 
         public static Matrix2x1<T> operator /(Matrix2x1<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix2x1<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix2x1<T>(
-                left.e00 / right,
-                left.e10 / right
+                s / e00,
+                s / e10
             );
         }
 
-        public static Matrix2x1<T> operator -(Matrix2x1<T> m)
+        public static Matrix2x1<T> operator /(Scalar<T> left, Matrix2x1<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix2x1<T> Negate()
         {
             return new Matrix2x1<T>(
-                -m.e00,
-                -m.e10
+                -e00,
+                -e10
             );
         }
+
+        public static Matrix2x1<T> operator -(Matrix2x1<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix2x1<T> left, Matrix2x1<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix2x1<T> left, Matrix2x1<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -1287,11 +1902,21 @@ namespace LinearAlgebra.Matrices
             yield return e00.Value;
             yield return e10.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix1x3<T> : ICloneable, IEquatable<Matrix1x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix1x3<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix1x3<T>, Vector3<T>, Vector1<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02;
 
         public Vector2<int> Dimension => new Vector2<int>(1, 3);
@@ -1299,27 +1924,6 @@ namespace LinearAlgebra.Matrices
         public Scalar<T>[,] Data => new Scalar<T>[1, 3] {
             { e00, e01, e02 }
         };
-
-        public static Matrix1x3<T> Zero()
-        {
-            return new Matrix1x3<T>(0, 0, 0);
-        }
-
-        public Matrix1x3(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02)
-        {
-            this.e00 = e00;
-            this.e01 = e01;
-            this.e02 = e02;
-        }
-
-        public Matrix1x3(T e00, T e01, T e02)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e01 = new Scalar<T>(e01);
-            this.e02 = new Scalar<T>(e02);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector3<T>[] Rows
         {
@@ -1345,6 +1949,37 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector3<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix1x3<T> Zero()
+        {
+            return new Matrix1x3<T>(0, 0, 0);
+        }
+
+        public Matrix1x3(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02)
+        {
+            this.e00 = e00;
+            this.e01 = e01;
+            this.e02 = e02;
+        }
+
+        public Matrix1x3(T e00, T e01, T e02)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e01 = new Scalar<T>(e01);
+            this.e02 = new Scalar<T>(e02);
+        }
+
+        #endregion
+
+        #region Functions
+
         public Vector1<T> Transform(Vector3<T> vec)
         {
             return new Vector1<T>(
@@ -1368,59 +2003,136 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix1x3<T> Scale(Matrix1x3<T> mat)
+        {
+            return new Matrix1x3<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector1<T> Multiply(Vector3<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector1<T> operator *(Matrix1x3<T> left, Vector3<T> right)
         {
-            return new Vector1<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z
+            return left.Transform(right);
+        }
+
+        public Matrix1x3<T> Add(Matrix1x3<T> mat)
+        {
+            return new Matrix1x3<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02
             );
         }
 
         public static Matrix1x3<T> operator +(Matrix1x3<T> left, Matrix1x3<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix1x3<T> Substract(Matrix1x3<T> mat)
+        {
             return new Matrix1x3<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02
             );
         }
 
         public static Matrix1x3<T> operator -(Matrix1x3<T> left, Matrix1x3<T> right)
         {
-            return new Matrix1x3<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix1x3<T> operator *(Scalar<T> left, Matrix1x3<T> right)
+        public Matrix1x3<T> Multiply(Scalar<T> s)
         {
             return new Matrix1x3<T>(
-                left * right.e00, left * right.e01, left * right.e02
+                s * e00, s * e01, s * e02
             );
         }
 
         public static Matrix1x3<T> operator *(Matrix1x3<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix1x3<T> operator /(Scalar<T> left, Matrix1x3<T> right)
+        public static Matrix1x3<T> operator *(Scalar<T> left, Matrix1x3<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix1x3<T> Reciprocal()
         {
             return new Matrix1x3<T>(
-                left / right.e00, left / right.e01, left / right.e02
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One
+            );
+        }
+
+        public Matrix1x3<T> Divide(Scalar<T> s)
+        {
+            return new Matrix1x3<T>(
+                e00 / s, e01 / s, e02 / s
             );
         }
 
         public static Matrix1x3<T> operator /(Matrix1x3<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix1x3<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix1x3<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right
+                s / e00, s / e01, s / e02
             );
         }
 
-        public static Matrix1x3<T> operator -(Matrix1x3<T> m)
+        public static Matrix1x3<T> operator /(Scalar<T> left, Matrix1x3<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix1x3<T> Negate()
         {
             return new Matrix1x3<T>(
-                -m.e00, -m.e01, -m.e02
+                -e00, -e01, -e02
             );
         }
+
+        public static Matrix1x3<T> operator -(Matrix1x3<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix1x3<T> left, Matrix1x3<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix1x3<T> left, Matrix1x3<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -1470,11 +2182,21 @@ namespace LinearAlgebra.Matrices
             yield return e01.Value;
             yield return e02.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix3x1<T> : ICloneable, IEquatable<Matrix3x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix3x1<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix3x1<T>, Vector1<T>, Vector3<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e10, e20;
 
         public Vector2<int> Dimension => new Vector2<int>(3, 1);
@@ -1484,27 +2206,6 @@ namespace LinearAlgebra.Matrices
             { e10 },
             { e20 }
         };
-
-        public static Matrix3x1<T> Zero()
-        {
-            return new Matrix3x1<T>(0, 0, 0);
-        }
-
-        public Matrix3x1(Scalar<T> e00, Scalar<T> e10, Scalar<T> e20)
-        {
-            this.e00 = e00;
-            this.e10 = e10;
-            this.e20 = e20;
-        }
-
-        public Matrix3x1(T e00, T e10, T e20)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e10 = new Scalar<T>(e10);
-            this.e20 = new Scalar<T>(e20);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector1<T>[] Rows
         {
@@ -1529,6 +2230,37 @@ namespace LinearAlgebra.Matrices
                 };
             }
         }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector1<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix3x1<T> Zero()
+        {
+            return new Matrix3x1<T>(0, 0, 0);
+        }
+
+        public Matrix3x1(Scalar<T> e00, Scalar<T> e10, Scalar<T> e20)
+        {
+            this.e00 = e00;
+            this.e10 = e10;
+            this.e20 = e20;
+        }
+
+        public Matrix3x1(T e00, T e10, T e20)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e10 = new Scalar<T>(e10);
+            this.e20 = new Scalar<T>(e20);
+        }
+
+        #endregion
+
+        #region Functions
 
         public Vector3<T> Transform(Vector1<T> vec)
         {
@@ -1555,73 +2287,152 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix3x1<T> Scale(Matrix3x1<T> mat)
+        {
+            return new Matrix3x1<T>(
+                e00 * mat.e00,
+                e10 * mat.e10,
+                e20 * mat.e20
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector3<T> Multiply(Vector1<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector3<T> operator *(Matrix3x1<T> left, Vector1<T> right)
         {
-            return new Vector3<T>(
-                left.e00 * right.x,
-                left.e10 * right.x,
-                left.e20 * right.x
+            return left.Transform(right);
+        }
+
+        public Matrix3x1<T> Add(Matrix3x1<T> mat)
+        {
+            return new Matrix3x1<T>(
+                e00 + mat.e00,
+                e10 + mat.e10,
+                e20 + mat.e20
             );
         }
 
         public static Matrix3x1<T> operator +(Matrix3x1<T> left, Matrix3x1<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix3x1<T> Substract(Matrix3x1<T> mat)
+        {
             return new Matrix3x1<T>(
-                left.e00 + right.e00,
-                left.e10 + right.e10,
-                left.e20 + right.e20
+                e00 - mat.e00,
+                e10 - mat.e10,
+                e20 - mat.e20
             );
         }
 
         public static Matrix3x1<T> operator -(Matrix3x1<T> left, Matrix3x1<T> right)
         {
-            return new Matrix3x1<T>(
-                left.e00 - right.e00,
-                left.e10 - right.e10,
-                left.e20 - right.e20
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix3x1<T> operator *(Scalar<T> left, Matrix3x1<T> right)
+        public Matrix3x1<T> Multiply(Scalar<T> s)
         {
             return new Matrix3x1<T>(
-                left * right.e00,
-                left * right.e10,
-                left * right.e20
+                s * e00,
+                s * e10,
+                s * e20
             );
         }
 
         public static Matrix3x1<T> operator *(Matrix3x1<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix3x1<T> operator /(Scalar<T> left, Matrix3x1<T> right)
+        public static Matrix3x1<T> operator *(Scalar<T> left, Matrix3x1<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix3x1<T> Reciprocal()
         {
             return new Matrix3x1<T>(
-                left / right.e00,
-                left / right.e10,
-                left / right.e20
+                e00 / Scalar<T>.One,
+                e10 / Scalar<T>.One,
+                e20 / Scalar<T>.One
+            );
+        }
+
+        public Matrix3x1<T> Divide(Scalar<T> s)
+        {
+            return new Matrix3x1<T>(
+                e00 / s,
+                e10 / s,
+                e20 / s
             );
         }
 
         public static Matrix3x1<T> operator /(Matrix3x1<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix3x1<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix3x1<T>(
-                left.e00 / right,
-                left.e10 / right,
-                left.e20 / right
+                s / e00,
+                s / e10,
+                s / e20
             );
         }
 
-        public static Matrix3x1<T> operator -(Matrix3x1<T> m)
+        public static Matrix3x1<T> operator /(Scalar<T> left, Matrix3x1<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix3x1<T> Negate()
         {
             return new Matrix3x1<T>(
-                -m.e00,
-                -m.e10,
-                -m.e20
+                -e00,
+                -e10,
+                -e20
             );
         }
+
+        public static Matrix3x1<T> operator -(Matrix3x1<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix3x1<T> left, Matrix3x1<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix3x1<T> left, Matrix3x1<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -1673,11 +2484,21 @@ namespace LinearAlgebra.Matrices
             yield return e10.Value;
             yield return e20.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix1x4<T> : ICloneable, IEquatable<Matrix1x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix1x4<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix1x4<T>, Vector4<T>, Vector1<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02, e03;
 
         public Vector2<int> Dimension => new Vector2<int>(1, 4);
@@ -1685,29 +2506,6 @@ namespace LinearAlgebra.Matrices
         public Scalar<T>[,] Data => new Scalar<T>[1, 4] {
             { e00, e01, e02, e03 }
         };
-
-        public static Matrix1x4<T> Zero()
-        {
-            return new Matrix1x4<T>(0, 0, 0, 0);
-        }
-
-        public Matrix1x4(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02, Scalar<T> e03)
-        {
-            this.e00 = e00;
-            this.e01 = e01;
-            this.e02 = e02;
-            this.e03 = e03;
-        }
-
-        public Matrix1x4(T e00, T e01, T e02, T e03)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e01 = new Scalar<T>(e01);
-            this.e02 = new Scalar<T>(e02);
-            this.e03 = new Scalar<T>(e03);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector4<T>[] Rows
         {
@@ -1734,6 +2532,39 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector4<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix1x4<T> Zero()
+        {
+            return new Matrix1x4<T>(0, 0, 0, 0);
+        }
+
+        public Matrix1x4(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02, Scalar<T> e03)
+        {
+            this.e00 = e00;
+            this.e01 = e01;
+            this.e02 = e02;
+            this.e03 = e03;
+        }
+
+        public Matrix1x4(T e00, T e01, T e02, T e03)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e01 = new Scalar<T>(e01);
+            this.e02 = new Scalar<T>(e02);
+            this.e03 = new Scalar<T>(e03);
+        }
+
+        #endregion
+
+        #region Functions
+
         public Vector1<T> Transform(Vector4<T> vec)
         {
             return new Vector1<T>(
@@ -1758,59 +2589,136 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix1x4<T> Scale(Matrix1x4<T> mat)
+        {
+            return new Matrix1x4<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02, e03 * mat.e03
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector1<T> Multiply(Vector4<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector1<T> operator *(Matrix1x4<T> left, Vector4<T> right)
         {
-            return new Vector1<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z + left.e03 * right.w
+            return left.Transform(right);
+        }
+
+        public Matrix1x4<T> Add(Matrix1x4<T> mat)
+        {
+            return new Matrix1x4<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02, e03 + mat.e03
             );
         }
 
         public static Matrix1x4<T> operator +(Matrix1x4<T> left, Matrix1x4<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix1x4<T> Substract(Matrix1x4<T> mat)
+        {
             return new Matrix1x4<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02, left.e03 + right.e03
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02, e03 - mat.e03
             );
         }
 
         public static Matrix1x4<T> operator -(Matrix1x4<T> left, Matrix1x4<T> right)
         {
-            return new Matrix1x4<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02, left.e03 - right.e03
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix1x4<T> operator *(Scalar<T> left, Matrix1x4<T> right)
+        public Matrix1x4<T> Multiply(Scalar<T> s)
         {
             return new Matrix1x4<T>(
-                left * right.e00, left * right.e01, left * right.e02, left * right.e03
+                s * e00, s * e01, s * e02, s * e03
             );
         }
 
         public static Matrix1x4<T> operator *(Matrix1x4<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix1x4<T> operator /(Scalar<T> left, Matrix1x4<T> right)
+        public static Matrix1x4<T> operator *(Scalar<T> left, Matrix1x4<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix1x4<T> Reciprocal()
         {
             return new Matrix1x4<T>(
-                left / right.e00, left / right.e01, left / right.e02, left / right.e03
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One, e03 / Scalar<T>.One
+            );
+        }
+
+        public Matrix1x4<T> Divide(Scalar<T> s)
+        {
+            return new Matrix1x4<T>(
+                e00 / s, e01 / s, e02 / s, e03 / s
             );
         }
 
         public static Matrix1x4<T> operator /(Matrix1x4<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix1x4<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix1x4<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right, left.e03 / right
+                s / e00, s / e01, s / e02, s / e03
             );
         }
 
-        public static Matrix1x4<T> operator -(Matrix1x4<T> m)
+        public static Matrix1x4<T> operator /(Scalar<T> left, Matrix1x4<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix1x4<T> Negate()
         {
             return new Matrix1x4<T>(
-                -m.e00, -m.e01, -m.e02, -m.e03
+                -e00, -e01, -e02, -e03
             );
         }
+
+        public static Matrix1x4<T> operator -(Matrix1x4<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix1x4<T> left, Matrix1x4<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix1x4<T> left, Matrix1x4<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -1862,11 +2770,21 @@ namespace LinearAlgebra.Matrices
             yield return e02.Value;
             yield return e03.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix4x1<T> : ICloneable, IEquatable<Matrix4x1<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix4x1<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix4x1<T>, Vector1<T>, Vector4<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e10, e20, e30;
 
         public Vector2<int> Dimension => new Vector2<int>(4, 1);
@@ -1877,29 +2795,6 @@ namespace LinearAlgebra.Matrices
             { e20 },
             { e30 }
         };
-
-        public static Matrix4x1<T> Zero()
-        {
-            return new Matrix4x1<T>(0, 0, 0, 0);
-        }
-
-        public Matrix4x1(Scalar<T> e00, Scalar<T> e10, Scalar<T> e20, Scalar<T> e30)
-        {
-            this.e00 = e00;
-            this.e10 = e10;
-            this.e20 = e20;
-            this.e30 = e30;
-        }
-
-        public Matrix4x1(T e00, T e10, T e20, T e30)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e10 = new Scalar<T>(e10);
-            this.e20 = new Scalar<T>(e20);
-            this.e30 = new Scalar<T>(e30);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector1<T>[] Rows
         {
@@ -1925,6 +2820,39 @@ namespace LinearAlgebra.Matrices
                 };
             }
         }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector1<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix4x1<T> Zero()
+        {
+            return new Matrix4x1<T>(0, 0, 0, 0);
+        }
+
+        public Matrix4x1(Scalar<T> e00, Scalar<T> e10, Scalar<T> e20, Scalar<T> e30)
+        {
+            this.e00 = e00;
+            this.e10 = e10;
+            this.e20 = e20;
+            this.e30 = e30;
+        }
+
+        public Matrix4x1(T e00, T e10, T e20, T e30)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e10 = new Scalar<T>(e10);
+            this.e20 = new Scalar<T>(e20);
+            this.e30 = new Scalar<T>(e30);
+        }
+
+        #endregion
+
+        #region Functions
 
         public Vector4<T> Transform(Vector1<T> vec)
         {
@@ -1953,80 +2881,160 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix4x1<T> Scale(Matrix4x1<T> mat)
+        {
+            return new Matrix4x1<T>(
+                e00 * mat.e00,
+                e10 * mat.e10,
+                e20 * mat.e20,
+                e30 * mat.e30
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector4<T> Multiply(Vector1<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector4<T> operator *(Matrix4x1<T> left, Vector1<T> right)
         {
-            return new Vector4<T>(
-                left.e00 * right.x,
-                left.e10 * right.x,
-                left.e20 * right.x,
-                left.e30 * right.x
+            return left.Transform(right);
+        }
+
+        public Matrix4x1<T> Add(Matrix4x1<T> mat)
+        {
+            return new Matrix4x1<T>(
+                e00 + mat.e00,
+                e10 + mat.e10,
+                e20 + mat.e20,
+                e30 + mat.e30
             );
         }
 
         public static Matrix4x1<T> operator +(Matrix4x1<T> left, Matrix4x1<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix4x1<T> Substract(Matrix4x1<T> mat)
+        {
             return new Matrix4x1<T>(
-                left.e00 + right.e00,
-                left.e10 + right.e10,
-                left.e20 + right.e20,
-                left.e30 + right.e30
+                e00 - mat.e00,
+                e10 - mat.e10,
+                e20 - mat.e20,
+                e30 - mat.e30
             );
         }
 
         public static Matrix4x1<T> operator -(Matrix4x1<T> left, Matrix4x1<T> right)
         {
-            return new Matrix4x1<T>(
-                left.e00 - right.e00,
-                left.e10 - right.e10,
-                left.e20 - right.e20,
-                left.e30 - right.e30
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix4x1<T> operator *(Scalar<T> left, Matrix4x1<T> right)
+        public Matrix4x1<T> Multiply(Scalar<T> s)
         {
             return new Matrix4x1<T>(
-                left * right.e00,
-                left * right.e10,
-                left * right.e20,
-                left * right.e30
+                s * e00,
+                s * e10,
+                s * e20,
+                s * e30
             );
         }
 
         public static Matrix4x1<T> operator *(Matrix4x1<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix4x1<T> operator /(Scalar<T> left, Matrix4x1<T> right)
+        public static Matrix4x1<T> operator *(Scalar<T> left, Matrix4x1<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix4x1<T> Reciprocal()
         {
             return new Matrix4x1<T>(
-                left / right.e00,
-                left / right.e10,
-                left / right.e20,
-                left / right.e30
+                e00 / Scalar<T>.One,
+                e10 / Scalar<T>.One,
+                e20 / Scalar<T>.One,
+                e30 / Scalar<T>.One
+            );
+        }
+
+        public Matrix4x1<T> Divide(Scalar<T> s)
+        {
+            return new Matrix4x1<T>(
+                e00 / s,
+                e10 / s,
+                e20 / s,
+                e30 / s
             );
         }
 
         public static Matrix4x1<T> operator /(Matrix4x1<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix4x1<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix4x1<T>(
-                left.e00 / right,
-                left.e10 / right,
-                left.e20 / right,
-                left.e30 / right
+                s / e00,
+                s / e10,
+                s / e20,
+                s / e30
             );
         }
 
-        public static Matrix4x1<T> operator -(Matrix4x1<T> m)
+        public static Matrix4x1<T> operator /(Scalar<T> left, Matrix4x1<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix4x1<T> Negate()
         {
             return new Matrix4x1<T>(
-                -m.e00,
-                -m.e10,
-                -m.e20,
-                -m.e30
+                -e00,
+                -e10,
+                -e20,
+                -e30
             );
         }
+
+        public static Matrix4x1<T> operator -(Matrix4x1<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix4x1<T> left, Matrix4x1<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix4x1<T> left, Matrix4x1<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -2081,11 +3089,21 @@ namespace LinearAlgebra.Matrices
             yield return e20.Value;
             yield return e30.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix2x3<T> : ICloneable, IEquatable<Matrix2x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix2x3<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix2x3<T>, Vector3<T>, Vector2<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12;
 
         public Vector2<int> Dimension => new Vector2<int>(2, 3);
@@ -2094,33 +3112,6 @@ namespace LinearAlgebra.Matrices
             { e00, e01, e02 },
             { e10, e11, e12 }
         };
-
-        public static Matrix2x3<T> Zero()
-        {
-            return new Matrix2x3<T>(0, 0, 0, 0, 0, 0);
-        }
-
-        public Matrix2x3(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02, Scalar<T> e10, Scalar<T> e11, Scalar<T> e12)
-        {
-            this.e00 = e00;
-            this.e01 = e01;
-            this.e02 = e02;
-            this.e10 = e10;
-            this.e11 = e11;
-            this.e12 = e12;
-        }
-
-        public Matrix2x3(T e00, T e01, T e02, T e10, T e11, T e12)
-        {
-            this.e00 = new Scalar<T>(e00);
-            this.e01 = new Scalar<T>(e01);
-            this.e02 = new Scalar<T>(e02);
-            this.e10 = new Scalar<T>(e10);
-            this.e11 = new Scalar<T>(e11);
-            this.e12 = new Scalar<T>(e12);
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector3<T>[] Rows
         {
@@ -2147,6 +3138,43 @@ namespace LinearAlgebra.Matrices
             }
         }
 
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector3<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix2x3<T> Zero()
+        {
+            return new Matrix2x3<T>(0, 0, 0, 0, 0, 0);
+        }
+
+        public Matrix2x3(Scalar<T> e00, Scalar<T> e01, Scalar<T> e02, Scalar<T> e10, Scalar<T> e11, Scalar<T> e12)
+        {
+            this.e00 = e00;
+            this.e01 = e01;
+            this.e02 = e02;
+            this.e10 = e10;
+            this.e11 = e11;
+            this.e12 = e12;
+        }
+
+        public Matrix2x3(T e00, T e01, T e02, T e10, T e11, T e12)
+        {
+            this.e00 = new Scalar<T>(e00);
+            this.e01 = new Scalar<T>(e01);
+            this.e02 = new Scalar<T>(e02);
+            this.e10 = new Scalar<T>(e10);
+            this.e11 = new Scalar<T>(e11);
+            this.e12 = new Scalar<T>(e12);
+        }
+
+        #endregion
+
+        #region Functions
+
         public Vector2<T> Transform(Vector3<T> vec)
         {
             return new Vector2<T>(
@@ -2172,66 +3200,144 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix2x3<T> Scale(Matrix2x3<T> mat)
+        {
+            return new Matrix2x3<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02,
+                e10 * mat.e10, e11 * mat.e11, e12 * mat.e12
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector2<T> Multiply(Vector3<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector2<T> operator *(Matrix2x3<T> left, Vector3<T> right)
         {
-            return new Vector2<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z,
-                left.e10 * right.x + left.e11 * right.y + left.e12 * right.z
+            return left.Transform(right);
+        }
+
+        public Matrix2x3<T> Add(Matrix2x3<T> mat)
+        {
+            return new Matrix2x3<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02,
+                e10 + mat.e10, e11 + mat.e11, e12 + mat.e12
             );
         }
 
         public static Matrix2x3<T> operator +(Matrix2x3<T> left, Matrix2x3<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix2x3<T> Substract(Matrix2x3<T> mat)
+        {
             return new Matrix2x3<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02,
-                left.e10 + right.e10, left.e11 + right.e11, left.e12 + right.e12
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02,
+                e10 - mat.e10, e11 - mat.e11, e12 - mat.e12
             );
         }
 
         public static Matrix2x3<T> operator -(Matrix2x3<T> left, Matrix2x3<T> right)
         {
-            return new Matrix2x3<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02,
-                left.e10 - right.e10, left.e11 - right.e11, left.e12 - right.e12
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix2x3<T> operator *(Scalar<T> left, Matrix2x3<T> right)
+        public Matrix2x3<T> Multiply(Scalar<T> s)
         {
             return new Matrix2x3<T>(
-                left * right.e00, left * right.e01, left * right.e02,
-                left * right.e10, left * right.e11, left * right.e12
+                s * e00, s * e01, s * e02,
+                s * e10, s * e11, s * e12
             );
         }
 
         public static Matrix2x3<T> operator *(Matrix2x3<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix2x3<T> operator /(Scalar<T> left, Matrix2x3<T> right)
+        public static Matrix2x3<T> operator *(Scalar<T> left, Matrix2x3<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix2x3<T> Reciprocal()
         {
             return new Matrix2x3<T>(
-                left / right.e00, left / right.e01, left / right.e02,
-                left / right.e10, left / right.e11, left / right.e12
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One, e12 / Scalar<T>.One
+            );
+        }
+
+        public Matrix2x3<T> Divide(Scalar<T> s)
+        {
+            return new Matrix2x3<T>(
+                e00 / s, e01 / s, e02 / s,
+                e10 / s, e11 / s, e12 / s
             );
         }
 
         public static Matrix2x3<T> operator /(Matrix2x3<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix2x3<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix2x3<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right,
-                left.e10 / right, left.e11 / right, left.e12 / right
+                s / e00, s / e01, s / e02,
+                s / e10, s / e11, s / e12
             );
         }
 
-        public static Matrix2x3<T> operator -(Matrix2x3<T> m)
+        public static Matrix2x3<T> operator /(Scalar<T> left, Matrix2x3<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix2x3<T> Negate()
         {
             return new Matrix2x3<T>(
-                -m.e00, -m.e01, -m.e02,
-                -m.e10, -m.e11, -m.e12
+                -e00, -e01, -e02,
+                -e10, -e11, -e12
             );
         }
+
+        public static Matrix2x3<T> operator -(Matrix2x3<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix2x3<T> left, Matrix2x3<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix2x3<T> left, Matrix2x3<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix2x3<T>(((T, T, T), (T, T, T)) t)
         {
@@ -2240,6 +3346,10 @@ namespace LinearAlgebra.Matrices
                 t.Item2.Item1, t.Item2.Item2, t.Item2.Item3
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -2296,11 +3406,21 @@ namespace LinearAlgebra.Matrices
             yield return e11.Value;
             yield return e12.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix3x2<T> : ICloneable, IEquatable<Matrix3x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix3x2<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix3x2<T>, Vector2<T>, Vector3<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21;
 
         public Vector2<int> Dimension => new Vector2<int>(3, 2);
@@ -2310,6 +3430,39 @@ namespace LinearAlgebra.Matrices
             { e10, e11 },
             { e20, e21 }
         };
+
+        public Vector2<T>[] Rows
+        {
+            get
+            {
+                return new Vector2<T>[]
+                {
+                    new Vector2<T>(e00, e01),
+                    new Vector2<T>(e10, e11),
+                    new Vector2<T>(e20, e21)
+                };
+            }
+        }
+
+        public Vector3<T>[] Columns
+        {
+            get
+            {
+                return new Vector3<T>[]
+                {
+                    new Vector3<T>(e00, e10, e20),
+                    new Vector3<T>(e01, e11, e21)
+                };
+            }
+        }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector2<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
 
         public static Matrix3x2<T> Zero()
         {
@@ -2336,32 +3489,9 @@ namespace LinearAlgebra.Matrices
             this.e21 = new Scalar<T>(e21);
         }
 
-        public Scalar<T> this[int i, int j] => Data[i, j];
+        #endregion
 
-        public Vector2<T>[] Rows
-        {
-            get
-            {
-                return new Vector2<T>[]
-                {
-                    new Vector2<T>(e00, e01),
-                    new Vector2<T>(e10, e11),
-                    new Vector2<T>(e20, e21)
-                };
-            }
-        }
-
-        public Vector3<T>[] Columns
-        {
-            get
-            {
-                return new Vector3<T>[]
-                {
-                    new Vector3<T>(e00, e10, e20),
-                    new Vector3<T>(e01, e11, e21)
-                };
-            }
-        }
+        #region Functions
 
         public Vector3<T> Transform(Vector2<T> vec)
         {
@@ -2389,73 +3519,152 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix3x2<T> Scale(Matrix3x2<T> mat)
+        {
+            return new Matrix3x2<T>(
+                e00 * mat.e00, e01 * mat.e01,
+                e10 * mat.e10, e11 * mat.e11,
+                e20 * mat.e20, e21 * mat.e21
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector3<T> Multiply(Vector2<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector3<T> operator *(Matrix3x2<T> left, Vector2<T> right)
         {
-            return new Vector3<T>(
-                left.e00 * right.x + left.e01 * right.y,
-                left.e10 * right.x + left.e11 * right.y,
-                left.e20 * right.x + left.e21 * right.y
+            return left.Transform(right);
+        }
+
+        public Matrix3x2<T> Add(Matrix3x2<T> mat)
+        {
+            return new Matrix3x2<T>(
+                e00 + mat.e00, e01 + mat.e01,
+                e10 + mat.e10, e11 + mat.e11,
+                e20 + mat.e20, e21 + mat.e21
             );
         }
 
         public static Matrix3x2<T> operator +(Matrix3x2<T> left, Matrix3x2<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix3x2<T> Substract(Matrix3x2<T> mat)
+        {
             return new Matrix3x2<T>(
-                left.e00 + right.e00, left.e01 + right.e01,
-                left.e10 + right.e10, left.e11 + right.e11,
-                left.e20 + right.e20, left.e21 + right.e21
+                e00 - mat.e00, e01 - mat.e01,
+                e10 - mat.e10, e11 - mat.e11,
+                e20 - mat.e20, e21 - mat.e21
             );
         }
 
         public static Matrix3x2<T> operator -(Matrix3x2<T> left, Matrix3x2<T> right)
         {
-            return new Matrix3x2<T>(
-                left.e00 - right.e00, left.e01 - right.e01,
-                left.e10 - right.e10, left.e11 - right.e11,
-                left.e20 - right.e20, left.e21 - right.e21
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix3x2<T> operator *(Scalar<T> left, Matrix3x2<T> right)
+        public Matrix3x2<T> Multiply(Scalar<T> s)
         {
             return new Matrix3x2<T>(
-                left * right.e00, left * right.e01,
-                left * right.e10, left * right.e11,
-                left * right.e20, left * right.e21
+                s * e00, s * e01,
+                s * e10, s * e11,
+                s * e20, s * e21
             );
         }
 
         public static Matrix3x2<T> operator *(Matrix3x2<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix3x2<T> operator /(Scalar<T> left, Matrix3x2<T> right)
+        public static Matrix3x2<T> operator *(Scalar<T> left, Matrix3x2<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix3x2<T> Reciprocal()
         {
             return new Matrix3x2<T>(
-                left / right.e00, left / right.e01,
-                left / right.e10, left / right.e11,
-                left / right.e20, left / right.e21
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One,
+                e20 / Scalar<T>.One, e21 / Scalar<T>.One
+            );
+        }
+
+        public Matrix3x2<T> Divide(Scalar<T> s)
+        {
+            return new Matrix3x2<T>(
+                e00 / s, e01 / s,
+                e10 / s, e11 / s,
+                e20 / s, e21 / s
             );
         }
 
         public static Matrix3x2<T> operator /(Matrix3x2<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix3x2<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix3x2<T>(
-                left.e00 / right, left.e01 / right,
-                left.e10 / right, left.e11 / right,
-                left.e20 / right, left.e21 / right
+                s / e00, s / e01,
+                s / e10, s / e11,
+                s / e20, s / e21
             );
         }
 
-        public static Matrix3x2<T> operator -(Matrix3x2<T> m)
+        public static Matrix3x2<T> operator /(Scalar<T> left, Matrix3x2<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix3x2<T> Negate()
         {
             return new Matrix3x2<T>(
-                -m.e00, -m.e01,
-                -m.e10, -m.e11,
-                -m.e20, -m.e21
+                -e00, -e01,
+                -e10, -e11,
+                -e20, -e21
             );
         }
+
+        public static Matrix3x2<T> operator -(Matrix3x2<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix3x2<T> left, Matrix3x2<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix3x2<T> left, Matrix3x2<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix3x2<T>(((T, T), (T, T), (T, T)) t)
         {
@@ -2465,6 +3674,10 @@ namespace LinearAlgebra.Matrices
                 t.Item3.Item1, t.Item3.Item2
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -2522,11 +3735,21 @@ namespace LinearAlgebra.Matrices
             yield return e20.Value;
             yield return e21.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix2x4<T> : ICloneable, IEquatable<Matrix2x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix2x4<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix2x4<T>, Vector4<T>, Vector2<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13;
 
         public Vector2<int> Dimension => new Vector2<int>(2, 4);
@@ -2535,6 +3758,40 @@ namespace LinearAlgebra.Matrices
             { e00, e01, e02, e03 },
             { e10, e11, e12, e13 }
         };
+
+        public Vector4<T>[] Rows
+        {
+            get
+            {
+                return new Vector4<T>[]
+                {
+                    new Vector4<T>(e00, e01, e02, e03),
+                    new Vector4<T>(e10, e11, e12, e13)
+                };
+            }
+        }
+
+        public Vector2<T>[] Columns
+        {
+            get
+            {
+                return new Vector2<T>[]
+                {
+                    new Vector2<T>(e00, e10),
+                    new Vector2<T>(e01, e11),
+                    new Vector2<T>(e02, e12),
+                    new Vector2<T>(e03, e13)
+                };
+            }
+        }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector4<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
 
         public static Matrix2x4<T> Zero()
         {
@@ -2565,33 +3822,9 @@ namespace LinearAlgebra.Matrices
             this.e13 = new Scalar<T>(e13);
         }
 
-        public Scalar<T> this[int i, int j] => Data[i, j];
+        #endregion
 
-        public Vector4<T>[] Rows
-        {
-            get
-            {
-                return new Vector4<T>[]
-                {
-                    new Vector4<T>(e00, e01, e02, e03),
-                    new Vector4<T>(e10, e11, e12, e13)
-                };
-            }
-        }
-
-        public Vector2<T>[] Columns
-        {
-            get
-            {
-                return new Vector2<T>[]
-                {
-                    new Vector2<T>(e00, e10),
-                    new Vector2<T>(e01, e11),
-                    new Vector2<T>(e02, e12),
-                    new Vector2<T>(e03, e13)
-                };
-            }
-        }
+        #region Functions
 
         public Vector2<T> Transform(Vector4<T> vec)
         {
@@ -2619,66 +3852,144 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix2x4<T> Scale(Matrix2x4<T> mat)
+        {
+            return new Matrix2x4<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02, e03 * mat.e03,
+                e10 * mat.e10, e11 * mat.e11, e12 * mat.e12, e13 * mat.e13
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector2<T> Multiply(Vector4<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector2<T> operator *(Matrix2x4<T> left, Vector4<T> right)
         {
-            return new Vector2<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z + left.e03 * right.w,
-                left.e10 * right.x + left.e11 * right.y + left.e12 * right.z + left.e13 * right.w
+            return left.Transform(right);
+        }
+
+        public Matrix2x4<T> Add(Matrix2x4<T> mat)
+        {
+            return new Matrix2x4<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02, e03 + mat.e03,
+                e10 + mat.e10, e11 + mat.e11, e12 + mat.e12, e13 + mat.e13
             );
         }
 
         public static Matrix2x4<T> operator +(Matrix2x4<T> left, Matrix2x4<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix2x4<T> Substract(Matrix2x4<T> mat)
+        {
             return new Matrix2x4<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02, left.e03 + right.e03,
-                left.e10 + right.e10, left.e11 + right.e11, left.e12 + right.e12, left.e13 + right.e13
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02, e03 - mat.e03,
+                e10 - mat.e10, e11 - mat.e11, e12 - mat.e12, e13 - mat.e13
             );
         }
 
         public static Matrix2x4<T> operator -(Matrix2x4<T> left, Matrix2x4<T> right)
         {
-            return new Matrix2x4<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02, left.e03 - right.e03,
-                left.e10 - right.e10, left.e11 - right.e11, left.e12 - right.e12, left.e13 - right.e13
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix2x4<T> operator *(Scalar<T> left, Matrix2x4<T> right)
+        public Matrix2x4<T> Multiply(Scalar<T> s)
         {
             return new Matrix2x4<T>(
-                left * right.e00, left * right.e01, left * right.e02, left * right.e03,
-                left * right.e10, left * right.e11, left * right.e12, left * right.e13
+                s * e00, s * e01, s * e02, s * e03,
+                s * e10, s * e11, s * e12, s * e13
             );
         }
 
         public static Matrix2x4<T> operator *(Matrix2x4<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix2x4<T> operator /(Scalar<T> left, Matrix2x4<T> right)
+        public static Matrix2x4<T> operator *(Scalar<T> left, Matrix2x4<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix2x4<T> Reciprocal()
         {
             return new Matrix2x4<T>(
-                left / right.e00, left / right.e01, left / right.e02, left / right.e03,
-                left / right.e10, left / right.e11, left / right.e12, left / right.e13
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One, e03 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One, e12 / Scalar<T>.One, e13 / Scalar<T>.One
+            );
+        }
+
+        public Matrix2x4<T> Divide(Scalar<T> s)
+        {
+            return new Matrix2x4<T>(
+                e00 / s, e01 / s, e02 / s, e03 / s,
+                e10 / s, e11 / s, e12 / s, e13 / s
             );
         }
 
         public static Matrix2x4<T> operator /(Matrix2x4<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix2x4<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix2x4<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right, left.e03 / right,
-                left.e10 / right, left.e11 / right, left.e12 / right, left.e13 / right
+                s / e00, s / e01, s / e02, s / e03,
+                s / e10, s / e11, s / e12, s / e13
             );
         }
 
-        public static Matrix2x4<T> operator -(Matrix2x4<T> m)
+        public static Matrix2x4<T> operator /(Scalar<T> left, Matrix2x4<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix2x4<T> Negate()
         {
             return new Matrix2x4<T>(
-                -m.e00, -m.e01, -m.e02, -m.e03,
-                -m.e10, -m.e11, -m.e12, -m.e13
+                -e00, -e01, -e02, -e03,
+                -e10, -e11, -e12, -e13
             );
         }
+
+        public static Matrix2x4<T> operator -(Matrix2x4<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix2x4<T> left, Matrix2x4<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix2x4<T> left, Matrix2x4<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix2x4<T>(((T, T, T, T), (T, T, T, T)) t)
         {
@@ -2687,6 +3998,10 @@ namespace LinearAlgebra.Matrices
                 t.Item2.Item1, t.Item2.Item2, t.Item2.Item3, t.Item2.Item4
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -2747,11 +4062,21 @@ namespace LinearAlgebra.Matrices
             yield return e12.Value;
             yield return e13.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix4x2<T> : ICloneable, IEquatable<Matrix4x2<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix4x2<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix4x2<T>, Vector2<T>, Vector4<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21, e30, e31;
 
         public Vector2<int> Dimension => new Vector2<int>(4, 2);
@@ -2762,6 +4087,40 @@ namespace LinearAlgebra.Matrices
             { e20, e21 },
             { e30, e31 }
         };
+
+        public Vector2<T>[] Rows
+        {
+            get
+            {
+                return new Vector2<T>[]
+                {
+                    new Vector2<T>(e00, e01),
+                    new Vector2<T>(e10, e11),
+                    new Vector2<T>(e20, e21),
+                    new Vector2<T>(e30, e31)
+                };
+            }
+        }
+
+        public Vector4<T>[] Columns
+        {
+            get
+            {
+                return new Vector4<T>[]
+                {
+                    new Vector4<T>(e00, e10, e20, e30),
+                    new Vector4<T>(e01, e11, e21, e31)
+                };
+            }
+        }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector2<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
 
         public static Matrix4x2<T> Zero()
         {
@@ -2792,33 +4151,9 @@ namespace LinearAlgebra.Matrices
             this.e31 = new Scalar<T>(e31);
         }
 
-        public Scalar<T> this[int i, int j] => Data[i, j];
+        #endregion
 
-        public Vector2<T>[] Rows
-        {
-            get
-            {
-                return new Vector2<T>[]
-                {
-                    new Vector2<T>(e00, e01),
-                    new Vector2<T>(e10, e11),
-                    new Vector2<T>(e20, e21),
-                    new Vector2<T>(e30, e31)
-                };
-            }
-        }
-
-        public Vector4<T>[] Columns
-        {
-            get
-            {
-                return new Vector4<T>[]
-                {
-                    new Vector4<T>(e00, e10, e20, e30),
-                    new Vector4<T>(e01, e11, e21, e31)
-                };
-            }
-        }
+        #region Functions
 
         public Vector4<T> Transform(Vector2<T> vec)
         {
@@ -2848,80 +4183,160 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix4x2<T> Scale(Matrix4x2<T> mat)
+        {
+            return new Matrix4x2<T>(
+                e00 * mat.e00, e01 * mat.e01,
+                e10 * mat.e10, e11 * mat.e11,
+                e20 * mat.e20, e21 * mat.e21,
+                e30 * mat.e30, e31 * mat.e31
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector4<T> Multiply(Vector2<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector4<T> operator *(Matrix4x2<T> left, Vector2<T> right)
         {
-            return new Vector4<T>(
-                left.e00 * right.x + left.e01 * right.y,
-                left.e10 * right.x + left.e11 * right.y,
-                left.e20 * right.x + left.e21 * right.y,
-                left.e30 * right.x + left.e31 * right.y
+            return left.Transform(right);
+        }
+
+        public Matrix4x2<T> Add(Matrix4x2<T> mat)
+        {
+            return new Matrix4x2<T>(
+                e00 + mat.e00, e01 + mat.e01,
+                e10 + mat.e10, e11 + mat.e11,
+                e20 + mat.e20, e21 + mat.e21,
+                e30 + mat.e30, e31 + mat.e31
             );
         }
 
         public static Matrix4x2<T> operator +(Matrix4x2<T> left, Matrix4x2<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix4x2<T> Substract(Matrix4x2<T> mat)
+        {
             return new Matrix4x2<T>(
-                left.e00 + right.e00, left.e01 + right.e01,
-                left.e10 + right.e10, left.e11 + right.e11,
-                left.e20 + right.e20, left.e21 + right.e21,
-                left.e30 + right.e30, left.e31 + right.e31
+                e00 - mat.e00, e01 - mat.e01,
+                e10 - mat.e10, e11 - mat.e11,
+                e20 - mat.e20, e21 - mat.e21,
+                e30 - mat.e30, e31 - mat.e31
             );
         }
 
         public static Matrix4x2<T> operator -(Matrix4x2<T> left, Matrix4x2<T> right)
         {
-            return new Matrix4x2<T>(
-                left.e00 - right.e00, left.e01 - right.e01,
-                left.e10 - right.e10, left.e11 - right.e11,
-                left.e20 - right.e20, left.e21 - right.e21,
-                left.e30 - right.e30, left.e31 - right.e31
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix4x2<T> operator *(Scalar<T> left, Matrix4x2<T> right)
+        public Matrix4x2<T> Multiply(Scalar<T> s)
         {
             return new Matrix4x2<T>(
-                left * right.e00, left * right.e01,
-                left * right.e10, left * right.e11,
-                left * right.e20, left * right.e21,
-                left * right.e30, left * right.e31
+                s * e00, s * e01,
+                s * e10, s * e11,
+                s * e20, s * e21,
+                s * e30, s * e31
             );
         }
 
         public static Matrix4x2<T> operator *(Matrix4x2<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix4x2<T> operator /(Scalar<T> left, Matrix4x2<T> right)
+        public static Matrix4x2<T> operator *(Scalar<T> left, Matrix4x2<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix4x2<T> Reciprocal()
         {
             return new Matrix4x2<T>(
-                left / right.e00, left / right.e01,
-                left / right.e10, left / right.e11,
-                left / right.e20, left / right.e21,
-                left / right.e30, left / right.e31
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One,
+                e20 / Scalar<T>.One, e21 / Scalar<T>.One,
+                e30 / Scalar<T>.One, e31 / Scalar<T>.One
+            );
+        }
+
+        public Matrix4x2<T> Divide(Scalar<T> s)
+        {
+            return new Matrix4x2<T>(
+                e00 / s, e01 / s,
+                e10 / s, e11 / s,
+                e20 / s, e21 / s,
+                e30 / s, e31 / s
             );
         }
 
         public static Matrix4x2<T> operator /(Matrix4x2<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix4x2<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix4x2<T>(
-                left.e00 / right, left.e01 / right,
-                left.e10 / right, left.e11 / right,
-                left.e20 / right, left.e21 / right,
-                left.e30 / right, left.e31 / right
+                s / e00, s / e01,
+                s / e10, s / e11,
+                s / e20, s / e21,
+                s / e30, s / e31
             );
         }
 
-        public static Matrix4x2<T> operator -(Matrix4x2<T> m)
+        public static Matrix4x2<T> operator /(Scalar<T> left, Matrix4x2<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix4x2<T> Negate()
         {
             return new Matrix4x2<T>(
-                -m.e00, -m.e01,
-                -m.e10, -m.e11,
-                -m.e20, -m.e21,
-                -m.e30, -m.e31
+                -e00, -e01,
+                -e10, -e11,
+                -e20, -e21,
+                -e30, -e31
             );
         }
+
+        public static Matrix4x2<T> operator -(Matrix4x2<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix4x2<T> left, Matrix4x2<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix4x2<T> left, Matrix4x2<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix4x2<T>(((T, T), (T, T), (T, T), (T, T)) t)
         {
@@ -2932,6 +4347,10 @@ namespace LinearAlgebra.Matrices
                 t.Item4.Item1, t.Item4.Item2
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -2994,11 +4413,21 @@ namespace LinearAlgebra.Matrices
             yield return e30.Value;
             yield return e31.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix3x4<T> : ICloneable, IEquatable<Matrix3x4<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix3x4<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix3x4<T>, Vector4<T>, Vector3<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23;
 
         public Vector2<int> Dimension => new Vector2<int>(3, 4);
@@ -3008,6 +4437,41 @@ namespace LinearAlgebra.Matrices
             { e10, e11, e12, e13 },
             { e20, e21, e22, e23 }
         };
+
+        public Vector4<T>[] Rows
+        {
+            get
+            {
+                return new Vector4<T>[]
+                {
+                    new Vector4<T>(e00, e01, e02, e03),
+                    new Vector4<T>(e10, e11, e12, e13),
+                    new Vector4<T>(e20, e21, e22, e23)
+                };
+            }
+        }
+
+        public Vector3<T>[] Columns
+        {
+            get
+            {
+                return new Vector3<T>[]
+                {
+                    new Vector3<T>(e00, e10, e20),
+                    new Vector3<T>(e01, e11, e21),
+                    new Vector3<T>(e02, e12, e22),
+                    new Vector3<T>(e03, e13, e23)
+                };
+            }
+        }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector4<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
 
         public static Matrix3x4<T> Zero()
         {
@@ -3046,34 +4510,9 @@ namespace LinearAlgebra.Matrices
             this.e23 = new Scalar<T>(e23);
         }
 
-        public Scalar<T> this[int i, int j] => Data[i, j];
+        #endregion
 
-        public Vector4<T>[] Rows
-        {
-            get
-            {
-                return new Vector4<T>[]
-                {
-                    new Vector4<T>(e00, e01, e02, e03),
-                    new Vector4<T>(e10, e11, e12, e13),
-                    new Vector4<T>(e20, e21, e22, e23)
-                };
-            }
-        }
-
-        public Vector3<T>[] Columns
-        {
-            get
-            {
-                return new Vector3<T>[]
-                {
-                    new Vector3<T>(e00, e10, e20),
-                    new Vector3<T>(e01, e11, e21),
-                    new Vector3<T>(e02, e12, e22),
-                    new Vector3<T>(e03, e13, e23)
-                };
-            }
-        }
+        #region Functions
 
         public Vector3<T> Transform(Vector4<T> vec)
         {
@@ -3103,73 +4542,152 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix3x4<T> Scale(Matrix3x4<T> mat)
+        {
+            return new Matrix3x4<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02, e03 * mat.e03,
+                e10 * mat.e10, e11 * mat.e11, e12 * mat.e12, e13 * mat.e13,
+                e20 * mat.e20, e21 * mat.e21, e22 * mat.e22, e23 * mat.e23
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector3<T> Multiply(Vector4<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector3<T> operator *(Matrix3x4<T> left, Vector4<T> right)
         {
-            return new Vector3<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z + left.e03 * right.w,
-                left.e10 * right.x + left.e11 * right.y + left.e12 * right.z + left.e13 * right.w,
-                left.e20 * right.x + left.e21 * right.y + left.e22 * right.z + left.e23 * right.w
+            return left.Transform(right);
+        }
+
+        public Matrix3x4<T> Add(Matrix3x4<T> mat)
+        {
+            return new Matrix3x4<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02, e03 + mat.e03,
+                e10 + mat.e10, e11 + mat.e11, e12 + mat.e12, e13 + mat.e13,
+                e20 + mat.e20, e21 + mat.e21, e22 + mat.e22, e23 + mat.e23
             );
         }
 
         public static Matrix3x4<T> operator +(Matrix3x4<T> left, Matrix3x4<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix3x4<T> Substract(Matrix3x4<T> mat)
+        {
             return new Matrix3x4<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02, left.e03 + right.e03,
-                left.e10 + right.e10, left.e11 + right.e11, left.e12 + right.e12, left.e13 + right.e13,
-                left.e20 + right.e20, left.e21 + right.e21, left.e22 + right.e22, left.e23 + right.e23
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02, e03 - mat.e03,
+                e10 - mat.e10, e11 - mat.e11, e12 - mat.e12, e13 - mat.e13,
+                e20 - mat.e20, e21 - mat.e21, e22 - mat.e22, e23 - mat.e23
             );
         }
 
         public static Matrix3x4<T> operator -(Matrix3x4<T> left, Matrix3x4<T> right)
         {
-            return new Matrix3x4<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02, left.e03 - right.e03,
-                left.e10 - right.e10, left.e11 - right.e11, left.e12 - right.e12, left.e13 - right.e13,
-                left.e20 - right.e20, left.e21 - right.e21, left.e22 - right.e22, left.e23 - right.e23
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix3x4<T> operator *(Scalar<T> left, Matrix3x4<T> right)
+        public Matrix3x4<T> Multiply(Scalar<T> s)
         {
             return new Matrix3x4<T>(
-                left * right.e00, left * right.e01, left * right.e02, left * right.e03,
-                left * right.e10, left * right.e11, left * right.e12, left * right.e13,
-                left * right.e20, left * right.e21, left * right.e22, left * right.e23
+                s * e00, s * e01, s * e02, s * e03,
+                s * e10, s * e11, s * e12, s * e13,
+                s * e20, s * e21, s * e22, s * e23
             );
         }
 
         public static Matrix3x4<T> operator *(Matrix3x4<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix3x4<T> operator /(Scalar<T> left, Matrix3x4<T> right)
+        public static Matrix3x4<T> operator *(Scalar<T> left, Matrix3x4<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix3x4<T> Reciprocal()
         {
             return new Matrix3x4<T>(
-                left / right.e00, left / right.e01, left / right.e02, left / right.e03,
-                left / right.e10, left / right.e11, left / right.e12, left / right.e13,
-                left / right.e20, left / right.e21, left / right.e22, left / right.e23
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One, e03 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One, e12 / Scalar<T>.One, e13 / Scalar<T>.One,
+                e20 / Scalar<T>.One, e21 / Scalar<T>.One, e22 / Scalar<T>.One, e23 / Scalar<T>.One
+            );
+        }
+
+        public Matrix3x4<T> Divide(Scalar<T> s)
+        {
+            return new Matrix3x4<T>(
+                e00 / s, e01 / s, e02 / s, e03 / s,
+                e10 / s, e11 / s, e12 / s, e13 / s,
+                e20 / s, e21 / s, e22 / s, e23 / s
             );
         }
 
         public static Matrix3x4<T> operator /(Matrix3x4<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix3x4<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix3x4<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right, left.e03 / right,
-                left.e10 / right, left.e11 / right, left.e12 / right, left.e13 / right,
-                left.e20 / right, left.e21 / right, left.e22 / right, left.e23 / right
+                s / e00, s / e01, s / e02, s / e03,
+                s / e10, s / e11, s / e12, s / e13,
+                s / e20, s / e21, s / e22, s / e23
             );
         }
 
-        public static Matrix3x4<T> operator -(Matrix3x4<T> m)
+        public static Matrix3x4<T> operator /(Scalar<T> left, Matrix3x4<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix3x4<T> Negate()
         {
             return new Matrix3x4<T>(
-                -m.e00, -m.e01, -m.e02, -m.e03,
-                -m.e10, -m.e11, -m.e12, -m.e13,
-                -m.e20, -m.e21, -m.e22, -m.e23
+                -e00, -e01, -e02, -e03,
+                -e10, -e11, -e12, -e13,
+                -e20, -e21, -e22, -e23
             );
         }
+
+        public static Matrix3x4<T> operator -(Matrix3x4<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix3x4<T> left, Matrix3x4<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix3x4<T> left, Matrix3x4<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix3x4<T>(((T, T, T, T), (T, T, T, T), (T, T, T, T)) t)
         {
@@ -3179,6 +4697,10 @@ namespace LinearAlgebra.Matrices
                 t.Item3.Item1, t.Item3.Item2, t.Item3.Item3, t.Item3.Item4
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -3248,11 +4770,21 @@ namespace LinearAlgebra.Matrices
             yield return e22.Value;
             yield return e23.Value;
         }
+
+        #endregion
     }
 
-    public struct Matrix4x3<T> : ICloneable, IEquatable<Matrix4x3<T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix4x3<T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix4x3<T>, Vector3<T>, Vector4<T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22, e30, e31, e32;
 
         public Vector2<int> Dimension => new Vector2<int>(4, 3);
@@ -3263,6 +4795,41 @@ namespace LinearAlgebra.Matrices
             { e20, e21, e22 },
             { e30, e31, e32 }
         };
+
+        public Vector3<T>[] Rows
+        {
+            get
+            {
+                return new Vector3<T>[]
+                {
+                    new Vector3<T>(e00, e01, e02),
+                    new Vector3<T>(e10, e11, e12),
+                    new Vector3<T>(e20, e21, e22),
+                    new Vector3<T>(e30, e31, e32)
+                };
+            }
+        }
+
+        public Vector4<T>[] Columns
+        {
+            get
+            {
+                return new Vector4<T>[]
+                {
+                    new Vector4<T>(e00, e10, e20, e30),
+                    new Vector4<T>(e01, e11, e21, e31),
+                    new Vector4<T>(e02, e12, e22, e32)
+                };
+            }
+        }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector3<T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
 
         public static Matrix4x3<T> Zero()
         {
@@ -3301,34 +4868,9 @@ namespace LinearAlgebra.Matrices
             this.e32 = new Scalar<T>(e32);
         }
 
-        public Scalar<T> this[int i, int j] => Data[i, j];
+        #endregion
 
-        public Vector3<T>[] Rows
-        {
-            get
-            {
-                return new Vector3<T>[]
-                {
-                    new Vector3<T>(e00, e01, e02),
-                    new Vector3<T>(e10, e11, e12),
-                    new Vector3<T>(e20, e21, e22),
-                    new Vector3<T>(e30, e31, e32)
-                };
-            }
-        }
-
-        public Vector4<T>[] Columns
-        {
-            get
-            {
-                return new Vector4<T>[]
-                {
-                    new Vector4<T>(e00, e10, e20, e30),
-                    new Vector4<T>(e01, e11, e21, e31),
-                    new Vector4<T>(e02, e12, e22, e32)
-                };
-            }
-        }
+        #region Functions
 
         public Vector4<T> Transform(Vector3<T> vec)
         {
@@ -3359,80 +4901,160 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix4x3<T> Scale(Matrix4x3<T> mat)
+        {
+            return new Matrix4x3<T>(
+                e00 * mat.e00, e01 * mat.e01, e02 * mat.e02,
+                e10 * mat.e10, e11 * mat.e11, e12 * mat.e12,
+                e20 * mat.e20, e21 * mat.e21, e22 * mat.e22,
+                e30 * mat.e30, e31 * mat.e31, e32 * mat.e32
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector4<T> Multiply(Vector3<T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector4<T> operator *(Matrix4x3<T> left, Vector3<T> right)
         {
-            return new Vector4<T>(
-                left.e00 * right.x + left.e01 * right.y + left.e02 * right.z,
-                left.e10 * right.x + left.e11 * right.y + left.e12 * right.z,
-                left.e20 * right.x + left.e21 * right.y + left.e22 * right.z,
-                left.e30 * right.x + left.e31 * right.y + left.e32 * right.z
+            return left.Transform(right);
+        }
+
+        public Matrix4x3<T> Add(Matrix4x3<T> mat)
+        {
+            return new Matrix4x3<T>(
+                e00 + mat.e00, e01 + mat.e01, e02 + mat.e02,
+                e10 + mat.e10, e11 + mat.e11, e12 + mat.e12,
+                e20 + mat.e20, e21 + mat.e21, e22 + mat.e22,
+                e30 + mat.e30, e31 + mat.e31, e32 + mat.e32
             );
         }
 
         public static Matrix4x3<T> operator +(Matrix4x3<T> left, Matrix4x3<T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix4x3<T> Substract(Matrix4x3<T> mat)
+        {
             return new Matrix4x3<T>(
-                left.e00 + right.e00, left.e01 + right.e01, left.e02 + right.e02,
-                left.e10 + right.e10, left.e11 + right.e11, left.e12 + right.e12,
-                left.e20 + right.e20, left.e21 + right.e21, left.e22 + right.e22,
-                left.e30 + right.e30, left.e31 + right.e31, left.e32 + right.e32
+                e00 - mat.e00, e01 - mat.e01, e02 - mat.e02,
+                e10 - mat.e10, e11 - mat.e11, e12 - mat.e12,
+                e20 - mat.e20, e21 - mat.e21, e22 - mat.e22,
+                e30 - mat.e30, e31 - mat.e31, e32 - mat.e32
             );
         }
 
         public static Matrix4x3<T> operator -(Matrix4x3<T> left, Matrix4x3<T> right)
         {
-            return new Matrix4x3<T>(
-                left.e00 - right.e00, left.e01 - right.e01, left.e02 - right.e02,
-                left.e10 - right.e10, left.e11 - right.e11, left.e12 - right.e12,
-                left.e20 - right.e20, left.e21 - right.e21, left.e22 - right.e22,
-                left.e30 - right.e30, left.e31 - right.e31, left.e32 - right.e32
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix4x3<T> operator *(Scalar<T> left, Matrix4x3<T> right)
+        public Matrix4x3<T> Multiply(Scalar<T> s)
         {
             return new Matrix4x3<T>(
-                left * right.e00, left * right.e01, left * right.e02,
-                left * right.e10, left * right.e11, left * right.e12,
-                left * right.e20, left * right.e21, left * right.e22,
-                left * right.e30, left * right.e31, left * right.e32
+                s * e00, s * e01, s * e02,
+                s * e10, s * e11, s * e12,
+                s * e20, s * e21, s * e22,
+                s * e30, s * e31, s * e32
             );
         }
 
         public static Matrix4x3<T> operator *(Matrix4x3<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix4x3<T> operator /(Scalar<T> left, Matrix4x3<T> right)
+        public static Matrix4x3<T> operator *(Scalar<T> left, Matrix4x3<T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix4x3<T> Reciprocal()
         {
             return new Matrix4x3<T>(
-                left / right.e00, left / right.e01, left / right.e02,
-                left / right.e10, left / right.e11, left / right.e12,
-                left / right.e20, left / right.e21, left / right.e22,
-                left / right.e30, left / right.e31, left / right.e32
+                e00 / Scalar<T>.One, e01 / Scalar<T>.One, e02 / Scalar<T>.One,
+                e10 / Scalar<T>.One, e11 / Scalar<T>.One, e12 / Scalar<T>.One,
+                e20 / Scalar<T>.One, e21 / Scalar<T>.One, e22 / Scalar<T>.One,
+                e30 / Scalar<T>.One, e31 / Scalar<T>.One, e32 / Scalar<T>.One
+            );
+        }
+
+        public Matrix4x3<T> Divide(Scalar<T> s)
+        {
+            return new Matrix4x3<T>(
+                e00 / s, e01 / s, e02 / s,
+                e10 / s, e11 / s, e12 / s,
+                e20 / s, e21 / s, e22 / s,
+                e30 / s, e31 / s, e32 / s
             );
         }
 
         public static Matrix4x3<T> operator /(Matrix4x3<T> left, Scalar<T> right)
         {
+            return left.Divide(right);
+        }
+
+        public Matrix4x3<T> GetDividedBy(Scalar<T> s)
+        {
             return new Matrix4x3<T>(
-                left.e00 / right, left.e01 / right, left.e02 / right,
-                left.e10 / right, left.e11 / right, left.e12 / right,
-                left.e20 / right, left.e21 / right, left.e22 / right,
-                left.e30 / right, left.e31 / right, left.e32 / right
+                s / e00, s / e01, s / e02,
+                s / e10, s / e11, s / e12,
+                s / e20, s / e21, s / e22,
+                s / e30, s / e31, s / e32
             );
         }
 
-        public static Matrix4x3<T> operator -(Matrix4x3<T> m)
+        public static Matrix4x3<T> operator /(Scalar<T> left, Matrix4x3<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix4x3<T> Negate()
         {
             return new Matrix4x3<T>(
-                -m.e00, -m.e01, -m.e02,
-                -m.e10, -m.e11, -m.e12,
-                -m.e20, -m.e21, -m.e22,
-                -m.e30, -m.e31, -m.e32
+                -e00, -e01, -e02,
+                -e10, -e11, -e12,
+                -e20, -e21, -e22,
+                -e30, -e31, -e32
             );
         }
+
+        public static Matrix4x3<T> operator -(Matrix4x3<T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix4x3<T> left, Matrix4x3<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix4x3<T> left, Matrix4x3<T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Implicit Conversion
 
         public static implicit operator Matrix4x3<T>(((T, T, T), (T, T, T), (T, T, T), (T, T, T)) t)
         {
@@ -3443,6 +5065,10 @@ namespace LinearAlgebra.Matrices
                 t.Item4.Item1, t.Item4.Item2, t.Item4.Item3
             );
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         public override string ToString()
         {
@@ -3513,5 +5139,7 @@ namespace LinearAlgebra.Matrices
             yield return e31.Value;
             yield return e32.Value;
         }
+
+        #endregion
     }
 }

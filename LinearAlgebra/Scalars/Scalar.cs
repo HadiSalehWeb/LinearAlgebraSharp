@@ -253,7 +253,7 @@ namespace LinearAlgebra.Scalars
 
     /// <typeparam name="T">Boolean, SByte, Byte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Single, Double, Decimal</typeparam>
     [Serializable]
-    public struct Scalar<T> : ICloneable, IEquatable<Scalar<T>>, ITensor<T, Vector0<int>, Scalar<T>>
+    public struct Scalar<T> : ITensor<T, Vector0<int>, Scalar<T>>
         where T : struct
     {
         #region Type Handling
@@ -306,7 +306,7 @@ namespace LinearAlgebra.Scalars
 
         #region Fields and Properties
 
-        public Scalar<int> Rank => Scalar<int>.Zero;
+        public static Scalar<int> Rank => Scalar<int>.Zero;
         public Vector0<int> Dimension => Vector0<int>.zero;
 
         private readonly TypedValueContainer tvc;
@@ -472,34 +472,72 @@ namespace LinearAlgebra.Scalars
 
         #region Arithmetic
 
-        public static Scalar<T> operator +(Scalar<T> left, Scalar<T> right)
+        public Scalar<T> Add(Scalar<T> s)
         {
             switch (scalarType)
             {
                 case ScalarType.Boolean:
-                    return From(left.BooleanValue || right.BooleanValue);
+                    return From(BooleanValue || s.BooleanValue);
                 case ScalarType.SByte:
-                    return From(left.SByteValue + right.SByteValue);
+                    return From(SByteValue + s.SByteValue);
                 case ScalarType.Byte:
-                    return From(left.ByteValue + right.ByteValue);
+                    return From(ByteValue + s.ByteValue);
                 case ScalarType.Int16:
-                    return From(left.Int16Value + right.Int16Value);
+                    return From(Int16Value + s.Int16Value);
                 case ScalarType.UInt16:
-                    return From(left.UInt16Value + right.UInt16Value);
+                    return From(UInt16Value + s.UInt16Value);
                 case ScalarType.Int32:
-                    return From(left.Int32Value + right.Int32Value);
+                    return From(Int32Value + s.Int32Value);
                 case ScalarType.UInt32:
-                    return From(left.UInt32Value + right.UInt32Value);
+                    return From(UInt32Value + s.UInt32Value);
                 case ScalarType.Int64:
-                    return From(left.Int64Value + right.Int64Value);
+                    return From(Int64Value + s.Int64Value);
                 case ScalarType.UInt64:
-                    return From(left.UInt64Value + right.UInt64Value);
+                    return From(UInt64Value + s.UInt64Value);
                 case ScalarType.Single:
-                    return From(left.SingleValue + right.SingleValue);
+                    return From(SingleValue + s.SingleValue);
                 case ScalarType.Double:
-                    return From(left.DoubleValue + right.DoubleValue);
+                    return From(DoubleValue + s.DoubleValue);
                 case ScalarType.Decimal:
-                    return From(left.DecimalValue + right.DecimalValue);
+                    return From(DecimalValue + s.DecimalValue);
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public static Scalar<T> operator +(Scalar<T> left, Scalar<T> right)
+        {
+            return left.Add(right);
+        }
+
+        public Scalar<T> Substract(Scalar<T> s)
+        {
+            switch (scalarType)
+            {
+                case ScalarType.Boolean:
+                    throw new Exception($"Substraction can't be performed on type System.Boolean.");
+                case ScalarType.SByte:
+                    return From(SByteValue - s.SByteValue);
+                case ScalarType.Byte:
+                    return From(ByteValue - s.ByteValue);
+                case ScalarType.Int16:
+                    return From(Int16Value - s.Int16Value);
+                case ScalarType.UInt16:
+                    return From(UInt16Value - s.UInt16Value);
+                case ScalarType.Int32:
+                    return From(Int32Value - s.Int32Value);
+                case ScalarType.UInt32:
+                    return From(UInt32Value - s.UInt32Value);
+                case ScalarType.Int64:
+                    return From(Int64Value - s.Int64Value);
+                case ScalarType.UInt64:
+                    return From(UInt64Value - s.UInt64Value);
+                case ScalarType.Single:
+                    return From(SingleValue - s.SingleValue);
+                case ScalarType.Double:
+                    return From(DoubleValue - s.DoubleValue);
+                case ScalarType.Decimal:
+                    return From(DecimalValue - s.DecimalValue);
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
             }
@@ -507,98 +545,156 @@ namespace LinearAlgebra.Scalars
 
         public static Scalar<T> operator -(Scalar<T> left, Scalar<T> right)
         {
-            switch (scalarType)
-            {
-                case ScalarType.Boolean:
-                    throw new Exception($"Substraction can't be performed on type System.Boolean.");
-                case ScalarType.SByte:
-                    return From(left.SByteValue - right.SByteValue);
-                case ScalarType.Byte:
-                    return From(left.ByteValue - right.ByteValue);
-                case ScalarType.Int16:
-                    return From(left.Int16Value - right.Int16Value);
-                case ScalarType.UInt16:
-                    return From(left.UInt16Value - right.UInt16Value);
-                case ScalarType.Int32:
-                    return From(left.Int32Value - right.Int32Value);
-                case ScalarType.UInt32:
-                    return From(left.UInt32Value - right.UInt32Value);
-                case ScalarType.Int64:
-                    return From(left.Int64Value - right.Int64Value);
-                case ScalarType.UInt64:
-                    return From(left.UInt64Value - right.UInt64Value);
-                case ScalarType.Single:
-                    return From(left.SingleValue - right.SingleValue);
-                case ScalarType.Double:
-                    return From(left.DoubleValue - right.DoubleValue);
-                case ScalarType.Decimal:
-                    return From(left.DecimalValue - right.DecimalValue);
-                default:
-                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
-            }
+            return left.Substract(right);
         }
 
-        public static Scalar<T> operator *(Scalar<T> left, Scalar<T> right)
+        public Scalar<T> Multiply(Scalar<T> s)
         {
             switch (scalarType)
             {
                 case ScalarType.Boolean:
-                    return From(left.BooleanValue && right.BooleanValue);
+                    return From(BooleanValue && s.BooleanValue);
                 case ScalarType.SByte:
-                    return From(left.SByteValue * right.SByteValue);
+                    return From(SByteValue * s.SByteValue);
                 case ScalarType.Byte:
-                    return From(left.ByteValue * right.ByteValue);
+                    return From(ByteValue * s.ByteValue);
                 case ScalarType.Int16:
-                    return From(left.Int16Value * right.Int16Value);
+                    return From(Int16Value * s.Int16Value);
                 case ScalarType.UInt16:
-                    return From(left.UInt16Value * right.UInt16Value);
+                    return From(UInt16Value * s.UInt16Value);
                 case ScalarType.Int32:
-                    return From(left.Int32Value * right.Int32Value);
+                    return From(Int32Value * s.Int32Value);
                 case ScalarType.UInt32:
-                    return From(left.UInt32Value * right.UInt32Value);
+                    return From(UInt32Value * s.UInt32Value);
                 case ScalarType.Int64:
-                    return From(left.Int64Value * right.Int64Value);
+                    return From(Int64Value * s.Int64Value);
                 case ScalarType.UInt64:
-                    return From(left.UInt64Value * right.UInt64Value);
+                    return From(UInt64Value * s.UInt64Value);
                 case ScalarType.Single:
-                    return From(left.SingleValue * right.SingleValue);
+                    return From(SingleValue * s.SingleValue);
                 case ScalarType.Double:
-                    return From(left.DoubleValue * right.DoubleValue);
+                    return From(DoubleValue * s.DoubleValue);
                 case ScalarType.Decimal:
-                    return From(left.DecimalValue * right.DecimalValue);
+                    return From(DecimalValue * s.DecimalValue);
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
             }
         }
 
-        public static Scalar<T> operator /(Scalar<T> left, Scalar<T> right)
+        public Scalar<T> Scale(Scalar<T> s)
+        {
+            return Multiply(s);
+        }
+
+        public static Scalar<T> operator *(Scalar<T> left, Scalar<T> right)
+        {
+            return left.Multiply(right);
+        }
+
+        public Scalar<T> Divide(Scalar<T> s)
         {
             switch (scalarType)
             {
                 case ScalarType.Boolean:
                     throw new Exception($"Division can't be performed on type System.Boolean.");
                 case ScalarType.SByte:
-                    return From(left.SByteValue / right.SByteValue);
+                    return From(SByteValue / s.SByteValue);
                 case ScalarType.Byte:
-                    return From(left.ByteValue / right.ByteValue);
+                    return From(ByteValue / s.ByteValue);
                 case ScalarType.Int16:
-                    return From(left.Int16Value / right.Int16Value);
+                    return From(Int16Value / s.Int16Value);
                 case ScalarType.UInt16:
-                    return From(left.UInt16Value / right.UInt16Value);
+                    return From(UInt16Value / s.UInt16Value);
                 case ScalarType.Int32:
-                    return From(left.Int32Value / right.Int32Value);
+                    return From(Int32Value / s.Int32Value);
                 case ScalarType.UInt32:
-                    return From(left.UInt32Value / right.UInt32Value);
+                    return From(UInt32Value / s.UInt32Value);
                 case ScalarType.Int64:
-                    return From(left.Int64Value / right.Int64Value);
+                    return From(Int64Value / s.Int64Value);
                 case ScalarType.UInt64:
-                    return From(left.UInt64Value / right.UInt64Value);
+                    return From(UInt64Value / s.UInt64Value);
                 case ScalarType.Single:
-                    return From(left.SingleValue / right.SingleValue);
+                    return From(SingleValue / s.SingleValue);
                 case ScalarType.Double:
-                    return From(left.DoubleValue / right.DoubleValue);
+                    return From(DoubleValue / s.DoubleValue);
                 case ScalarType.Decimal:
-                    return From(left.DecimalValue / right.DecimalValue);
+                    return From(DecimalValue / s.DecimalValue);
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public Scalar<T> GetDividedBy(Scalar<T> s)
+        {
+            switch (scalarType)
+            {
+                case ScalarType.Boolean:
+                    throw new Exception($"Division can't be performed on type System.Boolean.");
+                case ScalarType.SByte:
+                    return From(s.SByteValue / SByteValue);
+                case ScalarType.Byte:
+                    return From(s.ByteValue / ByteValue);
+                case ScalarType.Int16:
+                    return From(s.Int16Value / Int16Value);
+                case ScalarType.UInt16:
+                    return From(s.UInt16Value / UInt16Value);
+                case ScalarType.Int32:
+                    return From(s.Int32Value / Int32Value);
+                case ScalarType.UInt32:
+                    return From(s.UInt32Value / UInt32Value);
+                case ScalarType.Int64:
+                    return From(s.Int64Value / Int64Value);
+                case ScalarType.UInt64:
+                    return From(s.UInt64Value / UInt64Value);
+                case ScalarType.Single:
+                    return From(s.SingleValue / SingleValue);
+                case ScalarType.Double:
+                    return From(s.DoubleValue / DoubleValue);
+                case ScalarType.Decimal:
+                    return From(s.DecimalValue / DecimalValue);
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
+        }
+
+        public Scalar<T> Reciprocal()
+        {
+            return GetDividedBy(One);
+        }
+
+        public static Scalar<T> operator /(Scalar<T> left, Scalar<T> right)
+        {
+            return left.Divide(right);
+        }
+
+        public Scalar<T> Negate()
+        {
+            switch (scalarType)
+            {
+                case ScalarType.Boolean:
+                    throw new Exception("Type <System.Boolean> cannot be negated.");
+                case ScalarType.SByte:
+                    return From(-SByteValue);
+                case ScalarType.Byte:
+                    throw new Exception("Type <System.Byte> cannot be negated.");
+                case ScalarType.Int16:
+                    return From(-Int16Value);
+                case ScalarType.UInt16:
+                    throw new Exception("Type <System.UInt16> cannot be negated.");
+                case ScalarType.Int32:
+                    return From(-Int32Value);
+                case ScalarType.UInt32:
+                    throw new Exception("Type <System.UInt32> cannot be negated.");
+                case ScalarType.Int64:
+                    return From(-Int64Value);
+                case ScalarType.UInt64:
+                    throw new Exception("Type <System.UInt64> cannot be negated.");
+                case ScalarType.Single:
+                    return From(-SingleValue);
+                case ScalarType.Double:
+                    return From(-DoubleValue);
+                case ScalarType.Decimal:
+                    return From(-DecimalValue);
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
             }
@@ -606,35 +702,7 @@ namespace LinearAlgebra.Scalars
 
         public static Scalar<T> operator -(Scalar<T> t)
         {
-            switch (scalarType)
-            {
-                case ScalarType.Boolean:
-                    throw new Exception("Type <System.Boolean> cannot be negated.");
-                case ScalarType.SByte:
-                    return From(-t.SByteValue);
-                case ScalarType.Byte:
-                    throw new Exception("Type <System.Byte> cannot be negated.");
-                case ScalarType.Int16:
-                    return From(-t.Int16Value);
-                case ScalarType.UInt16:
-                    throw new Exception("Type <System.UInt16> cannot be negated.");
-                case ScalarType.Int32:
-                    return From(-t.Int32Value);
-                case ScalarType.UInt32:
-                    throw new Exception("Type <System.UInt32> cannot be negated.");
-                case ScalarType.Int64:
-                    return From(-t.Int64Value);
-                case ScalarType.UInt64:
-                    throw new Exception("Type <System.UInt64> cannot be negated.");
-                case ScalarType.Single:
-                    return From(-t.SingleValue);
-                case ScalarType.Double:
-                    return From(-t.DoubleValue);
-                case ScalarType.Decimal:
-                    return From(-t.DecimalValue);
-                default:
-                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
-            }
+            return t.Negate();
         }
 
         public static Scalar<T> operator ~(Scalar<T> t)

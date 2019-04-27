@@ -7,8 +7,6 @@ namespace LinearAlgebra.Vectors
 {
     [Serializable]
     public struct Vector0<T> :
-        ICloneable,
-        IEquatable<Vector0<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
@@ -17,7 +15,7 @@ namespace LinearAlgebra.Vectors
     {
         #region Fields and Properties
 
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 0;
         public int Length => 0;
         public Scalar<T>[] Data => new Scalar<T>[0] { };
@@ -242,8 +240,6 @@ namespace LinearAlgebra.Vectors
 
     [Serializable]
     public struct Vector1<T> :
-        ICloneable,
-        IEquatable<Vector1<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
@@ -254,7 +250,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x;
 
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 1;
         public int Length => 1;
         public Scalar<T>[] Data => new Scalar<T>[1] { x };
@@ -511,8 +507,6 @@ namespace LinearAlgebra.Vectors
 
     [Serializable]
     public struct Vector2<T> :
-        ICloneable,
-        IEquatable<Vector2<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
@@ -523,7 +517,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x, y;
 
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 2;
         public int Length => 2;
         public Scalar<T>[] Data => new Scalar<T>[2] { x, y };
@@ -805,8 +799,6 @@ namespace LinearAlgebra.Vectors
 
     [Serializable]
     public struct Vector3<T> :
-        ICloneable,
-        IEquatable<Vector3<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
@@ -817,7 +809,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x, y, z;
 
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 3;
         public int Length => 3;
         public Scalar<T>[] Data => new Scalar<T>[3] { x, y, z };
@@ -1111,8 +1103,6 @@ namespace LinearAlgebra.Vectors
 
     [Serializable]
     public struct Vector4<T> :
-        ICloneable,
-        IEquatable<Vector4<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
@@ -1123,7 +1113,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> x, y, z, w;
 
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 4;
         public int Length => 4;
         public Scalar<T>[] Data => new Scalar<T>[4] { x, y, z, w };
@@ -1429,8 +1419,6 @@ namespace LinearAlgebra.Vectors
 
     [Serializable]
     public struct Vector5<T> :
-        ICloneable,
-        IEquatable<Vector5<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
@@ -1441,7 +1429,7 @@ namespace LinearAlgebra.Vectors
 
         public readonly Scalar<T> v0, v1, v2, v3, v4;
 
-        public Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Rank => Scalar<int>.One;
         public Vector1<int> Dimension => 5;
         public int Length => 5;
         public Scalar<T>[] Data => new Scalar<T>[5] { v0, v1, v2, v3, v4 };

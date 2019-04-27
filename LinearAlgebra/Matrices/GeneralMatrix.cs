@@ -8,18 +8,15 @@ using System.Text;
 namespace LinearAlgebra.Matrices
 {
     public struct Matrix<T> :
-        ICloneable,
-        IEquatable<Matrix<T>>,
         IEnumerable,
         IEnumerable<Scalar<T>>,
         IEnumerable<T>,
-        IMatrix<T>,
-        ITensor<T, Vector2<int>, Matrix<T>>
+        IMatrix<T, Matrix<T>, Vector<T>, Vector<T>>
         where T : struct
     {
         #region Fields and Properties
 
-        public Scalar<int> Rank => 2;
+        public static Scalar<int> Rank => 2;
         public Vector2<int> Dimension { get; }
         public Scalar<T>[,] Data { get; }
 
@@ -79,6 +76,7 @@ namespace LinearAlgebra.Matrices
 
             return new Matrix<T>(data);
         }
+
         public static Matrix<T> Zero(int dimension)
         {
             return Zero(new Vector2<int>(dimension));
@@ -120,6 +118,19 @@ namespace LinearAlgebra.Matrices
         #endregion
 
         #region Functions
+
+        public Matrix<T> Scale(Matrix<T> mat)
+        {
+            if (Dimension != mat.Dimension) throw new ArgumentException("Incompatible dimensions.");
+
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j] * mat.Data[i, j];
+
+            return new Matrix<T>(data);
+        }
 
         public Vector<T> Transform(Vector<T> v)
         {
@@ -182,108 +193,170 @@ namespace LinearAlgebra.Matrices
 
         #endregion
 
-        public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
+        #region Operators
+
+        #region Arithmetic
+
+        public Matrix<T> Multiply(Matrix<T> mat)
         {
-            if (left.Dimension.y != right.Dimension.x) throw new ArgumentException("Incompatible dimensions.");
+            if (Dimension.y != mat.Dimension.x) throw new ArgumentException("Incompatible dimensions.");
 
-            Scalar<T>[,] data = new Scalar<T>[left.Dimension.x, right.Dimension.y];
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, mat.Dimension.y];
 
-            for (int i = 0; i < left.Dimension.x; i++)
-                for (int j = 0; j < right.Dimension.y; j++)
-                    for (int k = 0; k < left.Dimension.y; k++)
-                        data[i, j] = left[i, k] * right[k, j];
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < mat.Dimension.y; j++)
+                    for (int k = 0; k < Dimension.y; k++)
+                        data[i, j] = Data[i, k] * mat.Data[k, j];
 
             return new Matrix<T>(data);
         }
 
-        public static Vector<T> operator *(Matrix<T> left, Vector<T> right)
+        public static Matrix<T> operator *(Matrix<T> left, Matrix<T> right)
         {
-            if (left.Dimension.y != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            return left.Multiply(right);
+        }
 
-            Scalar<T>[] data = new Scalar<T>[left.Dimension.x];
+        public Vector<T> Multiply(Vector<T> vec)
+        {
+            if (Dimension.y != vec.Dimension) throw new ArgumentException("Incompatible dimensions.");
+
+            Scalar<T>[] data = new Scalar<T>[Dimension.x];
             int i = 0, j = 0;
-            for (i = 0, data[i] = Scalar<T>.Zero; i < left.Dimension.x; i++)
-                for (j = 0; j < right.Dimension; j++)
-                    data[i] += left[i, j] * right[j];
+            for (i = 0, data[i] = Scalar<T>.Zero; i < Dimension.x; i++)
+                for (j = 0; j < vec.Dimension; j++)
+                    data[i] += Data[i, j] * vec[j];
 
             return new Vector<T>(data);
         }
 
+        public static Vector<T> operator *(Matrix<T> left, Vector<T> right)
+        {
+            return left.Multiply(right);
+        }
+
+        public Matrix<T> Add(Matrix<T> mat)
+        {
+            if (Dimension != mat.Dimension) throw new ArgumentException("Incompatible dimensions.");
+
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j] + mat.Data[i, j];
+
+            return new Matrix<T>(data);
+        }
+
         public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)
         {
-            if (left.Dimension != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            return left.Add(right);
+        }
 
-            Scalar<T>[,] data = new Scalar<T>[left.Dimension.x, left.Dimension.y];
+        public Matrix<T> Substract(Matrix<T> mat)
+        {
+            if (Dimension != mat.Dimension) throw new ArgumentException("Incompatible dimensions.");
 
-            for (int i = 0; i < left.Dimension.x; i++)
-                for (int j = 0; j < left.Dimension.y; j++)
-                    data[i, j] = left[i, j] + right[i, j];
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j] - mat.Data[i, j];
 
             return new Matrix<T>(data);
         }
 
         public static Matrix<T> operator -(Matrix<T> left, Matrix<T> right)
         {
-            if (left.Dimension != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            return left.Substract(right);
+        }
 
-            Scalar<T>[,] data = new Scalar<T>[left.Dimension.x, left.Dimension.y];
+        public Matrix<T> Multiply(Scalar<T> s)
+        {
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
 
-            for (int i = 0; i < left.Dimension.x; i++)
-                for (int j = 0; j < left.Dimension.y; j++)
-                    data[i, j] = left[i, j] - right[i, j];
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j] * s;
 
             return new Matrix<T>(data);
         }
 
         public static Matrix<T> operator *(Scalar<T> left, Matrix<T> right)
         {
-            Scalar<T>[,] data = new Scalar<T>[right.Dimension.x, right.Dimension.y];
-
-            for (int i = 0; i < right.Dimension.x; i++)
-                for (int j = 0; j < right.Dimension.y; j++)
-                    data[i, j] = left * right[i, j];
-
-            return new Matrix<T>(data);
+            return right.Multiply(left);
         }
 
         public static Matrix<T> operator *(Matrix<T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix<T> operator /(Scalar<T> left, Matrix<T> right)
+        public Matrix<T> Divide(Scalar<T> s)
         {
-            Scalar<T>[,] data = new Scalar<T>[right.Dimension.x, right.Dimension.y];
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
 
-            for (int i = 0; i < right.Dimension.x; i++)
-                for (int j = 0; j < right.Dimension.y; j++)
-                    data[i, j] = left / right[i, j];
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j] / s;
 
             return new Matrix<T>(data);
         }
 
         public static Matrix<T> operator /(Matrix<T> left, Scalar<T> right)
         {
-            Scalar<T>[,] data = new Scalar<T>[left.Dimension.x, left.Dimension.y];
+            return left.Divide(right);
+        }
 
-            for (int i = 0; i < left.Dimension.x; i++)
-                for (int j = 0; j < left.Dimension.y; j++)
-                    data[i, j] = left[i, j] / right;
+        public Matrix<T> GetDividedBy(Scalar<T> s)
+        {
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = s / Data[i, j];
+
+            return new Matrix<T>(data);
+        }
+
+        public static Matrix<T> operator /(Scalar<T> left, Matrix<T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix<T> Reciprocal()
+        {
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Scalar<T>.One / Data[i, j];
+
+            return new Matrix<T>(data);
+        }
+
+        public Matrix<T> Negate()
+        {
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = -Data[i, j];
 
             return new Matrix<T>(data);
         }
 
         public static Matrix<T> operator -(Matrix<T> m)
         {
-            var data = new Scalar<T>[m.Dimension.x, m.Dimension.y];
-
-            for (int i = 0; i < m.Dimension.x; i++)
-                for (int j = 0; j < m.Dimension.y; j++)
-                    data[i, j] = -m.Data[i, j];
-
-            return new Matrix<T>(data);
+            return m.Negate();
         }
 
+        #endregion
+
+        #region Structure
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
         public static Matrix<T> operator |(Matrix<T> left, Matrix<T> right)
         {
             if (left.Dimension.x != right.Dimension.x) throw new ArgumentException("Incompatible dimensions.");
@@ -300,6 +373,60 @@ namespace LinearAlgebra.Matrices
 
             return new Matrix<T>(data);
         }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix<T> operator /(Matrix<T> left, Matrix<T> right)
+        {
+            if (left.Dimension.y != right.Dimension.y) throw new ArgumentException("Incompatible dimensions.");
+
+            Scalar<T>[,] data = new Scalar<T>[left.Dimension.x + right.Dimension.x, left.Dimension.y];
+
+            for (int i = 0; i < left.Dimension.x; i++)
+                for (int j = 0; j < left.Dimension.y; j++)
+                    data[i, j] = left[i, j];
+
+            for (int i = 0; i < right.Dimension.x; i++)
+                for (int j = 0; j < right.Dimension.y; j++)
+                    data[i + left.Dimension.x, j] = right[i, j];
+
+            return new Matrix<T>(data);
+        }
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix<T> left, Matrix<T> right)
+        {
+            if (left.Dimension != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+
+            for (int i = 0; i < left.Dimension.x; i++)
+                for (int j = 0; j < left.Dimension.y; j++)
+                    if (left[i, j] != right[i, j])
+                        return false;
+
+            return true;
+        }
+
+        public static bool operator !=(Matrix<T> left, Matrix<T> right)
+        {
+            if (left.Dimension != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+
+            for (int i = 0; i < left.Dimension.x; i++)
+                for (int j = 0; j < left.Dimension.y; j++)
+                    if (left[i, j] != right[i, j])
+                        return true;
+
+            return false;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
 
         public object Clone()
         {
@@ -373,5 +500,7 @@ namespace LinearAlgebra.Matrices
         {
             return base.GetHashCode();
         }
+
+        #endregion
     }
 }

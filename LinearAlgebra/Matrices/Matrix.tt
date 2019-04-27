@@ -34,9 +34,17 @@ using System.Collections.Generic;
 namespace LinearAlgebra.Matrices
 {
 <# foreach (var n in supportedDimensions) { #>
-    public struct Matrix<#= n[0] #>x<#= n[1] #><T> : ICloneable, IEquatable<Matrix<#= n[0] #>x<#= n[1] #><T>>, IEnumerable, IEnumerable<Scalar<T>>, IEnumerable<T>, IMatrix<T>
+    public struct Matrix<#= n[0] #>x<#= n[1] #><T> :
+        IEnumerable,
+        IEnumerable<Scalar<T>>,
+        IEnumerable<T>,
+        IMatrix<T, Matrix<#= n[0] #>x<#= n[1] #><T>, Vector<#= n[1] #><T>, Vector<#= n[0] #><T>>
         where T : struct
     {
+        #region Fields and Properties
+
+        public static Scalar<int> Rank => 2;
+
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y)))) #>;
 
         public Vector2<int> Dimension => new Vector2<int>(<#= n[0] #>, <#= n[1] #>);
@@ -46,38 +54,6 @@ namespace LinearAlgebra.Matrices
             { <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y)) #> }<#= x < n[0] - 1 ? "," : "" #>
 <# } #>
         };
-
-        public static Matrix<#= n[0] #>x<#= n[1] #><T> Zero()
-        {
-            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0] * n[1]).Select(x => "0")) #>);
-        }
-
-<# if (n[0] == n[1]) { #>
-        public static Matrix<#= n[0] #>x<#= n[1] #><T> One()
-        {
-            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => x == y ? "1" : "0")))) #>);
-        }
-
-<# } #>
-        public Matrix<#= n[0] #>x<#= n[1] #>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "Scalar<T> e" + x + y)))) #>)
-        {
-<# for(int x = 0; x < n[0]; x++) { #>
-<# for(int y = 0; y < n[1]; y++) { #>
-            this.e<#= x + "" + y #> = e<#= x + "" + y #>;
-<# } #>
-<# } #>
-        }
-
-        public Matrix<#= n[0] #>x<#= n[1] #>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "T e" + x + y)))) #>)
-        {
-<# for(int x = 0; x < n[0]; x++) { #>
-<# for(int y = 0; y < n[1]; y++) { #>
-            this.e<#= x + "" + y #> = new Scalar<T>(e<#= x + "" + y #>);
-<# } #>
-<# } #>
-        }
-
-        public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector<#= n[1] #><T>[] Rows
         {
@@ -104,6 +80,52 @@ namespace LinearAlgebra.Matrices
                 };
             }
         }
+
+        public Scalar<T> this[int i, int j] => Data[i, j];
+
+        public Vector<#= n[1] #><T> this[int row] => Rows[row];
+
+        #endregion
+
+        #region Static
+
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> Zero()
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0] * n[1]).Select(x => "0")) #>);
+        }
+
+<# if (n[0] == n[1]) { #>
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> One()
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => x == y ? "1" : "0")))) #>);
+        }
+
+        #endregion
+
+        #region Constructors
+
+<# } #>
+        public Matrix<#= n[0] #>x<#= n[1] #>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "Scalar<T> e" + x + y)))) #>)
+        {
+<# for(int x = 0; x < n[0]; x++) { #>
+<# for(int y = 0; y < n[1]; y++) { #>
+            this.e<#= x + "" + y #> = e<#= x + "" + y #>;
+<# } #>
+<# } #>
+        }
+
+        public Matrix<#= n[0] #>x<#= n[1] #>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "T e" + x + y)))) #>)
+        {
+<# for(int x = 0; x < n[0]; x++) { #>
+<# for(int y = 0; y < n[1]; y++) { #>
+            this.e<#= x + "" + y #> = new Scalar<T>(e<#= x + "" + y #>);
+<# } #>
+<# } #>
+        }
+
+        #endregion
+
+        #region Functions
 
         public Vector<#= n[0] #><T> Transform(Vector<#= n[1] #><T> vec)
         {
@@ -132,75 +154,154 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        public Matrix<#= n[0] #>x<#= n[1] #><T> Scale(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " * mat.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        #region Arithmetic
+
+        public Vector<#= n[0] #><T> Multiply(Vector<#= n[1] #><T> vec)
+        {
+            return Transform(vec);
+        }
+
         public static Vector<#= n[0] #><T> operator *(Matrix<#= n[0] #>x<#= n[1] #><T> left, Vector<#= n[1] #><T> right)
         {
-            return new Vector<#= n[0] #><T>(
+            return left.Transform(right);
+        }
+
+        public Matrix<#= n[0] #>x<#= n[1] #><T> Add(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(" + ", Enumerable.Range(0, n[1]).Select(y => "left.e" + x + y + " * right." + vectorComponentName(n[0], y))) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " + mat.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
 
         public static Matrix<#= n[0] #>x<#= n[1] #><T> operator +(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
         {
+            return left.Add(right);
+        }
+
+        public Matrix<#= n[0] #>x<#= n[1] #><T> Substract(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
+        {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left.e" + x + y + " + right.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " - mat.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
 
         public static Matrix<#= n[0] #>x<#= n[1] #><T> operator -(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
         {
-            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
-<# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left.e" + x + y + " - right.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
-<# } #>
-            );
+            return left.Substract(right);
         }
 
-        public static Matrix<#= n[0] #>x<#= n[1] #><T> operator *(Scalar<T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        public Matrix<#= n[0] #>x<#= n[1] #><T> Multiply(Scalar<T> s)
         {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left * right.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "s * e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
 
         public static Matrix<#= n[0] #>x<#= n[1] #><T> operator *(Matrix<#= n[0] #>x<#= n[1] #><T> left, Scalar<T> right)
         {
-            return right * left;
+            return left.Multiply(right);
         }
 
-        public static Matrix<#= n[0] #>x<#= n[1] #><T> operator /(Scalar<T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> operator *(Scalar<T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        {
+            return right.Multiply(left);
+        }
+
+        public Matrix<#= n[0] #>x<#= n[1] #><T> Reciprocal()
         {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left / right.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " / Scalar<T>.One")) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+
+        public Matrix<#= n[0] #>x<#= n[1] #><T> Divide(Scalar<T> s)
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " / s")) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
 
         public static Matrix<#= n[0] #>x<#= n[1] #><T> operator /(Matrix<#= n[0] #>x<#= n[1] #><T> left, Scalar<T> right)
         {
-            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
-<# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left.e" + x + y + " / right")) #><#= x < n[0] - 1 ? "," : "" #>
-<# } #>
-            );
+            return left.Divide(right);
         }
 
-        public static Matrix<#= n[0] #>x<#= n[1] #><T> operator -(Matrix<#= n[0] #>x<#= n[1] #><T> m)
+        public Matrix<#= n[0] #>x<#= n[1] #><T> GetDividedBy(Scalar<T> s)
         {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "-m.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "s / e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
 
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> operator /(Scalar<T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        {
+            return right.GetDividedBy(left);
+        }
+
+        public Matrix<#= n[0] #>x<#= n[1] #><T> Negate()
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "-e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> operator -(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
+        {
+            return mat.Negate();
+        }
+
+        #endregion
+
+        #region Structure
+
+        #endregion
+
+        #region Identity
+
+        public static bool operator ==(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
+
+        #endregion
+
 <# if (n[0] > 1 && n[1] > 1) { #>
+        #region Implicit Conversion
+
         public static implicit operator Matrix<#= n[0] #>x<#= n[1] #><T>((<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => "(" + string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "T")) + ")" )) #>) t)
         {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(
@@ -210,7 +311,11 @@ namespace LinearAlgebra.Matrices
             );
         }
 
+        #endregion
+
 <# } #>
+        #region Interface Implementations
+
         public override string ToString()
         {
             return $"Matrix<#= n[0] #>x<#= n[1] #>(" + Environment.NewLine +
@@ -265,6 +370,8 @@ namespace LinearAlgebra.Matrices
 <# } #>
 <# } #>
         }
+
+        #endregion
     }
 <# index++; if (index != supportedDimensions.Count) { #>
 

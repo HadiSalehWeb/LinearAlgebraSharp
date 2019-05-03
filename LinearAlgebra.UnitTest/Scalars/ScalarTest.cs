@@ -9,8 +9,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestStaticConstants()
         {
-            Assert.False(Scalar<bool>.Zero.Value);
-            Assert.True(Scalar<bool>.One.Value);
             Assert.Equal((sbyte)0, Scalar<sbyte>.Zero.Value);
             Assert.Equal((sbyte)1, Scalar<sbyte>.One.Value);
             Assert.Equal((byte)0, Scalar<byte>.Zero.Value);
@@ -38,7 +36,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestInitialization()
         {
-            Scalar<bool> boolV = new Scalar<bool>(true);
             Scalar<sbyte> sbyteV = new Scalar<sbyte>(2);
             Scalar<byte> byteV = new Scalar<byte>(2);
             Scalar<short> shortV = new Scalar<short>(2);
@@ -51,7 +48,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV = new Scalar<double>(2.0);
             Scalar<decimal> decimalV = new Scalar<decimal>(2m);
 
-            Assert.True(boolV.Value);
             Assert.Equal((sbyte)2, sbyteV.Value);
             Assert.Equal((byte)2, byteV.Value);
             Assert.Equal((short)2, shortV.Value);
@@ -68,7 +64,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestImplicitOperators()
         {
-            Scalar<bool> boolV = true;
             Scalar<sbyte> sbyteV = 2;
             Scalar<byte> byteV = 2;
             Scalar<short> shortV = 2;
@@ -81,7 +76,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV = 2.0;
             Scalar<decimal> decimalV = 2m;
 
-            Assert.True(boolV);
             Assert.Equal((sbyte)2, (sbyte)sbyteV);
             Assert.Equal((byte)2, (byte)byteV);
             Assert.Equal((short)2, (short)shortV);
@@ -98,7 +92,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestAddition()
         {
-            Scalar<bool> boolV1 = new Scalar<bool>(true), boolV2 = new Scalar<bool>(false);
             Scalar<sbyte> sbyteV1 = new Scalar<sbyte>(5), sbyteV2 = new Scalar<sbyte>(2);
             Scalar<byte> byteV1 = new Scalar<byte>(5), byteV2 = new Scalar<byte>(2);
             Scalar<short> shortV1 = new Scalar<short>(5), shortV2 = new Scalar<short>(2);
@@ -111,7 +104,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV1 = new Scalar<double>(5.0), doubleV2 = new Scalar<double>(2.0);
             Scalar<decimal> decimalV1 = new Scalar<decimal>(5m), decimalV2 = new Scalar<decimal>(2m);
 
-            Assert.Equal(new Scalar<bool>(true), boolV1 + boolV2);
             Assert.Equal(new Scalar<sbyte>(7), sbyteV1 + sbyteV2);
             Assert.Equal(new Scalar<byte>(7), byteV1 + byteV2);
             Assert.Equal(new Scalar<short>(7), shortV1 + shortV2);
@@ -128,7 +120,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestSubstraction()
         {
-            Scalar<bool> boolV1 = new Scalar<bool>(true), boolV2 = new Scalar<bool>(false);
             Scalar<sbyte> sbyteV1 = new Scalar<sbyte>(5), sbyteV2 = new Scalar<sbyte>(2);
             Scalar<byte> byteV1 = new Scalar<byte>(5), byteV2 = new Scalar<byte>(2);
             Scalar<short> shortV1 = new Scalar<short>(5), shortV2 = new Scalar<short>(2);
@@ -141,7 +132,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV1 = new Scalar<double>(5.0), doubleV2 = new Scalar<double>(2.0);
             Scalar<decimal> decimalV1 = new Scalar<decimal>(5m), decimalV2 = new Scalar<decimal>(2m);
 
-            Assert.Throws<Exception>(() => boolV1 - boolV2);
             Assert.Equal(new Scalar<sbyte>(3), sbyteV1 - sbyteV2);
             Assert.Equal(new Scalar<byte>(3), byteV1 - byteV2);
             Assert.Equal(new Scalar<short>(3), shortV1 - shortV2);
@@ -158,7 +148,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestSubstractionNegative()
         {
-            Scalar<bool> boolV1 = new Scalar<bool>(true), boolV2 = new Scalar<bool>(false);
             Scalar<sbyte> sbyteV1 = new Scalar<sbyte>(5), sbyteV2 = new Scalar<sbyte>(2);
             Scalar<byte> byteV1 = new Scalar<byte>(5), byteV2 = new Scalar<byte>(2);
             Scalar<short> shortV1 = new Scalar<short>(5), shortV2 = new Scalar<short>(2);
@@ -171,7 +160,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV1 = new Scalar<double>(5.0), doubleV2 = new Scalar<double>(2.0);
             Scalar<decimal> decimalV1 = new Scalar<decimal>(5m), decimalV2 = new Scalar<decimal>(2m);
 
-            Assert.Throws<Exception>(() => boolV1 - boolV2);
             Assert.Equal(new Scalar<sbyte>(-3), sbyteV2 - sbyteV1);
             Assert.Throws<OverflowException>(() => byteV2 - byteV1);
             Assert.Equal(new Scalar<short>(-3), shortV2 - shortV1);
@@ -188,7 +176,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestMultiplication()
         {
-            Scalar<bool> boolV1 = new Scalar<bool>(true), boolV2 = new Scalar<bool>(false);
             Scalar<sbyte> sbyteV1 = new Scalar<sbyte>(5), sbyteV2 = new Scalar<sbyte>(2);
             Scalar<byte> byteV1 = new Scalar<byte>(5), byteV2 = new Scalar<byte>(2);
             Scalar<short> shortV1 = new Scalar<short>(5), shortV2 = new Scalar<short>(2);
@@ -201,7 +188,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV1 = new Scalar<double>(5.0), doubleV2 = new Scalar<double>(2.0);
             Scalar<decimal> decimalV1 = new Scalar<decimal>(5m), decimalV2 = new Scalar<decimal>(2m);
 
-            Assert.Equal(new Scalar<bool>(false), boolV1 * boolV2);
             Assert.Equal(new Scalar<sbyte>(10), sbyteV1 * sbyteV2);
             Assert.Equal(new Scalar<byte>(10), byteV1 * byteV2);
             Assert.Equal(new Scalar<short>(10), shortV1 * shortV2);
@@ -218,7 +204,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestDivision()
         {
-            Scalar<bool> boolV1 = new Scalar<bool>(true), boolV2 = new Scalar<bool>(false);
             Scalar<sbyte> sbyteV1 = new Scalar<sbyte>(5), sbyteV2 = new Scalar<sbyte>(2);
             Scalar<byte> byteV1 = new Scalar<byte>(5), byteV2 = new Scalar<byte>(2);
             Scalar<short> shortV1 = new Scalar<short>(5), shortV2 = new Scalar<short>(2);
@@ -231,7 +216,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV1 = new Scalar<double>(5.0), doubleV2 = new Scalar<double>(2.0);
             Scalar<decimal> decimalV1 = new Scalar<decimal>(5m), decimalV2 = new Scalar<decimal>(2m);
 
-            Assert.Throws<Exception>(() => boolV1 / boolV2);
             Assert.Equal(new Scalar<sbyte>(2), sbyteV1 / sbyteV2);
             Assert.Equal(new Scalar<byte>(2), byteV1 / byteV2);
             Assert.Equal(new Scalar<short>(2), shortV1 / shortV2);
@@ -248,7 +232,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestNegation()
         {
-            Scalar<bool> boolV = new Scalar<bool>(true);
             Scalar<sbyte> sbyteV = new Scalar<sbyte>(5);
             Scalar<byte> byteV = new Scalar<byte>(5);
             Scalar<short> shortV = new Scalar<short>(5);
@@ -261,7 +244,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV = new Scalar<double>(5.0);
             Scalar<decimal> decimalV = new Scalar<decimal>(5m);
 
-            Assert.Throws<Exception>(() => -boolV);
             Assert.Equal(new Scalar<sbyte>(-5), -sbyteV);
             Assert.Throws<Exception>(() => -byteV);
             Assert.Equal(new Scalar<short>(-5), -shortV);
@@ -276,39 +258,8 @@ namespace LinearAlgebra.UnitTest.Scalars
         }
 
         [Fact]
-        public void TestBitwiseComplements()
-        {
-            Scalar<bool> boolV = new Scalar<bool>(true);
-            Scalar<sbyte> sbyteV = new Scalar<sbyte>(5);
-            Scalar<byte> byteV = new Scalar<byte>(5);
-            Scalar<short> shortV = new Scalar<short>(5);
-            Scalar<ushort> ushortV = new Scalar<ushort>(5);
-            Scalar<int> intV = new Scalar<int>(5);
-            Scalar<uint> uintV = new Scalar<uint>(5);
-            Scalar<long> longV = new Scalar<long>(5);
-            Scalar<ulong> ulongV = new Scalar<ulong>(5);
-            Scalar<float> floatV = new Scalar<float>(5f);
-            Scalar<double> doubleV = new Scalar<double>(5.0);
-            Scalar<decimal> decimalV = new Scalar<decimal>(5m);
-
-            Assert.Equal(new Scalar<bool>(false), ~boolV);
-            Assert.Equal(new Scalar<sbyte>(~5), ~sbyteV);
-            Assert.Throws<OverflowException>(() => ~byteV);
-            Assert.Equal(new Scalar<short>(~5), ~shortV);
-            Assert.Throws<OverflowException>(() => ~ushortV);
-            Assert.Equal(new Scalar<int>(~5), ~intV);
-            Assert.Equal(new Scalar<uint>(~5u), ~uintV);
-            Assert.Equal(new Scalar<long>(~5L), ~longV);
-            Assert.Equal(new Scalar<ulong>(~5uL), ~ulongV);
-            Assert.Throws<Exception>(() => ~floatV);
-            Assert.Throws<Exception>(() => ~doubleV);
-            Assert.Throws<Exception>(() => ~decimalV);
-        }
-
-        [Fact]
         public void TestEquality()
         {
-            Scalar<bool> boolV = new Scalar<bool>(true);
             Scalar<sbyte> sbyteV = new Scalar<sbyte>(5);
             Scalar<byte> byteV = new Scalar<byte>(5);
             Scalar<short> shortV = new Scalar<short>(5);
@@ -322,7 +273,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<decimal> decimalV = new Scalar<decimal>(5m);
 
 #pragma warning disable CS1718 // Comparison made to same variable // which is the point of the test
-            Assert.True(boolV == boolV);
             Assert.True(sbyteV == sbyteV);
             Assert.True(byteV == byteV);
             Assert.True(shortV == shortV);
@@ -352,7 +302,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV = new Scalar<double>(5.0);
             Scalar<decimal> decimalV = new Scalar<decimal>(5m);
 
-            Assert.True(new Scalar<bool>(true) > new Scalar<bool>(false));
             Assert.True(sbyteV + Scalar<sbyte>.One > sbyteV);
             Assert.True(byteV + Scalar<byte>.One > byteV);
             Assert.True(shortV + Scalar<short>.One > shortV);
@@ -365,7 +314,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Assert.True(doubleV + Scalar<double>.One > doubleV);
             Assert.True(decimalV + Scalar<decimal>.One > decimalV);
 
-            Assert.False(new Scalar<bool>(false) > new Scalar<bool>(true));
             Assert.False(sbyteV > sbyteV + Scalar<sbyte>.One);
             Assert.False(byteV > byteV + Scalar<byte>.One);
             Assert.False(shortV > shortV + Scalar<short>.One);
@@ -382,7 +330,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         [Fact]
         public void TestLessThan()
         {
-            Scalar<bool> boolV = new Scalar<bool>(true);
             Scalar<sbyte> sbyteV = new Scalar<sbyte>(5);
             Scalar<byte> byteV = new Scalar<byte>(5);
             Scalar<short> shortV = new Scalar<short>(5);
@@ -395,7 +342,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Scalar<double> doubleV = new Scalar<double>(5.0);
             Scalar<decimal> decimalV = new Scalar<decimal>(5m);
 
-            Assert.True(new Scalar<bool>(false) < new Scalar<bool>(true));
             Assert.True(sbyteV < sbyteV + Scalar<sbyte>.One);
             Assert.True(byteV < byteV + Scalar<byte>.One);
             Assert.True(shortV < shortV + Scalar<short>.One);
@@ -408,7 +354,6 @@ namespace LinearAlgebra.UnitTest.Scalars
             Assert.True(doubleV < doubleV + Scalar<double>.One);
             Assert.True(decimalV < decimalV + Scalar<decimal>.One);
 
-            Assert.False(new Scalar<bool>(true) < new Scalar<bool>(false));
             Assert.False(sbyteV + Scalar<sbyte>.One < sbyteV);
             Assert.False(byteV + Scalar<byte>.One < byteV);
             Assert.False(shortV + Scalar<short>.One < shortV);

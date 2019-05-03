@@ -17,7 +17,6 @@ namespace LinearAlgebra.UnitTest.Scalars
     public class Axioms
     {
         [Theory]
-        [MemberData(nameof(ScalarTestData.BoolData), new object[] { 3, 8 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.SByteData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ByteData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ShortData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
@@ -39,7 +38,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         }
 
         [Theory]
-        [MemberData(nameof(ScalarTestData.BoolData), new object[] { 2, 8 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.SByteData), new object[] { 2, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ByteData), new object[] { 2, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ShortData), new object[] { 2, 6 }, MemberType = typeof(ScalarTestData))]
@@ -61,7 +59,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         }
 
         [Theory]
-        [MemberData(nameof(ScalarTestData.BoolData), new object[] { 3, 8 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.SByteData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ByteData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ShortData), new object[] { 3, 6 }, MemberType = typeof(ScalarTestData))]
@@ -82,7 +79,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         }
 
         [Theory]
-        [MemberData(nameof(ScalarTestData.BoolData), new object[] { 1, 8 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.SByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ShortData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
@@ -103,7 +99,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         }
 
         [Theory]
-        [MemberData(nameof(ScalarTestData.BoolData), new object[] { 1, 8 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.SByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ShortData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
@@ -124,7 +119,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         }
 
         [Theory]
-        //[MemberData(nameof(ScalarTestData.BoolData), new object[] { 1, 8 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.SByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.ByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         [MemberData(nameof(ScalarTestData.ShortData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
@@ -145,7 +139,6 @@ namespace LinearAlgebra.UnitTest.Scalars
         }
 
         [Theory]
-        //[MemberData(nameof(ScalarTestData.BoolData), new object[] { 1, 8 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.SByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.ByteData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]
         //[MemberData(nameof(ScalarTestData.ShortData), new object[] { 1, 6 }, MemberType = typeof(ScalarTestData))]

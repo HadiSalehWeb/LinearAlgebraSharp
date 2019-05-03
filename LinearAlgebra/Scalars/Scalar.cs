@@ -633,7 +633,33 @@ namespace LinearAlgebra.Scalars
 
         public Scalar<T> Reciprocal()
         {
-            return GetDividedBy(One);
+            switch (scalarType)
+            {
+                case ScalarType.SByte:
+                    throw new Exception("Cannot take reciprocal of type <System.SByte>.");
+                case ScalarType.Byte:
+                    throw new Exception("Cannot take reciprocal of type <System.Byte>.");
+                case ScalarType.Int16:
+                    throw new Exception("Cannot take reciprocal of type <System.Int16>.");
+                case ScalarType.UInt16:
+                    throw new Exception("Cannot take reciprocal of type <System.UInt16>.");
+                case ScalarType.Int32:
+                    throw new Exception("Cannot take reciprocal of type <System.Int32>.");
+                case ScalarType.UInt32:
+                    throw new Exception("Cannot take reciprocal of type <System.UInt32>.");
+                case ScalarType.Int64:
+                    throw new Exception("Cannot take reciprocal of type <System.Int64>.");
+                case ScalarType.UInt64:
+                    throw new Exception("Cannot take reciprocal of type <System.UInt64>.");
+                case ScalarType.Single:
+                    return From(One.Divide(SingleValue));
+                case ScalarType.Double:
+                    return From(One.Divide(DoubleValue));
+                case ScalarType.Decimal:
+                    return From(One.Divide(DecimalValue));
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
 
         public static Scalar<T> operator /(Scalar<T> left, Scalar<T> right)
@@ -675,6 +701,37 @@ namespace LinearAlgebra.Scalars
         public static Scalar<T> operator -(Scalar<T> t)
         {
             return t.Negate();
+        }
+
+        public static Scalar<T> operator %(Scalar<T> left, Scalar<T> right)
+        {
+            switch (scalarType)
+            {
+                case ScalarType.SByte:
+                    return From(left.SByteValue % right.SByteValue);
+                case ScalarType.Byte:
+                    return From(left.ByteValue % right.ByteValue);
+                case ScalarType.Int16:
+                    return From(left.Int16Value % right.Int16Value);
+                case ScalarType.UInt16:
+                    return From(left.UInt16Value % right.UInt16Value);
+                case ScalarType.Int32:
+                    return From(left.Int32Value % right.Int32Value);
+                case ScalarType.UInt32:
+                    return From(left.UInt32Value % right.UInt32Value);
+                case ScalarType.Int64:
+                    return From(left.Int64Value % right.Int64Value);
+                case ScalarType.UInt64:
+                    return From(left.UInt64Value % right.UInt64Value);
+                case ScalarType.Single:
+                    return From(left.SingleValue % right.SingleValue);
+                case ScalarType.Double:
+                    return From(left.DoubleValue % right.DoubleValue);
+                case ScalarType.Decimal:
+                    return From(left.DecimalValue % right.DecimalValue);
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
 
         #endregion

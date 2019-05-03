@@ -292,7 +292,19 @@ namespace LinearAlgebra.Scalars
 
         public Scalar<T> Reciprocal()
         {
-            return GetDividedBy(One);
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].name #>:
+<# if (supportedTypes[i].hasMultiplicativeInverse) { #>
+                    return From(One.Divide(<#= getPropertyName(supportedTypes[i].name) #>));
+<# } else { #>
+                    throw new Exception("Cannot take reciprocal of type <<#= supportedTypes[i].type.ToString() #>>.");
+<# } #>
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
 
         public static Scalar<T> operator /(Scalar<T> left, Scalar<T> right)
@@ -320,6 +332,19 @@ namespace LinearAlgebra.Scalars
         public static Scalar<T> operator -(Scalar<T> t)
         {
             return t.Negate();
+        }
+
+        public static Scalar<T> operator %(Scalar<T> left, Scalar<T> right)
+        {
+            switch (scalarType)
+            {
+<# for (int i = 0; i < supportedTypes.Count; i++) { #>
+                case ScalarType.<#= supportedTypes[i].name #>:
+                    return From(left.<#= getPropertyName(supportedTypes[i].name) #> % right.<#= getPropertyName(supportedTypes[i].name) #>);
+<# } #>
+                default:
+                    throw new Exception($"Unrecognized scalar type <{ scalarType }>");
+            }
         }
 
         #endregion

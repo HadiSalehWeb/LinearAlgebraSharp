@@ -6,37 +6,6 @@ namespace LinearAlgebra.UnitTest.Scalars
 {
     public class ScalarTestData
     {
-        //private static readonly Dictionary<Type, Func<int, int, IEnumerable<object[]>>> TypeToFunc = new Dictionary<Type, Func<int, int, IEnumerable<object[]>>>
-        //{
-        //    { typeof(bool), BoolData },
-        //    { typeof(sbyte), SByteData },
-        //    { typeof(byte), ByteData },
-        //    { typeof(short), ShortData },
-        //    { typeof(ushort), UShortData },
-        //    { typeof(int), IntData },
-        //    { typeof(uint), UIntData },
-        //    { typeof(long), LongData },
-        //    { typeof(ulong), ULongData },
-        //    { typeof(float), FloatData },
-        //    { typeof(double), DoubleData },
-        //    { typeof(decimal), DecimalData }
-        //};
-
-        public static IEnumerable<object[]> BoolData(int itemCount, int testCount)
-        {
-            return new List<object[]>
-            {
-                new object[] { true, true, true },
-                new object[] { false, true, true },
-                new object[] { true, false, true },
-                new object[] { false, false, true },
-                new object[] { true, true, false },
-                new object[] { false, true, false },
-                new object[] { true, false, false },
-                new object[] { false, false, false }
-            }.Select(x => x.Take(itemCount).ToArray()).Take(testCount);
-        }
-
         public static IEnumerable<object[]> SByteData(int itemCount, int testCount)
         {
             return new List<object[]>

@@ -52,7 +52,7 @@ namespace LinearAlgebra.Vectors
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n).Select(i => componentName(n, i))) #>;
 
 <# } #>
-        public static Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Order => Scalar<int>.One;
         public Vector1<int> Dimension => <#= n #>;
         public int Length => <#= n #>;
         public Scalar<T>[] Data => new Scalar<T>[<#= n #>] {<#= string.Join(",", Enumerable.Range(0, n).Select(i => " " + componentName(n, i))) #> };
@@ -116,7 +116,7 @@ namespace LinearAlgebra.Vectors
         #region Functions
 
         public Scalar<T> SqrMagnitude => <#= n > 0 ? string.Join(" + ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * " + componentName(n, x))) : "Scalar<T>.Zero" #>;
-        public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
+        public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector<#= n #><T> Normalized => this / Magnitude;
 
         public Scalar<T> Norm(int p)

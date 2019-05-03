@@ -17,7 +17,7 @@ namespace LinearAlgebra.Vectors
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => Scalar<int>.One;
+        public static Scalar<int> Order => Scalar<int>.One;
         public Vector1<int> Dimension { get; }
         public int Length => Dimension.x.Value;
 
@@ -120,7 +120,7 @@ namespace LinearAlgebra.Vectors
         #region Functions
 
         public Scalar<T> SqrMagnitude => Dot(this);
-        public Scalar<T> Magnitude => Math.Sqrt(SqrMagnitude);
+        public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector<T> Normalized => this / Magnitude;
 
         public Scalar<T> Norm(int p)

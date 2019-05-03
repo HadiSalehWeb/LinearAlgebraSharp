@@ -16,7 +16,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
         public Vector2<int> Dimension { get; }
         public Scalar<T>[,] Data { get; }
 
@@ -229,9 +229,27 @@ namespace LinearAlgebra.Matrices
             return new Vector<T>(data);
         }
 
+        public Vector<T> GetMultipliedBy(Vector<T> vec)
+        {
+            if (Dimension.x != vec.Dimension) throw new ArgumentException("Incompatible dimensions.");
+
+            Scalar<T>[] data = new Scalar<T>[Dimension.y];
+            int i = 0, j = 0;
+            for (i = 0, data[i] = Scalar<T>.Zero; i < vec.Dimension; i++)
+                for (j = 0; j < Dimension.y; j++)
+                    data[i] += Data[i, j] * vec[i];
+
+            return new Vector<T>(data);
+        }
+
         public static Vector<T> operator *(Matrix<T> left, Vector<T> right)
         {
             return left.Multiply(right);
+        }
+
+        public static Vector<T> operator *(Vector<T> left, Matrix<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix<T> Add(Matrix<T> mat)

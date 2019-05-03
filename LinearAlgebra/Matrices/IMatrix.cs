@@ -20,5 +20,6 @@ namespace LinearAlgebra.Matrices
         TRow[] Rows { get; }
         TColumn[] Columns { get; }
         TColumn Multiply(TRow vec);
+        TRow GetMultipliedBy(TColumn vec);
     }
 }

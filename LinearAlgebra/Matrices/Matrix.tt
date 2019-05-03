@@ -43,7 +43,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> <#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y)))) #>;
 
@@ -174,9 +174,23 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector<#= n[1] #><T> GetMultipliedBy(Vector<#= n[0] #><T> vec)
+        {
+            return new Vector<#= n[1] #><T>(
+<# for(int y = 0; y < n[1]; y++) { #>
+                <#= string.Join(" + ", Enumerable.Range(0, n[0]).Select(x => "e" + x + y + " * vec." + vectorComponentName(n[1], x))) #><#= y < n[1] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+
         public static Vector<#= n[0] #><T> operator *(Matrix<#= n[0] #>x<#= n[1] #><T> left, Vector<#= n[1] #><T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector<#= n[1] #><T> operator *(Vector<#= n[0] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix<#= n[0] #>x<#= n[1] #><T> Add(Matrix<#= n[0] #>x<#= n[1] #><T> mat)

@@ -15,7 +15,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00;
 
@@ -122,9 +122,21 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector1<T> GetMultipliedBy(Vector1<T> vec)
+        {
+            return new Vector1<T>(
+                e00 * vec.x
+            );
+        }
+
         public static Vector1<T> operator *(Matrix1x1<T> left, Vector1<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector1<T> operator *(Vector1<T> left, Matrix1x1<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix1x1<T> Add(Matrix1x1<T> mat)
@@ -292,7 +304,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e10, e11;
 
@@ -412,9 +424,22 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector2<T> GetMultipliedBy(Vector2<T> vec)
+        {
+            return new Vector2<T>(
+                e00 * vec.x + e10 * vec.y,
+                e01 * vec.x + e11 * vec.y
+            );
+        }
+
         public static Vector2<T> operator *(Matrix2x2<T> left, Vector2<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector2<T> operator *(Vector2<T> left, Matrix2x2<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix2x2<T> Add(Matrix2x2<T> mat)
@@ -608,7 +633,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22;
 
@@ -745,9 +770,23 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector3<T> GetMultipliedBy(Vector3<T> vec)
+        {
+            return new Vector3<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z,
+                e01 * vec.x + e11 * vec.y + e21 * vec.z,
+                e02 * vec.x + e12 * vec.y + e22 * vec.z
+            );
+        }
+
         public static Vector3<T> operator *(Matrix3x3<T> left, Vector3<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector3<T> operator *(Vector3<T> left, Matrix3x3<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix3x3<T> Add(Matrix3x3<T> mat)
@@ -960,7 +999,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23, e30, e31, e32, e33;
 
@@ -1118,9 +1157,24 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector4<T> GetMultipliedBy(Vector4<T> vec)
+        {
+            return new Vector4<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z + e30 * vec.w,
+                e01 * vec.x + e11 * vec.y + e21 * vec.z + e31 * vec.w,
+                e02 * vec.x + e12 * vec.y + e22 * vec.z + e32 * vec.w,
+                e03 * vec.x + e13 * vec.y + e23 * vec.z + e33 * vec.w
+            );
+        }
+
         public static Vector4<T> operator *(Matrix4x4<T> left, Vector4<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector4<T> operator *(Vector4<T> left, Matrix4x4<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix4x4<T> Add(Matrix4x4<T> mat)
@@ -1356,7 +1410,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01;
 
@@ -1458,9 +1512,22 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector2<T> GetMultipliedBy(Vector1<T> vec)
+        {
+            return new Vector2<T>(
+                e00 * vec.x,
+                e01 * vec.x
+            );
+        }
+
         public static Vector1<T> operator *(Matrix1x2<T> left, Vector2<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector2<T> operator *(Vector1<T> left, Matrix1x2<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix1x2<T> Add(Matrix1x2<T> mat)
@@ -1630,7 +1697,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e10;
 
@@ -1735,9 +1802,21 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector1<T> GetMultipliedBy(Vector2<T> vec)
+        {
+            return new Vector1<T>(
+                e00 * vec.x + e10 * vec.y
+            );
+        }
+
         public static Vector2<T> operator *(Matrix2x1<T> left, Vector1<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector1<T> operator *(Vector2<T> left, Matrix2x1<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix2x1<T> Add(Matrix2x1<T> mat)
@@ -1915,7 +1994,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02;
 
@@ -2021,9 +2100,23 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector3<T> GetMultipliedBy(Vector1<T> vec)
+        {
+            return new Vector3<T>(
+                e00 * vec.x,
+                e01 * vec.x,
+                e02 * vec.x
+            );
+        }
+
         public static Vector1<T> operator *(Matrix1x3<T> left, Vector3<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector3<T> operator *(Vector1<T> left, Matrix1x3<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix1x3<T> Add(Matrix1x3<T> mat)
@@ -2195,7 +2288,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e10, e20;
 
@@ -2307,9 +2400,21 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector1<T> GetMultipliedBy(Vector3<T> vec)
+        {
+            return new Vector1<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z
+            );
+        }
+
         public static Vector3<T> operator *(Matrix3x1<T> left, Vector1<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector1<T> operator *(Vector3<T> left, Matrix3x1<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix3x1<T> Add(Matrix3x1<T> mat)
@@ -2497,7 +2602,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02, e03;
 
@@ -2607,9 +2712,24 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector4<T> GetMultipliedBy(Vector1<T> vec)
+        {
+            return new Vector4<T>(
+                e00 * vec.x,
+                e01 * vec.x,
+                e02 * vec.x,
+                e03 * vec.x
+            );
+        }
+
         public static Vector1<T> operator *(Matrix1x4<T> left, Vector4<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector4<T> operator *(Vector1<T> left, Matrix1x4<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix1x4<T> Add(Matrix1x4<T> mat)
@@ -2783,7 +2903,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e10, e20, e30;
 
@@ -2902,9 +3022,21 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector1<T> GetMultipliedBy(Vector4<T> vec)
+        {
+            return new Vector1<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z + e30 * vec.w
+            );
+        }
+
         public static Vector4<T> operator *(Matrix4x1<T> left, Vector1<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector1<T> operator *(Vector4<T> left, Matrix4x1<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix4x1<T> Add(Matrix4x1<T> mat)
@@ -3102,7 +3234,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12;
 
@@ -3219,9 +3351,23 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector3<T> GetMultipliedBy(Vector2<T> vec)
+        {
+            return new Vector3<T>(
+                e00 * vec.x + e10 * vec.y,
+                e01 * vec.x + e11 * vec.y,
+                e02 * vec.x + e12 * vec.y
+            );
+        }
+
         public static Vector2<T> operator *(Matrix2x3<T> left, Vector3<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector3<T> operator *(Vector2<T> left, Matrix2x3<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix2x3<T> Add(Matrix2x3<T> mat)
@@ -3419,7 +3565,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21;
 
@@ -3539,9 +3685,22 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector2<T> GetMultipliedBy(Vector3<T> vec)
+        {
+            return new Vector2<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z,
+                e01 * vec.x + e11 * vec.y + e21 * vec.z
+            );
+        }
+
         public static Vector3<T> operator *(Matrix3x2<T> left, Vector2<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector2<T> operator *(Vector3<T> left, Matrix3x2<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix3x2<T> Add(Matrix3x2<T> mat)
@@ -3748,7 +3907,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13;
 
@@ -3871,9 +4030,24 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector4<T> GetMultipliedBy(Vector2<T> vec)
+        {
+            return new Vector4<T>(
+                e00 * vec.x + e10 * vec.y,
+                e01 * vec.x + e11 * vec.y,
+                e02 * vec.x + e12 * vec.y,
+                e03 * vec.x + e13 * vec.y
+            );
+        }
+
         public static Vector2<T> operator *(Matrix2x4<T> left, Vector4<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector4<T> operator *(Vector2<T> left, Matrix2x4<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix2x4<T> Add(Matrix2x4<T> mat)
@@ -4075,7 +4249,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e10, e11, e20, e21, e30, e31;
 
@@ -4204,9 +4378,22 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector2<T> GetMultipliedBy(Vector4<T> vec)
+        {
+            return new Vector2<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z + e30 * vec.w,
+                e01 * vec.x + e11 * vec.y + e21 * vec.z + e31 * vec.w
+            );
+        }
+
         public static Vector4<T> operator *(Matrix4x2<T> left, Vector2<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector2<T> operator *(Vector4<T> left, Matrix4x2<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix4x2<T> Add(Matrix4x2<T> mat)
@@ -4426,7 +4613,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23;
 
@@ -4562,9 +4749,24 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector4<T> GetMultipliedBy(Vector3<T> vec)
+        {
+            return new Vector4<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z,
+                e01 * vec.x + e11 * vec.y + e21 * vec.z,
+                e02 * vec.x + e12 * vec.y + e22 * vec.z,
+                e03 * vec.x + e13 * vec.y + e23 * vec.z
+            );
+        }
+
         public static Vector3<T> operator *(Matrix3x4<T> left, Vector4<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector4<T> operator *(Vector3<T> left, Matrix3x4<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix3x4<T> Add(Matrix3x4<T> mat)
@@ -4783,7 +4985,7 @@ namespace LinearAlgebra.Matrices
     {
         #region Fields and Properties
 
-        public static Scalar<int> Rank => 2;
+        public static Scalar<int> Order => 2;
 
         public readonly Scalar<T> e00, e01, e02, e10, e11, e12, e20, e21, e22, e30, e31, e32;
 
@@ -4922,9 +5124,23 @@ namespace LinearAlgebra.Matrices
             return Transform(vec);
         }
 
+        public Vector3<T> GetMultipliedBy(Vector4<T> vec)
+        {
+            return new Vector3<T>(
+                e00 * vec.x + e10 * vec.y + e20 * vec.z + e30 * vec.w,
+                e01 * vec.x + e11 * vec.y + e21 * vec.z + e31 * vec.w,
+                e02 * vec.x + e12 * vec.y + e22 * vec.z + e32 * vec.w
+            );
+        }
+
         public static Vector4<T> operator *(Matrix4x3<T> left, Vector3<T> right)
         {
-            return left.Transform(right);
+            return left.Multiply(right);
+        }
+
+        public static Vector3<T> operator *(Vector4<T> left, Matrix4x3<T> right)
+        {
+            return right.GetMultipliedBy(left);
         }
 
         public Matrix4x3<T> Add(Matrix4x3<T> mat)

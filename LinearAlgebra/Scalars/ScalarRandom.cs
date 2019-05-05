@@ -27,7 +27,7 @@ namespace LinearAlgebra.Scalars
         {
             double next = rand.NextDouble();
 
-            if (Scalar<T>.algebraicStructure <= Scalar<T>.AlgebraicStructure.Ring)
+            if (Scalar<T>.algebraicStructure <= AlgebraicStructure.Ring)
                 return next < .5 ? Scalar<T>.Zero : Scalar<T>.One;
 
             return next;

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace LinearAlgebra.Matrices
 {
+    [Serializable]
     public struct Matrix1x1<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -295,6 +296,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix2x2<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -624,6 +626,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix3x3<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -990,6 +993,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix4x4<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -1401,6 +1405,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix1x2<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -1688,6 +1693,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix2x1<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -1985,6 +1991,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix1x3<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -2279,6 +2286,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix3x1<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -2593,6 +2601,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix1x4<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -2894,6 +2903,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix4x1<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -3225,6 +3235,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix2x3<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -3556,6 +3567,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix3x2<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -3898,6 +3910,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix2x4<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -4240,6 +4253,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix4x2<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -4604,6 +4618,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix3x4<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,
@@ -4976,6 +4991,7 @@ namespace LinearAlgebra.Matrices
         #endregion
     }
 
+    [Serializable]
     public struct Matrix4x3<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,

@@ -21,6 +21,7 @@
 		new int[2] { 2, 4 }, new int[2] { 4, 2 },
 		new int[2] { 3, 4 }, new int[2] { 4, 3 }
 	};
+	var maxMatrixDimension = supportedDimensions.SelectMany(x => x).Max();
 	var componentName = new Func<int, int, string>((x, y) => "e" + x + y);
 	var vectorComponentName = new Func<int, int, string>((n, i) => n < 5 ? "xyzw"[i].ToString() : "v" + i);
 	var index = 0;
@@ -34,6 +35,7 @@ using System.Collections.Generic;
 namespace LinearAlgebra.Matrices
 {
 <# foreach (var n in supportedDimensions) { #>
+    [Serializable]
     public struct Matrix<#= n[0] #>x<#= n[1] #><T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,

@@ -68,7 +68,7 @@ namespace LinearAlgebra.Vectors
 <# for (int i = 0; i < n; i++) { #>
 <# if (i < directionVocabulary.Count) { #>
         public static readonly Vector<#= n #><T> <#= directionVocabulary[i].Item1 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "Scalar<T>.One" : "Scalar<T>.Zero")) #>);
-        public static readonly Vector<#= n #><T> <#= directionVocabulary[i].Item2 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "-Scalar<T>.One" : "Scalar<T>.Zero")) #>);
+        public static readonly Vector<#= n #><T> <#= directionVocabulary[i].Item2 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "Scalar<T>.NegativeOneOrZero" : "Scalar<T>.Zero")) #>);
 
 <# } else { #>
         public static readonly Vector<#= n #><T> basis<#= i + 1 #> = new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(j => i == j ? "Scalar<T>.One" : "Scalar<T>.Zero")) #>);

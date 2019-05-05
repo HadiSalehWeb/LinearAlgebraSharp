@@ -20,6 +20,7 @@ namespace LinearAlgebra.Scalars
                 return _e.Value;
             }
         }
+
         public static Scalar<T> PI
         {
             get
@@ -31,7 +32,7 @@ namespace LinearAlgebra.Scalars
 
         static ScalarMath()
         {
-            if (Scalar<T>.algebraicStructure == Scalar<T>.AlgebraicStructure.Field)
+            if (Scalar<T>.algebraicStructure == AlgebraicStructure.Field)
             {
                 _e = Math.E;
                 _pi = Math.PI;
@@ -75,7 +76,7 @@ namespace LinearAlgebra.Scalars
         {
             double sqrt = Math.Sqrt(s);
 
-            if (Scalar<T>.algebraicStructure == Scalar<T>.AlgebraicStructure.Field || sqrt % 1 == 0)
+            if (Scalar<T>.algebraicStructure == AlgebraicStructure.Field || sqrt % 1 == 0)
                 return sqrt;
 
             throw new Exception($"Square root of { s.ToString() }: Scalar<{typeof(T).Name}> contains a decimal point and can't be casted back to Scalar<{typeof(T).Name}>.");
@@ -83,7 +84,7 @@ namespace LinearAlgebra.Scalars
 
         public Scalar<T> Floor(Scalar<T> s)
         {
-            if (Scalar<T>.algebraicStructure <= Scalar<T>.AlgebraicStructure.Ring)
+            if (Scalar<T>.algebraicStructure <= AlgebraicStructure.Ring)
                 return s;
 
 
@@ -99,7 +100,7 @@ namespace LinearAlgebra.Scalars
 
         public Scalar<T> Ceiling(Scalar<T> s)
         {
-            if (Scalar<T>.algebraicStructure <= Scalar<T>.AlgebraicStructure.Ring)
+            if (Scalar<T>.algebraicStructure <= AlgebraicStructure.Ring)
                 return s;
 
 
@@ -271,7 +272,7 @@ namespace LinearAlgebra.Scalars
 
         public Scalar<T> Pow(Scalar<T> s1, Scalar<T> s2)
         {
-            if (Scalar<T>.algebraicStructure == Scalar<T>.AlgebraicStructure.Ring && s1 < Scalar<T>.Zero)
+            if (Scalar<T>.algebraicStructure == AlgebraicStructure.Ring && s1 < Scalar<T>.Zero)
                 throw new Exception("Non-field elements can only be raised to positive powers.");
 
             return Math.Pow(s1, s2);

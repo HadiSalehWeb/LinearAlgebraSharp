@@ -35,7 +35,7 @@ namespace LinearAlgebra.Vectors
         /// <summary>
         /// (-1)
         /// </summary>
-        public static readonly Vector<T> left = new Vector<T>(-Scalar<T>.One);
+        public static readonly Vector<T> left = new Vector<T>(Scalar<T>.NegativeOneOrZero);
         /// <summary>
         /// (0, 1)
         /// </summary>
@@ -43,7 +43,7 @@ namespace LinearAlgebra.Vectors
         /// <summary>
         /// (0, -1)
         /// </summary>
-        public static readonly Vector<T> down = new Vector<T>(Scalar<T>.Zero, -Scalar<T>.One);
+        public static readonly Vector<T> down = new Vector<T>(Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
         /// <summary>
         /// (0, 0, 1)
         /// </summary>
@@ -51,7 +51,7 @@ namespace LinearAlgebra.Vectors
         /// <summary>
         /// (0, 0, -1)
         /// </summary>
-        public static readonly Vector<T> backward = new Vector<T>(Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One);
+        public static readonly Vector<T> backward = new Vector<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
         /// <summary>
         /// (0, 0, 0, 1)
         /// </summary>
@@ -59,7 +59,7 @@ namespace LinearAlgebra.Vectors
         /// <summary>
         /// (0, 0, 0, -1)
         /// </summary>
-        public static readonly Vector<T> kata = new Vector<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One);
+        public static readonly Vector<T> kata = new Vector<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
 
         public static Vector<T> Zero(int dimension)
         {

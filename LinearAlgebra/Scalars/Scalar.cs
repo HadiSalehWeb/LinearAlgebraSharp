@@ -16,6 +16,13 @@ using System.Runtime.InteropServices;
 
 namespace LinearAlgebra.Scalars
 {
+    public enum AlgebraicStructure
+    {
+        Semiring = 1,
+        Ring = 3,
+        Field = 7
+    }
+
     /// <summary>
     /// This is where the magic happens.
     /// The purpose of this struct is to replicate the behaviour of a union type in C by lining up all its
@@ -244,13 +251,6 @@ namespace LinearAlgebra.Scalars
             Decimal
         }
 
-        public enum AlgebraicStructure
-        {
-            Semiring = 1,
-            Ring = 3,
-            Field = 7
-        }
-
         private static readonly Dictionary<Type, ScalarType> TypeMap = new Dictionary<Type, ScalarType>
         {
             { typeof(System.SByte), ScalarType.SByte },
@@ -301,6 +301,7 @@ namespace LinearAlgebra.Scalars
         public static Scalar<T> One { get; }
         public static Scalar<T> MinValue { get; }
         public static Scalar<T> MaxValue { get; }
+        public static Scalar<T> NegativeOneOrZero => algebraicStructure == AlgebraicStructure.Semiring ? Zero : -One;
 
         static Scalar()
         {
@@ -370,21 +371,21 @@ namespace LinearAlgebra.Scalars
                     One = 1f;
                     MinValue = -3.40282347E+38f;
                     MaxValue = 3.40282347E+38f;
-                    algebraicStructure = AlgebraicStructure.Ring;
+                    algebraicStructure = AlgebraicStructure.Field;
                     break;
                 case ScalarType.Double:
                     Zero = 0d;
                     One = 1d;
                     MinValue = -1.7976931348623157E+308d;
                     MaxValue = 1.7976931348623157E+308d;
-                    algebraicStructure = AlgebraicStructure.Ring;
+                    algebraicStructure = AlgebraicStructure.Field;
                     break;
                 case ScalarType.Decimal:
                     Zero = 0m;
                     One = 1m;
                     MinValue = -79228162514264337593543950335m;
                     MaxValue = 79228162514264337593543950335m;
-                    algebraicStructure = AlgebraicStructure.Ring;
+                    algebraicStructure = AlgebraicStructure.Field;
                     break;
                 default:
                     throw new ArgumentException($"Unrecognized scalar type <{ scalarType }>");

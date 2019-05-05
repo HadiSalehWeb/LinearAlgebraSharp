@@ -44,6 +44,13 @@ using System.Runtime.InteropServices;
 
 namespace LinearAlgebra.Scalars
 {
+    public enum AlgebraicStructure
+    {
+        Semiring = 1,
+        Ring = 3,
+        Field = 7
+    }
+
     /// <summary>
     /// This is where the magic happens.
     /// The purpose of this struct is to replicate the behaviour of a union type in C by lining up all its
@@ -95,13 +102,6 @@ namespace LinearAlgebra.Scalars
 <# } #>
         }
 
-        public enum AlgebraicStructure
-        {
-            Semiring = 1,
-            Ring = 3,
-            Field = 7
-        }
-
         private static readonly Dictionary<Type, ScalarType> TypeMap = new Dictionary<Type, ScalarType>
         {
 <# for (int i = 0; i < supportedTypes.Count; i++) { #>
@@ -136,6 +136,7 @@ namespace LinearAlgebra.Scalars
         public static Scalar<T> One { get; }
         public static Scalar<T> MinValue { get; }
         public static Scalar<T> MaxValue { get; }
+        public static Scalar<T> NegativeOneOrZero => algebraicStructure == AlgebraicStructure.Semiring ? Zero : -One;
 
         static Scalar()
         {
@@ -488,7 +489,7 @@ public struct ScalarType
 
 		if (!hasAdditiveInverse && !hasMultiplicativeInverse)
             algebraicStructreName = "Semiring";
-        else if (hasAdditiveInverse)
+        else if (!hasMultiplicativeInverse)
             algebraicStructreName = "Ring";
         else
             algebraicStructreName = "Field";

@@ -264,7 +264,7 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector1<T> one = new Vector1<T>(Scalar<T>.One);
 
         public static readonly Vector1<T> right = new Vector1<T>(Scalar<T>.One);
-        public static readonly Vector1<T> left = new Vector1<T>(-Scalar<T>.One);
+        public static readonly Vector1<T> left = new Vector1<T>(Scalar<T>.NegativeOneOrZero);
 
         #endregion
 
@@ -531,10 +531,10 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector2<T> one = new Vector2<T>(Scalar<T>.One, Scalar<T>.One);
 
         public static readonly Vector2<T> right = new Vector2<T>(Scalar<T>.One, Scalar<T>.Zero);
-        public static readonly Vector2<T> left = new Vector2<T>(-Scalar<T>.One, Scalar<T>.Zero);
+        public static readonly Vector2<T> left = new Vector2<T>(Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero);
 
         public static readonly Vector2<T> up = new Vector2<T>(Scalar<T>.Zero, Scalar<T>.One);
-        public static readonly Vector2<T> down = new Vector2<T>(Scalar<T>.Zero, -Scalar<T>.One);
+        public static readonly Vector2<T> down = new Vector2<T>(Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
 
         #endregion
 
@@ -823,13 +823,13 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector3<T> one = new Vector3<T>(Scalar<T>.One, Scalar<T>.One, Scalar<T>.One);
 
         public static readonly Vector3<T> right = new Vector3<T>(Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero);
-        public static readonly Vector3<T> left = new Vector3<T>(-Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero);
+        public static readonly Vector3<T> left = new Vector3<T>(Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero, Scalar<T>.Zero);
 
         public static readonly Vector3<T> up = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.One, Scalar<T>.Zero);
-        public static readonly Vector3<T> down = new Vector3<T>(Scalar<T>.Zero, -Scalar<T>.One, Scalar<T>.Zero);
+        public static readonly Vector3<T> down = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero);
 
         public static readonly Vector3<T> forward = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
-        public static readonly Vector3<T> backward = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One);
+        public static readonly Vector3<T> backward = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
 
         #endregion
 
@@ -1127,16 +1127,16 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector4<T> one = new Vector4<T>(Scalar<T>.One, Scalar<T>.One, Scalar<T>.One, Scalar<T>.One);
 
         public static readonly Vector4<T> right = new Vector4<T>(Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
-        public static readonly Vector4<T> left = new Vector4<T>(-Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
+        public static readonly Vector4<T> left = new Vector4<T>(Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
 
         public static readonly Vector4<T> up = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero);
-        public static readonly Vector4<T> down = new Vector4<T>(Scalar<T>.Zero, -Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero);
+        public static readonly Vector4<T> down = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero, Scalar<T>.Zero);
 
         public static readonly Vector4<T> forward = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One, Scalar<T>.Zero);
-        public static readonly Vector4<T> backward = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One, Scalar<T>.Zero);
+        public static readonly Vector4<T> backward = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero);
 
         public static readonly Vector4<T> ana = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
-        public static readonly Vector4<T> kata = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One);
+        public static readonly Vector4<T> kata = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
 
         #endregion
 
@@ -1443,16 +1443,16 @@ namespace LinearAlgebra.Vectors
         public static readonly Vector5<T> one = new Vector5<T>(Scalar<T>.One, Scalar<T>.One, Scalar<T>.One, Scalar<T>.One, Scalar<T>.One);
 
         public static readonly Vector5<T> right = new Vector5<T>(Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
-        public static readonly Vector5<T> left = new Vector5<T>(-Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
+        public static readonly Vector5<T> left = new Vector5<T>(Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
 
         public static readonly Vector5<T> up = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
-        public static readonly Vector5<T> down = new Vector5<T>(Scalar<T>.Zero, -Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
+        public static readonly Vector5<T> down = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero);
 
         public static readonly Vector5<T> forward = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero);
-        public static readonly Vector5<T> backward = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One, Scalar<T>.Zero, Scalar<T>.Zero);
+        public static readonly Vector5<T> backward = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero, Scalar<T>.Zero);
 
         public static readonly Vector5<T> ana = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One, Scalar<T>.Zero);
-        public static readonly Vector5<T> kata = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, -Scalar<T>.One, Scalar<T>.Zero);
+        public static readonly Vector5<T> kata = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero, Scalar<T>.Zero);
 
         public static readonly Vector5<T> basis5 = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
 

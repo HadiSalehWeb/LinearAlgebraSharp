@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace LinearAlgebra.Tensors
 {
+    //Todo: change data storage to 1D array
+    [Serializable]
     public class Tensor<TVec, T>
         where TVec : IVector<int, TVec>
         where T : struct

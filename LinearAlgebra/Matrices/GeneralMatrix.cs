@@ -7,6 +7,7 @@ using System.Text;
 
 namespace LinearAlgebra.Matrices
 {
+    [Serializable]
     public struct Matrix<T> :
         IEnumerable,
         IEnumerable<Scalar<T>>,

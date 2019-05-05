@@ -7,30 +7,68 @@ namespace LinearAlgebra.UnitTest.Scalars
     public class ScalarTest
     {
         [Fact]
+        public void TestAlgebraicStructure()
+        {
+            Assert.Equal(AlgebraicStructure.Semiring, Scalar<byte>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Semiring, Scalar<ushort>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Semiring, Scalar<uint>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Semiring, Scalar<ulong>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Ring, Scalar<sbyte>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Ring, Scalar<short>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Ring, Scalar<int>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Ring, Scalar<long>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Field, Scalar<float>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Field, Scalar<double>.algebraicStructure);
+            Assert.Equal(AlgebraicStructure.Field, Scalar<decimal>.algebraicStructure);
+        }
+
+        [Fact]
         public void TestStaticConstants()
         {
             Assert.Equal((sbyte)0, Scalar<sbyte>.Zero.Value);
             Assert.Equal((sbyte)1, Scalar<sbyte>.One.Value);
+            Assert.Equal(sbyte.MinValue, Scalar<sbyte>.MinValue.Value);
+            Assert.Equal(sbyte.MaxValue, Scalar<sbyte>.MaxValue.Value);
             Assert.Equal((byte)0, Scalar<byte>.Zero.Value);
             Assert.Equal((byte)1, Scalar<byte>.One.Value);
+            Assert.Equal(byte.MinValue, Scalar<byte>.MinValue.Value);
+            Assert.Equal(byte.MaxValue, Scalar<byte>.MaxValue.Value);
             Assert.Equal((short)0, Scalar<short>.Zero.Value);
             Assert.Equal((short)1, Scalar<short>.One.Value);
+            Assert.Equal(short.MinValue, Scalar<short>.MinValue.Value);
+            Assert.Equal(short.MaxValue, Scalar<short>.MaxValue.Value);
             Assert.Equal((ushort)0, Scalar<ushort>.Zero.Value);
             Assert.Equal((ushort)1, Scalar<ushort>.One.Value);
+            Assert.Equal(ushort.MinValue, Scalar<ushort>.MinValue.Value);
+            Assert.Equal(ushort.MaxValue, Scalar<ushort>.MaxValue.Value);
             Assert.Equal(0, Scalar<int>.Zero.Value);
             Assert.Equal(1, Scalar<int>.One.Value);
+            Assert.Equal(int.MinValue, Scalar<int>.MinValue.Value);
+            Assert.Equal(int.MaxValue, Scalar<int>.MaxValue.Value);
             Assert.Equal(0u, Scalar<uint>.Zero.Value);
             Assert.Equal(1u, Scalar<uint>.One.Value);
+            Assert.Equal(uint.MinValue, Scalar<uint>.MinValue.Value);
+            Assert.Equal(uint.MaxValue, Scalar<uint>.MaxValue.Value);
             Assert.Equal(0L, Scalar<long>.Zero.Value);
             Assert.Equal(1L, Scalar<long>.One.Value);
+            Assert.Equal(long.MinValue, Scalar<long>.MinValue.Value);
+            Assert.Equal(long.MaxValue, Scalar<long>.MaxValue.Value);
             Assert.Equal(0uL, Scalar<ulong>.Zero.Value);
             Assert.Equal(1uL, Scalar<ulong>.One.Value);
+            Assert.Equal(ulong.MinValue, Scalar<ulong>.MinValue.Value);
+            Assert.Equal(ulong.MaxValue, Scalar<ulong>.MaxValue.Value);
             Assert.Equal(0f, Scalar<float>.Zero.Value);
             Assert.Equal(1f, Scalar<float>.One.Value);
+            Assert.Equal(float.MinValue, Scalar<float>.MinValue.Value);
+            Assert.Equal(float.MaxValue, Scalar<float>.MaxValue.Value);
             Assert.Equal(0d, Scalar<double>.Zero.Value);
             Assert.Equal(1d, Scalar<double>.One.Value);
+            Assert.Equal(double.MinValue, Scalar<double>.MinValue.Value);
+            Assert.Equal(double.MaxValue, Scalar<double>.MaxValue.Value);
             Assert.Equal(0m, Scalar<decimal>.Zero.Value);
             Assert.Equal(1m, Scalar<decimal>.One.Value);
+            Assert.Equal(decimal.MinValue, Scalar<decimal>.MinValue.Value);
+            Assert.Equal(decimal.MaxValue, Scalar<decimal>.MaxValue.Value);
         }
 
         [Fact]
@@ -227,6 +265,34 @@ namespace LinearAlgebra.UnitTest.Scalars
             Assert.Equal(new Scalar<float>(2.5f), floatV1 / floatV2);
             Assert.Equal(new Scalar<double>(2.5d), doubleV1 / doubleV2);
             Assert.Equal(new Scalar<decimal>(2.5m), decimalV1 / decimalV2);
+        }
+
+        [Fact]
+        public void TestModulo()
+        {
+            Scalar<sbyte> sbyteV1 = new Scalar<sbyte>(5), sbyteV2 = new Scalar<sbyte>(2);
+            Scalar<byte> byteV1 = new Scalar<byte>(5), byteV2 = new Scalar<byte>(2);
+            Scalar<short> shortV1 = new Scalar<short>(5), shortV2 = new Scalar<short>(2);
+            Scalar<ushort> ushortV1 = new Scalar<ushort>(5), ushortV2 = new Scalar<ushort>(2);
+            Scalar<int> intV1 = new Scalar<int>(5), intV2 = new Scalar<int>(2);
+            Scalar<uint> uintV1 = new Scalar<uint>(5), uintV2 = new Scalar<uint>(2);
+            Scalar<long> longV1 = new Scalar<long>(5), longV2 = new Scalar<long>(2);
+            Scalar<ulong> ulongV1 = new Scalar<ulong>(5), ulongV2 = new Scalar<ulong>(2);
+            Scalar<float> floatV1 = new Scalar<float>(5f), floatV2 = new Scalar<float>(2f);
+            Scalar<double> doubleV1 = new Scalar<double>(5.0), doubleV2 = new Scalar<double>(2.0);
+            Scalar<decimal> decimalV1 = new Scalar<decimal>(5m), decimalV2 = new Scalar<decimal>(2m);
+
+            Assert.Equal(new Scalar<sbyte>(1), sbyteV1 % sbyteV2);
+            Assert.Equal(new Scalar<byte>(1), byteV1 % byteV2);
+            Assert.Equal(new Scalar<short>(1), shortV1 % shortV2);
+            Assert.Equal(new Scalar<ushort>(1), ushortV1 % ushortV2);
+            Assert.Equal(new Scalar<int>(1), intV1 % intV2);
+            Assert.Equal(new Scalar<uint>(1u), uintV1 % uintV2);
+            Assert.Equal(new Scalar<long>(1L), longV1 % longV2);
+            Assert.Equal(new Scalar<ulong>(1uL), ulongV1 % ulongV2);
+            Assert.Equal(new Scalar<float>(1.0f), floatV1 % floatV2);
+            Assert.Equal(new Scalar<double>(1.0d), doubleV1 % doubleV2);
+            Assert.Equal(new Scalar<decimal>(1.0m), decimalV1 % decimalV2);
         }
 
         [Fact]

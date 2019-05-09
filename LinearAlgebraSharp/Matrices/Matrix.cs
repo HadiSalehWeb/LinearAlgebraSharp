@@ -227,6 +227,117 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x2<T> operator |(Matrix1x1<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix1x2<T>(
+                left.e00, right.e00
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x3<T> operator |(Matrix1x1<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix1x3<T>(
+                left.e00, right.e00, right.e01
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x3<T> operator |(Matrix1x2<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix1x3<T>(
+                left.e00, left.e01, right.e00
+            );
+        }
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x4<T> operator |(Matrix1x1<T> left, Matrix1x3<T> right)
+        {
+            return new Matrix1x4<T>(
+                left.e00, right.e00, right.e01, right.e02
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x4<T> operator |(Matrix1x3<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix1x4<T>(
+                left.e00, left.e01, left.e02, right.e00
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix2x1<T> operator /(Matrix1x1<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix2x1<T>(
+                left.e00,
+                right.e00
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x1<T> operator /(Matrix1x1<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix3x1<T>(
+                left.e00,
+                right.e00,
+                right.e10
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x1<T> operator /(Matrix2x1<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix3x1<T>(
+                left.e00,
+                left.e10,
+                right.e00
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x1<T> operator /(Matrix1x1<T> left, Matrix3x1<T> right)
+        {
+            return new Matrix4x1<T>(
+                left.e00,
+                right.e00,
+                right.e10,
+                right.e20
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x1<T> operator /(Matrix3x1<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix4x1<T>(
+                left.e00,
+                left.e10,
+                left.e20,
+                right.e00
+            );
+        }
 
         #endregion
 
@@ -265,7 +376,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (1) + e00.GetHashCode();
         }
 
         public object Clone()
@@ -538,6 +649,76 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x3<T> operator |(Matrix2x2<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix2x3<T>(
+                left.e00, left.e01, right.e00,
+                left.e10, left.e11, right.e10
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x3<T> operator |(Matrix2x1<T> left, Matrix2x2<T> right)
+        {
+            return new Matrix2x3<T>(
+                left.e00, right.e00, right.e01,
+                left.e10, right.e10, right.e11
+            );
+        }
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x4<T> operator |(Matrix2x2<T> left, Matrix2x2<T> right)
+        {
+            return new Matrix2x4<T>(
+                left.e00, left.e01, right.e00, right.e01,
+                left.e10, left.e11, right.e10, right.e11
+            );
+        }
+		
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x2<T> operator /(Matrix2x2<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix3x2<T>(
+                left.e00, left.e01,
+                left.e10, left.e11,
+                right.e00, right.e01
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x2<T> operator /(Matrix1x2<T> left, Matrix2x2<T> right)
+        {
+            return new Matrix3x2<T>(
+                left.e00, left.e01,
+                right.e00, right.e01,
+                right.e10, right.e11
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x2<T> operator /(Matrix2x2<T> left, Matrix2x2<T> right)
+        {
+            return new Matrix4x2<T>(
+                left.e00, left.e01,
+                left.e10, left.e11,
+                right.e00, right.e01,
+                right.e10, right.e11
+            );
+        }
 
         #endregion
 
@@ -589,7 +770,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode();
         }
 
         public object Clone()
@@ -893,6 +1074,56 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator |(Matrix3x3<T> left, Matrix3x1<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, left.e01, left.e02, right.e00,
+                left.e10, left.e11, left.e12, right.e10,
+                left.e20, left.e21, left.e22, right.e20
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator |(Matrix3x1<T> left, Matrix3x3<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, right.e00, right.e01, right.e02,
+                left.e10, right.e10, right.e11, right.e12,
+                left.e20, right.e20, right.e21, right.e22
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator /(Matrix3x3<T> left, Matrix1x3<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, left.e01, left.e02,
+                left.e10, left.e11, left.e12,
+                left.e20, left.e21, left.e22,
+                right.e00, right.e01, right.e02
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator /(Matrix1x3<T> left, Matrix3x3<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, left.e01, left.e02,
+                right.e00, right.e01, right.e02,
+                right.e10, right.e11, right.e12,
+                right.e20, right.e21, right.e22
+            );
+        }
 
         #endregion
 
@@ -946,7 +1177,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e12.GetHashCode()) + e20.GetHashCode()) + e21.GetHashCode()) + e22.GetHashCode();
         }
 
         public object Clone()
@@ -1289,7 +1520,7 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
-
+		
         #endregion
 
         #region Identity
@@ -1344,7 +1575,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode()) + e03.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e12.GetHashCode()) + e13.GetHashCode()) + e20.GetHashCode()) + e21.GetHashCode()) + e22.GetHashCode()) + e23.GetHashCode()) + e30.GetHashCode()) + e31.GetHashCode()) + e32.GetHashCode()) + e33.GetHashCode();
         }
 
         public object Clone()
@@ -1622,6 +1853,97 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x3<T> operator |(Matrix1x2<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix1x3<T>(
+                left.e00, left.e01, right.e00
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x3<T> operator |(Matrix1x1<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix1x3<T>(
+                left.e00, right.e00, right.e01
+            );
+        }
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x4<T> operator |(Matrix1x2<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix1x4<T>(
+                left.e00, left.e01, right.e00, right.e01
+            );
+        }
+		
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix2x2<T> operator /(Matrix1x2<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix2x2<T>(
+                left.e00, left.e01,
+                right.e00, right.e01
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x2<T> operator /(Matrix1x2<T> left, Matrix2x2<T> right)
+        {
+            return new Matrix3x2<T>(
+                left.e00, left.e01,
+                right.e00, right.e01,
+                right.e10, right.e11
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x2<T> operator /(Matrix2x2<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix3x2<T>(
+                left.e00, left.e01,
+                left.e10, left.e11,
+                right.e00, right.e01
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x2<T> operator /(Matrix1x2<T> left, Matrix3x2<T> right)
+        {
+            return new Matrix4x2<T>(
+                left.e00, left.e01,
+                right.e00, right.e01,
+                right.e10, right.e11,
+                right.e20, right.e21
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x2<T> operator /(Matrix3x2<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix4x2<T>(
+                left.e00, left.e01,
+                left.e10, left.e11,
+                left.e20, left.e21,
+                right.e00, right.e01
+            );
+        }
 
         #endregion
 
@@ -1660,7 +1982,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode();
         }
 
         public object Clone()
@@ -1919,6 +2241,98 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x2<T> operator |(Matrix2x1<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix2x2<T>(
+                left.e00, right.e00,
+                left.e10, right.e10
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x3<T> operator |(Matrix2x1<T> left, Matrix2x2<T> right)
+        {
+            return new Matrix2x3<T>(
+                left.e00, right.e00, right.e01,
+                left.e10, right.e10, right.e11
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x3<T> operator |(Matrix2x2<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix2x3<T>(
+                left.e00, left.e01, right.e00,
+                left.e10, left.e11, right.e10
+            );
+        }
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x4<T> operator |(Matrix2x1<T> left, Matrix2x3<T> right)
+        {
+            return new Matrix2x4<T>(
+                left.e00, right.e00, right.e01, right.e02,
+                left.e10, right.e10, right.e11, right.e12
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x4<T> operator |(Matrix2x3<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix2x4<T>(
+                left.e00, left.e01, left.e02, right.e00,
+                left.e10, left.e11, left.e12, right.e10
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x1<T> operator /(Matrix2x1<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix3x1<T>(
+                left.e00,
+                left.e10,
+                right.e00
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x1<T> operator /(Matrix1x1<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix3x1<T>(
+                left.e00,
+                right.e00,
+                right.e10
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x1<T> operator /(Matrix2x1<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix4x1<T>(
+                left.e00,
+                left.e10,
+                right.e00,
+                right.e10
+            );
+        }
 
         #endregion
 
@@ -1958,7 +2372,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (1) + e00.GetHashCode()) + e10.GetHashCode();
         }
 
         public object Clone()
@@ -2213,6 +2627,87 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x4<T> operator |(Matrix1x3<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix1x4<T>(
+                left.e00, left.e01, left.e02, right.e00
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix1x4<T> operator |(Matrix1x1<T> left, Matrix1x3<T> right)
+        {
+            return new Matrix1x4<T>(
+                left.e00, right.e00, right.e01, right.e02
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix2x3<T> operator /(Matrix1x3<T> left, Matrix1x3<T> right)
+        {
+            return new Matrix2x3<T>(
+                left.e00, left.e01, left.e02,
+                right.e00, right.e01, right.e02
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator /(Matrix1x3<T> left, Matrix2x3<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, left.e01, left.e02,
+                right.e00, right.e01, right.e02,
+                right.e10, right.e11, right.e12
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator /(Matrix2x3<T> left, Matrix1x3<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, left.e01, left.e02,
+                left.e10, left.e11, left.e12,
+                right.e00, right.e01, right.e02
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator /(Matrix1x3<T> left, Matrix3x3<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, left.e01, left.e02,
+                right.e00, right.e01, right.e02,
+                right.e10, right.e11, right.e12,
+                right.e20, right.e21, right.e22
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator /(Matrix3x3<T> left, Matrix1x3<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, left.e01, left.e02,
+                left.e10, left.e11, left.e12,
+                left.e20, left.e21, left.e22,
+                right.e00, right.e01, right.e02
+            );
+        }
 
         #endregion
 
@@ -2251,7 +2746,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode();
         }
 
         public object Clone()
@@ -2526,6 +3021,92 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x2<T> operator |(Matrix3x1<T> left, Matrix3x1<T> right)
+        {
+            return new Matrix3x2<T>(
+                left.e00, right.e00,
+                left.e10, right.e10,
+                left.e20, right.e20
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator |(Matrix3x1<T> left, Matrix3x2<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, right.e00, right.e01,
+                left.e10, right.e10, right.e11,
+                left.e20, right.e20, right.e21
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator |(Matrix3x2<T> left, Matrix3x1<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, left.e01, right.e00,
+                left.e10, left.e11, right.e10,
+                left.e20, left.e21, right.e20
+            );
+        }
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator |(Matrix3x1<T> left, Matrix3x3<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, right.e00, right.e01, right.e02,
+                left.e10, right.e10, right.e11, right.e12,
+                left.e20, right.e20, right.e21, right.e22
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator |(Matrix3x3<T> left, Matrix3x1<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, left.e01, left.e02, right.e00,
+                left.e10, left.e11, left.e12, right.e10,
+                left.e20, left.e21, left.e22, right.e20
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x1<T> operator /(Matrix3x1<T> left, Matrix1x1<T> right)
+        {
+            return new Matrix4x1<T>(
+                left.e00,
+                left.e10,
+                left.e20,
+                right.e00
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x1<T> operator /(Matrix1x1<T> left, Matrix3x1<T> right)
+        {
+            return new Matrix4x1<T>(
+                left.e00,
+                right.e00,
+                right.e10,
+                right.e20
+            );
+        }
 
         #endregion
 
@@ -2566,7 +3147,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (1) + e00.GetHashCode()) + e10.GetHashCode()) + e20.GetHashCode();
         }
 
         public object Clone()
@@ -2828,6 +3409,67 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix2x4<T> operator /(Matrix1x4<T> left, Matrix1x4<T> right)
+        {
+            return new Matrix2x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                right.e00, right.e01, right.e02, right.e03
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator /(Matrix1x4<T> left, Matrix2x4<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                right.e00, right.e01, right.e02, right.e03,
+                right.e10, right.e11, right.e12, right.e13
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator /(Matrix2x4<T> left, Matrix1x4<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                left.e10, left.e11, left.e12, left.e13,
+                right.e00, right.e01, right.e02, right.e03
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator /(Matrix1x4<T> left, Matrix3x4<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                right.e00, right.e01, right.e02, right.e03,
+                right.e10, right.e11, right.e12, right.e13,
+                right.e20, right.e21, right.e22, right.e23
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator /(Matrix3x4<T> left, Matrix1x4<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                left.e10, left.e11, left.e12, left.e13,
+                left.e20, left.e21, left.e22, left.e23,
+                right.e00, right.e01, right.e02, right.e03
+            );
+        }
 
         #endregion
 
@@ -2866,7 +3508,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode()) + e03.GetHashCode();
         }
 
         public object Clone()
@@ -3157,6 +3799,71 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x2<T> operator |(Matrix4x1<T> left, Matrix4x1<T> right)
+        {
+            return new Matrix4x2<T>(
+                left.e00, right.e00,
+                left.e10, right.e10,
+                left.e20, right.e20,
+                left.e30, right.e30
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator |(Matrix4x1<T> left, Matrix4x2<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, right.e00, right.e01,
+                left.e10, right.e10, right.e11,
+                left.e20, right.e20, right.e21,
+                left.e30, right.e30, right.e31
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator |(Matrix4x2<T> left, Matrix4x1<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, left.e01, right.e00,
+                left.e10, left.e11, right.e10,
+                left.e20, left.e21, right.e20,
+                left.e30, left.e31, right.e30
+            );
+        }
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator |(Matrix4x1<T> left, Matrix4x3<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, right.e00, right.e01, right.e02,
+                left.e10, right.e10, right.e11, right.e12,
+                left.e20, right.e20, right.e21, right.e22,
+                left.e30, right.e30, right.e31, right.e32
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator |(Matrix4x3<T> left, Matrix4x1<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, left.e02, right.e00,
+                left.e10, left.e11, left.e12, right.e10,
+                left.e20, left.e21, left.e22, right.e20,
+                left.e30, left.e31, left.e32, right.e30
+            );
+        }
 
         #endregion
 
@@ -3198,7 +3905,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e10.GetHashCode()) + e20.GetHashCode()) + e30.GetHashCode();
         }
 
         public object Clone()
@@ -3475,6 +4182,65 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x4<T> operator |(Matrix2x3<T> left, Matrix2x1<T> right)
+        {
+            return new Matrix2x4<T>(
+                left.e00, left.e01, left.e02, right.e00,
+                left.e10, left.e11, left.e12, right.e10
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix2x4<T> operator |(Matrix2x1<T> left, Matrix2x3<T> right)
+        {
+            return new Matrix2x4<T>(
+                left.e00, right.e00, right.e01, right.e02,
+                left.e10, right.e10, right.e11, right.e12
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator /(Matrix2x3<T> left, Matrix1x3<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, left.e01, left.e02,
+                left.e10, left.e11, left.e12,
+                right.e00, right.e01, right.e02
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator /(Matrix1x3<T> left, Matrix2x3<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, left.e01, left.e02,
+                right.e00, right.e01, right.e02,
+                right.e10, right.e11, right.e12
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator /(Matrix2x3<T> left, Matrix2x3<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, left.e01, left.e02,
+                left.e10, left.e11, left.e12,
+                right.e00, right.e01, right.e02,
+                right.e10, right.e11, right.e12
+            );
+        }
 
         #endregion
 
@@ -3526,7 +4292,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e12.GetHashCode();
         }
 
         public object Clone()
@@ -3816,6 +4582,68 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator |(Matrix3x2<T> left, Matrix3x1<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, left.e01, right.e00,
+                left.e10, left.e11, right.e10,
+                left.e20, left.e21, right.e20
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x3<T> operator |(Matrix3x1<T> left, Matrix3x2<T> right)
+        {
+            return new Matrix3x3<T>(
+                left.e00, right.e00, right.e01,
+                left.e10, right.e10, right.e11,
+                left.e20, right.e20, right.e21
+            );
+        }
+
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator |(Matrix3x2<T> left, Matrix3x2<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, left.e01, right.e00, right.e01,
+                left.e10, left.e11, right.e10, right.e11,
+                left.e20, left.e21, right.e20, right.e21
+            );
+        }
+		
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x2<T> operator /(Matrix3x2<T> left, Matrix1x2<T> right)
+        {
+            return new Matrix4x2<T>(
+                left.e00, left.e01,
+                left.e10, left.e11,
+                left.e20, left.e21,
+                right.e00, right.e01
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x2<T> operator /(Matrix1x2<T> left, Matrix3x2<T> right)
+        {
+            return new Matrix4x2<T>(
+                left.e00, left.e01,
+                right.e00, right.e01,
+                right.e10, right.e11,
+                right.e20, right.e21
+            );
+        }
 
         #endregion
 
@@ -3869,7 +4697,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e20.GetHashCode()) + e21.GetHashCode();
         }
 
         public object Clone()
@@ -4157,6 +4985,43 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator /(Matrix2x4<T> left, Matrix1x4<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                left.e10, left.e11, left.e12, left.e13,
+                right.e00, right.e01, right.e02, right.e03
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix3x4<T> operator /(Matrix1x4<T> left, Matrix2x4<T> right)
+        {
+            return new Matrix3x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                right.e00, right.e01, right.e02, right.e03,
+                right.e10, right.e11, right.e12, right.e13
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator /(Matrix2x4<T> left, Matrix2x4<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                left.e10, left.e11, left.e12, left.e13,
+                right.e00, right.e01, right.e02, right.e03,
+                right.e10, right.e11, right.e12, right.e13
+            );
+        }
 
         #endregion
 
@@ -4208,7 +5073,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode()) + e03.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e12.GetHashCode()) + e13.GetHashCode();
         }
 
         public object Clone()
@@ -4518,7 +5383,46 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator |(Matrix4x2<T> left, Matrix4x1<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, left.e01, right.e00,
+                left.e10, left.e11, right.e10,
+                left.e20, left.e21, right.e20,
+                left.e30, left.e31, right.e30
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x3<T> operator |(Matrix4x1<T> left, Matrix4x2<T> right)
+        {
+            return new Matrix4x3<T>(
+                left.e00, right.e00, right.e01,
+                left.e10, right.e10, right.e11,
+                left.e20, right.e20, right.e21,
+                left.e30, right.e30, right.e31
+            );
+        }
 
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator |(Matrix4x2<T> left, Matrix4x2<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, right.e00, right.e01,
+                left.e10, left.e11, right.e10, right.e11,
+                left.e20, left.e21, right.e20, right.e21,
+                left.e30, left.e31, right.e30, right.e31
+            );
+        }
+		
         #endregion
 
         #region Identity
@@ -4573,7 +5477,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e20.GetHashCode()) + e21.GetHashCode()) + e30.GetHashCode()) + e31.GetHashCode();
         }
 
         public object Clone()
@@ -4885,6 +5789,32 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator /(Matrix3x4<T> left, Matrix1x4<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                left.e10, left.e11, left.e12, left.e13,
+                left.e20, left.e21, left.e22, left.e23,
+                right.e00, right.e01, right.e02, right.e03
+            );
+        }
+
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator /(Matrix1x4<T> left, Matrix3x4<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, left.e02, left.e03,
+                right.e00, right.e01, right.e02, right.e03,
+                right.e10, right.e11, right.e12, right.e13,
+                right.e20, right.e21, right.e22, right.e23
+            );
+        }
 
         #endregion
 
@@ -4938,7 +5868,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode()) + e03.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e12.GetHashCode()) + e13.GetHashCode()) + e20.GetHashCode()) + e21.GetHashCode()) + e22.GetHashCode()) + e23.GetHashCode();
         }
 
         public object Clone()
@@ -5267,6 +6197,32 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator |(Matrix4x3<T> left, Matrix4x1<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, left.e01, left.e02, right.e00,
+                left.e10, left.e11, left.e12, right.e10,
+                left.e20, left.e21, left.e22, right.e20,
+                left.e30, left.e31, left.e32, right.e30
+            );
+        }
+		
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix4x4<T> operator |(Matrix4x1<T> left, Matrix4x3<T> right)
+        {
+            return new Matrix4x4<T>(
+                left.e00, right.e00, right.e01, right.e02,
+                left.e10, right.e10, right.e11, right.e12,
+                left.e20, right.e20, right.e21, right.e22,
+                left.e30, right.e30, right.e31, right.e32
+            );
+        }
 
         #endregion
 
@@ -5322,7 +6278,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return 31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (31 * (1) + e00.GetHashCode()) + e01.GetHashCode()) + e02.GetHashCode()) + e10.GetHashCode()) + e11.GetHashCode()) + e12.GetHashCode()) + e20.GetHashCode()) + e21.GetHashCode()) + e22.GetHashCode()) + e30.GetHashCode()) + e31.GetHashCode()) + e32.GetHashCode();
         }
 
         public object Clone()

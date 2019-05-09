@@ -47,6 +47,12 @@ namespace LinearAlgebraSharp.Vectors
             return Scalar<T>.Zero;
         }
 
+        public Vector0<U> Cast<U>()
+            where U : struct
+        {
+            return new Vector0<U>();
+        }
+
         public Vector0<T> Scale(Vector0<T> vec)
         {
             return new Vector0<T>();
@@ -59,7 +65,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector0<T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector0<T> ProjectionOnto(Vector0<T> vec)
@@ -232,7 +238,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return 0;
+            return 1;
         }
 
         #endregion
@@ -299,6 +305,12 @@ namespace LinearAlgebraSharp.Vectors
             return x;
         }
 
+        public Vector1<U> Cast<U>()
+            where U : struct
+        {
+            return new Vector1<U>(x.Cast<U>());
+        }
+
         public Vector1<T> Scale(Vector1<T> vec)
         {
             return new Vector1<T>(x * vec.x);
@@ -311,7 +323,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector1<T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector1<T> ProjectionOnto(Vector1<T> vec)
@@ -499,7 +511,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return 1 * x;
+            return 31 * (1) + x.GetHashCode();
         }
 
         #endregion
@@ -575,7 +587,7 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return Math.Pow(Math.Pow(x, p) + Math.Pow(y, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(x, p) + ScalarMath<T>.Pow(y, p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
@@ -586,6 +598,12 @@ namespace LinearAlgebraSharp.Vectors
                 max = y;
 
             return max;
+        }
+
+        public Vector2<U> Cast<U>()
+            where U : struct
+        {
+            return new Vector2<U>(x.Cast<U>(), y.Cast<U>());
         }
 
         public Vector2<T> Scale(Vector2<T> vec)
@@ -600,7 +618,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector2<T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector2<T> ProjectionOnto(Vector2<T> vec)
@@ -791,7 +809,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return 1 * x + 2136537719 * y;
+            return 31 * (31 * (1) + x.GetHashCode()) + y.GetHashCode();
         }
 
         #endregion
@@ -874,7 +892,7 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return Math.Pow(Math.Pow(x, p) + Math.Pow(y, p) + Math.Pow(z, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(x, p) + ScalarMath<T>.Pow(y, p) + ScalarMath<T>.Pow(z, p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
@@ -889,6 +907,12 @@ namespace LinearAlgebraSharp.Vectors
             return max;
         }
 
+        public Vector3<U> Cast<U>()
+            where U : struct
+        {
+            return new Vector3<U>(x.Cast<U>(), y.Cast<U>(), z.Cast<U>());
+        }
+
         public Vector3<T> Scale(Vector3<T> vec)
         {
             return new Vector3<T>(x * vec.x, y * vec.y, z * vec.z);
@@ -901,7 +925,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector3<T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector3<T> ProjectionOnto(Vector3<T> vec)
@@ -1095,7 +1119,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return 1 * x + 2136537719 * y + 298955857 * z;
+            return 31 * (31 * (31 * (1) + x.GetHashCode()) + y.GetHashCode()) + z.GetHashCode();
         }
 
         #endregion
@@ -1185,7 +1209,7 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return Math.Pow(Math.Pow(x, p) + Math.Pow(y, p) + Math.Pow(z, p) + Math.Pow(w, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(x, p) + ScalarMath<T>.Pow(y, p) + ScalarMath<T>.Pow(z, p) + ScalarMath<T>.Pow(w, p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
@@ -1202,6 +1226,12 @@ namespace LinearAlgebraSharp.Vectors
             return max;
         }
 
+        public Vector4<U> Cast<U>()
+            where U : struct
+        {
+            return new Vector4<U>(x.Cast<U>(), y.Cast<U>(), z.Cast<U>(), w.Cast<U>());
+        }
+
         public Vector4<T> Scale(Vector4<T> vec)
         {
             return new Vector4<T>(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
@@ -1214,7 +1244,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector4<T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector4<T> ProjectionOnto(Vector4<T> vec)
@@ -1411,7 +1441,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return 1 * x + 2136537719 * y + 298955857 * z + 421235453 * w;
+            return 31 * (31 * (31 * (31 * (1) + x.GetHashCode()) + y.GetHashCode()) + z.GetHashCode()) + w.GetHashCode();
         }
 
         #endregion
@@ -1507,7 +1537,7 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return Math.Pow(Math.Pow(v0, p) + Math.Pow(v1, p) + Math.Pow(v2, p) + Math.Pow(v3, p) + Math.Pow(v4, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(v0, p) + ScalarMath<T>.Pow(v1, p) + ScalarMath<T>.Pow(v2, p) + ScalarMath<T>.Pow(v3, p) + ScalarMath<T>.Pow(v4, p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
@@ -1526,6 +1556,12 @@ namespace LinearAlgebraSharp.Vectors
             return max;
         }
 
+        public Vector5<U> Cast<U>()
+            where U : struct
+        {
+            return new Vector5<U>(v0.Cast<U>(), v1.Cast<U>(), v2.Cast<U>(), v3.Cast<U>(), v4.Cast<U>());
+        }
+
         public Vector5<T> Scale(Vector5<T> vec)
         {
             return new Vector5<T>(v0 * vec.v0, v1 * vec.v1, v2 * vec.v2, v3 * vec.v3, v4 * vec.v4);
@@ -1538,7 +1574,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector5<T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector5<T> ProjectionOnto(Vector5<T> vec)
@@ -1738,7 +1774,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return 1 * v0 + 2136537719 * v1 + 298955857 * v2 + 421235453 * v3 + 311692756 * v4;
+            return 31 * (31 * (31 * (31 * (31 * (1) + v0.GetHashCode()) + v1.GetHashCode()) + v2.GetHashCode()) + v3.GetHashCode()) + v4.GetHashCode();
         }
 
         #endregion
@@ -1797,16 +1833,86 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             return pred(v.x.Value);
         }
 
-        public static double Average<T>(this Vector1<T> v)
+        public static T Average<T>(this Vector1<T> v)
             where T : struct
         {
-            return (new Scalar<double>(v.x) / 1.0).Value;
+            return ((v.x) / (1 * Scalar<T>.One)).Value;
+        }
+
+        public static TResult Average<T, TResult>(this Vector1<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x).Value)) / (1 * Scalar<TResult>.One)).Value;
+        }
+
+        public static T Sum<T>(this Vector1<T> v)
+            where T : struct
+        {
+            return ((v.x)).Value;
+        }
+
+        public static TResult Sum<T, TResult>(this Vector1<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x).Value))).Value;
         }
 
         public static bool Contains<T>(this Vector1<T> v, T t)
             where T : struct
         {
             return v.x.Value.Equals(t);
+        }
+
+        public static int Count<T>(this Vector1<T> v, Func<T, bool> pred)
+            where T : struct
+        {
+            return (pred(v.x.Value) ? 1 : 0);
+        }
+
+        public static T Max<T>(this Vector1<T> v)
+            where T : struct
+        {
+            Scalar<T> max = v.x;
+
+
+            return max.Value;
+        }
+
+        public static T Min<T>(this Vector1<T> v)
+            where T : struct
+        {
+            Scalar<T> min = v.x;
+
+
+            return min.Value;
+        }
+
+        public static TResult Max<T, TResult>(this Vector1<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> max = new Scalar<TResult>(func(v.x.Value)), temp;
+
+
+            return max.Value;
+        }
+
+        public static TResult Min<T, TResult>(this Vector1<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> min = new Scalar<TResult>(func(v.x.Value)), temp;
+
+
+            return min.Value;
+        }
+
+        public static Vector1<T> Reverse<T>(this Vector1<T> v)
+            where T : struct
+        {
+            return new Vector1<T>(v.x);
         }
 
         #endregion
@@ -1859,16 +1965,92 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             return pred(v.x.Value) || pred(v.y.Value);
         }
 
-        public static double Average<T>(this Vector2<T> v)
+        public static T Average<T>(this Vector2<T> v)
             where T : struct
         {
-            return (new Scalar<double>(v.x + v.y) / 2.0).Value;
+            return ((v.x + v.y) / (2 * Scalar<T>.One)).Value;
+        }
+
+        public static TResult Average<T, TResult>(this Vector2<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x + v.y).Value)) / (2 * Scalar<TResult>.One)).Value;
+        }
+
+        public static T Sum<T>(this Vector2<T> v)
+            where T : struct
+        {
+            return ((v.x + v.y)).Value;
+        }
+
+        public static TResult Sum<T, TResult>(this Vector2<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x + v.y).Value))).Value;
         }
 
         public static bool Contains<T>(this Vector2<T> v, T t)
             where T : struct
         {
             return v.x.Value.Equals(t) || v.y.Value.Equals(t);
+        }
+
+        public static int Count<T>(this Vector2<T> v, Func<T, bool> pred)
+            where T : struct
+        {
+            return (pred(v.x.Value) ? 1 : 0) + (pred(v.y.Value) ? 1 : 0);
+        }
+
+        public static T Max<T>(this Vector2<T> v)
+            where T : struct
+        {
+            Scalar<T> max = v.x;
+
+            if (v.y > max) max = v.y;
+
+            return max.Value;
+        }
+
+        public static T Min<T>(this Vector2<T> v)
+            where T : struct
+        {
+            Scalar<T> min = v.x;
+
+            if (v.y < min) min = v.y;
+
+            return min.Value;
+        }
+
+        public static TResult Max<T, TResult>(this Vector2<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> max = new Scalar<TResult>(func(v.x.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.y.Value));
+            if (temp > max) max = temp;
+
+            return max.Value;
+        }
+
+        public static TResult Min<T, TResult>(this Vector2<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> min = new Scalar<TResult>(func(v.x.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.y.Value));
+            if (temp < min) min = temp;
+
+            return min.Value;
+        }
+
+        public static Vector2<T> Reverse<T>(this Vector2<T> v)
+            where T : struct
+        {
+            return new Vector2<T>(v.y, v.x);
         }
 
         #endregion
@@ -1921,16 +2103,98 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value);
         }
 
-        public static double Average<T>(this Vector3<T> v)
+        public static T Average<T>(this Vector3<T> v)
             where T : struct
         {
-            return (new Scalar<double>(v.x + v.y + v.z) / 3.0).Value;
+            return ((v.x + v.y + v.z) / (3 * Scalar<T>.One)).Value;
+        }
+
+        public static TResult Average<T, TResult>(this Vector3<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x + v.y + v.z).Value)) / (3 * Scalar<TResult>.One)).Value;
+        }
+
+        public static T Sum<T>(this Vector3<T> v)
+            where T : struct
+        {
+            return ((v.x + v.y + v.z)).Value;
+        }
+
+        public static TResult Sum<T, TResult>(this Vector3<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x + v.y + v.z).Value))).Value;
         }
 
         public static bool Contains<T>(this Vector3<T> v, T t)
             where T : struct
         {
             return v.x.Value.Equals(t) || v.y.Value.Equals(t) || v.z.Value.Equals(t);
+        }
+
+        public static int Count<T>(this Vector3<T> v, Func<T, bool> pred)
+            where T : struct
+        {
+            return (pred(v.x.Value) ? 1 : 0) + (pred(v.y.Value) ? 1 : 0) + (pred(v.z.Value) ? 1 : 0);
+        }
+
+        public static T Max<T>(this Vector3<T> v)
+            where T : struct
+        {
+            Scalar<T> max = v.x;
+
+            if (v.y > max) max = v.y;
+            if (v.z > max) max = v.z;
+
+            return max.Value;
+        }
+
+        public static T Min<T>(this Vector3<T> v)
+            where T : struct
+        {
+            Scalar<T> min = v.x;
+
+            if (v.y < min) min = v.y;
+            if (v.z < min) min = v.z;
+
+            return min.Value;
+        }
+
+        public static TResult Max<T, TResult>(this Vector3<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> max = new Scalar<TResult>(func(v.x.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.y.Value));
+            if (temp > max) max = temp;
+            temp = new Scalar<TResult>(func(v.z.Value));
+            if (temp > max) max = temp;
+
+            return max.Value;
+        }
+
+        public static TResult Min<T, TResult>(this Vector3<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> min = new Scalar<TResult>(func(v.x.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.y.Value));
+            if (temp < min) min = temp;
+            temp = new Scalar<TResult>(func(v.z.Value));
+            if (temp < min) min = temp;
+
+            return min.Value;
+        }
+
+        public static Vector3<T> Reverse<T>(this Vector3<T> v)
+            where T : struct
+        {
+            return new Vector3<T>(v.z, v.y, v.x);
         }
 
         #endregion
@@ -1983,16 +2247,104 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             return pred(v.x.Value) || pred(v.y.Value) || pred(v.z.Value) || pred(v.w.Value);
         }
 
-        public static double Average<T>(this Vector4<T> v)
+        public static T Average<T>(this Vector4<T> v)
             where T : struct
         {
-            return (new Scalar<double>(v.x + v.y + v.z + v.w) / 4.0).Value;
+            return ((v.x + v.y + v.z + v.w) / (4 * Scalar<T>.One)).Value;
+        }
+
+        public static TResult Average<T, TResult>(this Vector4<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x + v.y + v.z + v.w).Value)) / (4 * Scalar<TResult>.One)).Value;
+        }
+
+        public static T Sum<T>(this Vector4<T> v)
+            where T : struct
+        {
+            return ((v.x + v.y + v.z + v.w)).Value;
+        }
+
+        public static TResult Sum<T, TResult>(this Vector4<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.x + v.y + v.z + v.w).Value))).Value;
         }
 
         public static bool Contains<T>(this Vector4<T> v, T t)
             where T : struct
         {
             return v.x.Value.Equals(t) || v.y.Value.Equals(t) || v.z.Value.Equals(t) || v.w.Value.Equals(t);
+        }
+
+        public static int Count<T>(this Vector4<T> v, Func<T, bool> pred)
+            where T : struct
+        {
+            return (pred(v.x.Value) ? 1 : 0) + (pred(v.y.Value) ? 1 : 0) + (pred(v.z.Value) ? 1 : 0) + (pred(v.w.Value) ? 1 : 0);
+        }
+
+        public static T Max<T>(this Vector4<T> v)
+            where T : struct
+        {
+            Scalar<T> max = v.x;
+
+            if (v.y > max) max = v.y;
+            if (v.z > max) max = v.z;
+            if (v.w > max) max = v.w;
+
+            return max.Value;
+        }
+
+        public static T Min<T>(this Vector4<T> v)
+            where T : struct
+        {
+            Scalar<T> min = v.x;
+
+            if (v.y < min) min = v.y;
+            if (v.z < min) min = v.z;
+            if (v.w < min) min = v.w;
+
+            return min.Value;
+        }
+
+        public static TResult Max<T, TResult>(this Vector4<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> max = new Scalar<TResult>(func(v.x.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.y.Value));
+            if (temp > max) max = temp;
+            temp = new Scalar<TResult>(func(v.z.Value));
+            if (temp > max) max = temp;
+            temp = new Scalar<TResult>(func(v.w.Value));
+            if (temp > max) max = temp;
+
+            return max.Value;
+        }
+
+        public static TResult Min<T, TResult>(this Vector4<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> min = new Scalar<TResult>(func(v.x.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.y.Value));
+            if (temp < min) min = temp;
+            temp = new Scalar<TResult>(func(v.z.Value));
+            if (temp < min) min = temp;
+            temp = new Scalar<TResult>(func(v.w.Value));
+            if (temp < min) min = temp;
+
+            return min.Value;
+        }
+
+        public static Vector4<T> Reverse<T>(this Vector4<T> v)
+            where T : struct
+        {
+            return new Vector4<T>(v.w, v.z, v.y, v.x);
         }
 
         #endregion
@@ -2045,16 +2397,110 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             return pred(v.v0.Value) || pred(v.v1.Value) || pred(v.v2.Value) || pred(v.v3.Value) || pred(v.v4.Value);
         }
 
-        public static double Average<T>(this Vector5<T> v)
+        public static T Average<T>(this Vector5<T> v)
             where T : struct
         {
-            return (new Scalar<double>(v.v0 + v.v1 + v.v2 + v.v3 + v.v4) / 5.0).Value;
+            return ((v.v0 + v.v1 + v.v2 + v.v3 + v.v4) / (5 * Scalar<T>.One)).Value;
+        }
+
+        public static TResult Average<T, TResult>(this Vector5<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.v0 + v.v1 + v.v2 + v.v3 + v.v4).Value)) / (5 * Scalar<TResult>.One)).Value;
+        }
+
+        public static T Sum<T>(this Vector5<T> v)
+            where T : struct
+        {
+            return ((v.v0 + v.v1 + v.v2 + v.v3 + v.v4)).Value;
+        }
+
+        public static TResult Sum<T, TResult>(this Vector5<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((v.v0 + v.v1 + v.v2 + v.v3 + v.v4).Value))).Value;
         }
 
         public static bool Contains<T>(this Vector5<T> v, T t)
             where T : struct
         {
             return v.v0.Value.Equals(t) || v.v1.Value.Equals(t) || v.v2.Value.Equals(t) || v.v3.Value.Equals(t) || v.v4.Value.Equals(t);
+        }
+
+        public static int Count<T>(this Vector5<T> v, Func<T, bool> pred)
+            where T : struct
+        {
+            return (pred(v.v0.Value) ? 1 : 0) + (pred(v.v1.Value) ? 1 : 0) + (pred(v.v2.Value) ? 1 : 0) + (pred(v.v3.Value) ? 1 : 0) + (pred(v.v4.Value) ? 1 : 0);
+        }
+
+        public static T Max<T>(this Vector5<T> v)
+            where T : struct
+        {
+            Scalar<T> max = v.v0;
+
+            if (v.v1 > max) max = v.v1;
+            if (v.v2 > max) max = v.v2;
+            if (v.v3 > max) max = v.v3;
+            if (v.v4 > max) max = v.v4;
+
+            return max.Value;
+        }
+
+        public static T Min<T>(this Vector5<T> v)
+            where T : struct
+        {
+            Scalar<T> min = v.v0;
+
+            if (v.v1 < min) min = v.v1;
+            if (v.v2 < min) min = v.v2;
+            if (v.v3 < min) min = v.v3;
+            if (v.v4 < min) min = v.v4;
+
+            return min.Value;
+        }
+
+        public static TResult Max<T, TResult>(this Vector5<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> max = new Scalar<TResult>(func(v.v0.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.v1.Value));
+            if (temp > max) max = temp;
+            temp = new Scalar<TResult>(func(v.v2.Value));
+            if (temp > max) max = temp;
+            temp = new Scalar<TResult>(func(v.v3.Value));
+            if (temp > max) max = temp;
+            temp = new Scalar<TResult>(func(v.v4.Value));
+            if (temp > max) max = temp;
+
+            return max.Value;
+        }
+
+        public static TResult Min<T, TResult>(this Vector5<T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> min = new Scalar<TResult>(func(v.v0.Value)), temp;
+
+            temp = new Scalar<TResult>(func(v.v1.Value));
+            if (temp < min) min = temp;
+            temp = new Scalar<TResult>(func(v.v2.Value));
+            if (temp < min) min = temp;
+            temp = new Scalar<TResult>(func(v.v3.Value));
+            if (temp < min) min = temp;
+            temp = new Scalar<TResult>(func(v.v4.Value));
+            if (temp < min) min = temp;
+
+            return min.Value;
+        }
+
+        public static Vector5<T> Reverse<T>(this Vector5<T> v)
+            where T : struct
+        {
+            return new Vector5<T>(v.v4, v.v3, v.v2, v.v1, v.v0);
         }
 
         #endregion

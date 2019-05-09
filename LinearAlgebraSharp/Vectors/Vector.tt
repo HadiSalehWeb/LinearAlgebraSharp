@@ -19,16 +19,6 @@
         Tuple.Create("forward", "backward"),
         Tuple.Create("ana", "kata")
     };
-    var primes = new List<int> { 
-		1,
-		2136537719,
-		298955857,
-		421235453,
-		311692756,
-		270262448,
-		374968597,
-		956762603
-	};
 #>
 using LinearAlgebraSharp.Scalars;
 using System;
@@ -123,7 +113,7 @@ namespace LinearAlgebraSharp.Vectors
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
 <# if (n > 1) { #>
-            return Math.Pow(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "Math.Pow(" + componentName(n, x) + ", p)")) #>, 1d / p);
+            return ScalarMath<T>.Pow(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "ScalarMath<T>.Pow(" + componentName(n, x) + ", p)")) #>, 1d / p);
 <# } else if (n == 1) { #>
             return <#= componentName(n, 0) #>;
 <# } else { #>
@@ -149,6 +139,12 @@ namespace LinearAlgebraSharp.Vectors
 <# } #>
         }
 
+        public Vector<#= n #><U> Cast<U>()
+            where U : struct
+        {
+            return new Vector<#= n #><U>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + ".Cast<U>()")) #>);
+        }
+
         public Vector<#= n #><T> Scale(Vector<#= n #><T> vec)
         {
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) #>);
@@ -161,7 +157,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector<#= n #><T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector<#= n #><T> ProjectionOnto(Vector<#= n #><T> vec)
@@ -367,7 +363,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return <#= n > 0 ? string.Join(" + ", Enumerable.Range(0, n).Select(x => (n <= primes.Count ? primes[x] + " * " : "") + componentName(n, x))) : "0" #>;
+            return <#= Enumerable.Range(0, n).Aggregate("1", (a, c) => "31 * (" + a + ") + " + componentName(n, c) + ".GetHashCode()") #>;
         }
 
         #endregion
@@ -432,16 +428,100 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "pred(v." + componentName(n, x) + ".Value)")) #>;
         }
 
-        public static double Average<T>(this Vector<#= n #><T> v)
+        public static T Average<T>(this Vector<#= n #><T> v)
             where T : struct
         {
-            return (new Scalar<double>(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>) / <#= n #>.0).Value;
+            return ((<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>) / (<#= n #> * Scalar<T>.One)).Value;
+        }
+
+        public static TResult Average<T, TResult>(this Vector<#= n #><T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>).Value)) / (<#= n #> * Scalar<TResult>.One)).Value;
+        }
+
+        public static T Sum<T>(this Vector<#= n #><T> v)
+            where T : struct
+        {
+            return ((<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>)).Value;
+        }
+
+        public static TResult Sum<T, TResult>(this Vector<#= n #><T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            return (new Scalar<TResult>(func((<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x))) #>).Value))).Value;
         }
 
         public static bool Contains<T>(this Vector<#= n #><T> v, T t)
             where T : struct
         {
             return <#= string.Join(" || ", Enumerable.Range(0, n).Select(x => "v." + componentName(n, x) + ".Value.Equals(t)")) #>;
+        }
+
+        public static int Count<T>(this Vector<#= n #><T> v, Func<T, bool> pred)
+            where T : struct
+        {
+            return <#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "(pred(v." + componentName(n, x) + ".Value) ? 1 : 0)")) #>;
+        }
+
+        public static T Max<T>(this Vector<#= n #><T> v)
+            where T : struct
+        {
+            Scalar<T> max = v.<#= componentName(n, 0) #>;
+
+<# for (int i = 1; i < n; i++) { #>
+            if (v.<#= componentName(n, i) #> > max) max = v.<#= componentName(n, i) #>;
+<# } #>
+
+            return max.Value;
+        }
+
+        public static T Min<T>(this Vector<#= n #><T> v)
+            where T : struct
+        {
+            Scalar<T> min = v.<#= componentName(n, 0) #>;
+
+<# for (int i = 1; i < n; i++) { #>
+            if (v.<#= componentName(n, i) #> < min) min = v.<#= componentName(n, i) #>;
+<# } #>
+
+            return min.Value;
+        }
+
+        public static TResult Max<T, TResult>(this Vector<#= n #><T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> max = new Scalar<TResult>(func(v.<#= componentName(n, 0) #>.Value)), temp;
+
+<# for (int i = 1; i < n; i++) { #>
+            temp = new Scalar<TResult>(func(v.<#= componentName(n, i) #>.Value));
+            if (temp > max) max = temp;
+<# } #>
+
+            return max.Value;
+        }
+
+        public static TResult Min<T, TResult>(this Vector<#= n #><T> v, Func<T, TResult> func)
+            where T : struct
+            where TResult : struct
+        {
+            Scalar<TResult> min = new Scalar<TResult>(func(v.<#= componentName(n, 0) #>.Value)), temp;
+
+<# for (int i = 1; i < n; i++) { #>
+            temp = new Scalar<TResult>(func(v.<#= componentName(n, i) #>.Value));
+            if (temp < min) min = temp;
+<# } #>
+
+            return min.Value;
+        }
+
+        public static Vector<#= n #><T> Reverse<T>(this Vector<#= n #><T> v)
+            where T : struct
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(i => "v." + componentName(n, n - i - 1))) #>);
         }
 
         #endregion

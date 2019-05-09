@@ -63,19 +63,19 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector<T> Zero(int dimension)
         {
-            return new Vector<T>(Enumerable.Range(0, dimension).Select(_ => Scalar<T>.Zero).ToArray());
+            return new Vector<T>(Enumerable.Repeat(Scalar<T>.Zero, dimension).ToArray());
         }
 
         public static Vector<T> One(int dimension)
         {
-            return new Vector<T>(Enumerable.Range(0, dimension).Select(_ => Scalar<T>.One).ToArray());
+            return new Vector<T>(Enumerable.Repeat(Scalar<T>.One, dimension).ToArray());
         }
 
         /// <summary>
-        /// Retrurns an n-dimensional vector with the i-th element set to one
+        /// Retrurns an n-dimensional vector with the i-th element set to one.
         /// </summary>
         /// <param name="dimension">the 'n' in n-dimensional, the dimension of the vector</param>
-        /// <param name="basis">the 'i' in i-th element, the 1-indexed axis of the vector (1 for x, 2 for y etc.)</param>
+        /// <param name="basis">the 'i' in i-th element, the 1-indexe axis of the vector (1 for x, 2 for y etc.)</param>
         /// <returns></returns>
         public static Vector<T> Basis(int dimension, int basis)
         {
@@ -84,16 +84,12 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector<T> Repeat(T t, int dimension)
         {
-            var arr = new Scalar<T>[dimension];
-
-            for (int i = 0; i < dimension; i++)
-                arr[i] = new Scalar<T>(t);
-
-            return new Vector<T>(arr);
+            return new Vector<T>(Enumerable.Repeat(new Scalar<T>(t), dimension).ToArray());
         }
 
         public static Vector<T> Range(T start, int dimension)
         {
+            if (dimension == 0) return Zero(0);
             var arr = new Scalar<T>[dimension];
             arr[0] = new Scalar<T>(start);
 
@@ -126,7 +122,7 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return Math.Pow(Data.Aggregate(Scalar<T>.Zero, (a, c) => a + Math.Pow(c, p)), 1d / p);
+            return ScalarMath<T>.Pow(Data.Aggregate(Scalar<T>.Zero, (a, c) => a + ScalarMath<T>.Pow(c, p)), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
@@ -158,7 +154,7 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Dot(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
-                throw new DimensionMismatchException<Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
+                throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             Scalar<T> result = Scalar<T>.Zero;
 
@@ -171,7 +167,7 @@ namespace LinearAlgebraSharp.Vectors
         public Vector<T> Cross(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
-                throw new DimensionMismatchException<Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
+                throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             if (Dimension == 0) return new Vector<T>(new Scalar<T>[0]);
             if (Dimension == 1) return new Vector<T>(Scalar<T>.Zero);
@@ -196,7 +192,7 @@ namespace LinearAlgebraSharp.Vectors
         public Vector<T> Scale(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
-                throw new DimensionMismatchException<Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
+                throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             Scalar<T>[] result = new Scalar<T>[Dimension];
 
@@ -208,7 +204,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public Scalar<T> AngleTo(Vector<T> vec)
         {
-            return Math.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
+            return ScalarMath<T>.Acos(Dot(vec) / (Magnitude * vec.Magnitude));
         }
 
         public Vector<T> ProjectionOnto(Vector<T> vec)
@@ -239,7 +235,8 @@ namespace LinearAlgebraSharp.Vectors
 
         public Vector<T> Add(Vector<T> vec)
         {
-            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
+            if (Dimension != vec.Dimension)
+                throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             return new Vector<T>(Data.Select((x, i) => x + vec.Data[i]).ToArray());
         }
@@ -251,7 +248,8 @@ namespace LinearAlgebraSharp.Vectors
 
         public Vector<T> Substract(Vector<T> vec)
         {
-            if (Dimension != vec.Dimension) throw new ArgumentException("Parameter 'v' must be in the same dimension as the current vector.");
+            if (Dimension != vec.Dimension)
+                throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
 
             return new Vector<T>(Data.Select((x, i) => x - vec.Data[i]).ToArray());
         }
@@ -347,6 +345,9 @@ namespace LinearAlgebraSharp.Vectors
 
         public bool Equals(Vector<T> other)
         {
+            if (Dimension != other.Dimension)
+                throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(other), other.Dimension, Dimension);
+
             int i = 0;
             return Data.All(x => x == other.Data[i++]);
         }
@@ -383,7 +384,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Data.Aggregate(1, (a, c) => a * 31 + c.GetHashCode());
         }
 
         #endregion

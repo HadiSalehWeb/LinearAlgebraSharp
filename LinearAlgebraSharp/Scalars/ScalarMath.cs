@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LinearAlgebraSharp.Scalars
 {
-    public class ScalarMath<T>
+    public static class ScalarMath<T>
         where T : struct
     {
         #region Constants
@@ -48,22 +48,22 @@ namespace LinearAlgebraSharp.Scalars
 
         #region Universal Functions
 
-        public Scalar<int> Sign(Scalar<T> s)
+        public static Scalar<int> Sign(Scalar<T> s)
         {
             return s >= 0 ? Scalar<int>.One : Scalar<int>.One.Negate();
         }
 
-        public Scalar<T> Abs(Scalar<T> s)
+        public static Scalar<T> Abs(Scalar<T> s)
         {
             return s < Scalar<T>.Zero ? s.Negate() : s;
         }
 
-        public Scalar<T> Min(Scalar<T> s1, Scalar<T> s2)
+        public static Scalar<T> Min(Scalar<T> s1, Scalar<T> s2)
         {
             return s1 < s2 ? s1 : s2;
         }
 
-        public Scalar<T> Max(Scalar<T> s1, Scalar<T> s2)
+        public static Scalar<T> Max(Scalar<T> s1, Scalar<T> s2)
         {
             return s1 > s2 ? s1 : s2;
         }
@@ -82,7 +82,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Square root of { s.ToString() }: Scalar<{typeof(T).Name}> contains a decimal point and can't be casted back to Scalar<{typeof(T).Name}>.");
         }
 
-        public Scalar<T> Floor(Scalar<T> s)
+        public static Scalar<T> Floor(Scalar<T> s)
         {
             if (Scalar<T>.algebraicStructure <= AlgebraicStructure.Ring)
                 return s;
@@ -98,7 +98,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception("Unrecognized scalar type.");
         }
 
-        public Scalar<T> Ceiling(Scalar<T> s)
+        public static Scalar<T> Ceiling(Scalar<T> s)
         {
             if (Scalar<T>.algebraicStructure <= AlgebraicStructure.Ring)
                 return s;
@@ -114,7 +114,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception("Unrecognized scalar type.");
         }
 
-        public Scalar<T> Sin(Scalar<T> s)
+        public static Scalar<T> Sin(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Sin(d.Value);
@@ -126,7 +126,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Cos(Scalar<T> s)
+        public static Scalar<T> Cos(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Cos(d.Value);
@@ -138,7 +138,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Tan(Scalar<T> s)
+        public static Scalar<T> Tan(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Tan(d.Value);
@@ -150,7 +150,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Asin(Scalar<T> s)
+        public static Scalar<T> Asin(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Asin(d.Value);
@@ -162,7 +162,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Acos(Scalar<T> s)
+        public static Scalar<T> Acos(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Acos(d.Value);
@@ -174,7 +174,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Atan(Scalar<T> s)
+        public static Scalar<T> Atan(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Atan(d.Value);
@@ -186,7 +186,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Atan2(Scalar<T> s1, Scalar<T> s2)
+        public static Scalar<T> Atan2(Scalar<T> s1, Scalar<T> s2)
         {
             if (s1 is Scalar<double> d1 && s2 is Scalar<double> d2)
                 return Math.Atan2(d1.Value, d2.Value);
@@ -198,7 +198,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Sinh(Scalar<T> s)
+        public static Scalar<T> Sinh(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Sinh(d.Value);
@@ -210,7 +210,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Cosh(Scalar<T> s)
+        public static Scalar<T> Cosh(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Cosh(d.Value);
@@ -222,7 +222,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Tanh(Scalar<T> s)
+        public static Scalar<T> Tanh(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Tanh(d.Value);
@@ -234,7 +234,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Exp(Scalar<T> s)
+        public static Scalar<T> Exp(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Exp(d.Value);
@@ -246,7 +246,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Log(Scalar<T> s)
+        public static Scalar<T> Log(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Log(d.Value);
@@ -258,7 +258,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Log10(Scalar<T> s)
+        public static Scalar<T> Log10(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Log10(d.Value);
@@ -270,7 +270,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Pow(Scalar<T> s1, Scalar<T> s2)
+        public static Scalar<T> Pow(Scalar<T> s1, Scalar<T> s2)
         {
             if (Scalar<T>.algebraicStructure == AlgebraicStructure.Ring && s1 < Scalar<T>.Zero)
                 throw new Exception("Non-field elements can only be raised to positive powers.");
@@ -278,7 +278,7 @@ namespace LinearAlgebraSharp.Scalars
             return Math.Pow(s1, s2);
         }
 
-        public Scalar<T> Round(Scalar<T> s)
+        public static Scalar<T> Round(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Round(d.Value);
@@ -290,7 +290,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Round(Scalar<T> s, int digits)
+        public static Scalar<T> Round(Scalar<T> s, int digits)
         {
             if (s is Scalar<double> d)
                 return Math.Round(d.Value, digits);
@@ -302,7 +302,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Round(Scalar<T> s, MidpointRounding mode)
+        public static Scalar<T> Round(Scalar<T> s, MidpointRounding mode)
         {
             if (s is Scalar<double> d)
                 return Math.Round(d.Value, mode);
@@ -314,7 +314,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Round(Scalar<T> s, int digits, MidpointRounding mode)
+        public static Scalar<T> Round(Scalar<T> s, int digits, MidpointRounding mode)
         {
             if (s is Scalar<double> d)
                 return Math.Round(d.Value, digits, mode);
@@ -326,7 +326,7 @@ namespace LinearAlgebraSharp.Scalars
             throw new Exception($"Function can't be performed on type Scalar<{ typeof(T).Name }>.");
         }
 
-        public Scalar<T> Truncate(Scalar<T> s)
+        public static Scalar<T> Truncate(Scalar<T> s)
         {
             if (s is Scalar<double> d)
                 return Math.Truncate(d.Value);

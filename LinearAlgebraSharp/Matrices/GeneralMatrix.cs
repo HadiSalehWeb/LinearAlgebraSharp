@@ -21,7 +21,6 @@ namespace LinearAlgebraSharp.Matrices
         public Vector2<int> Dimension { get; }
         public Scalar<T>[,] Data { get; }
 
-
         public Vector<T>[] Rows
         {
             get
@@ -122,7 +121,8 @@ namespace LinearAlgebraSharp.Matrices
 
         public Matrix<T> Scale(Matrix<T> mat)
         {
-            if (Dimension != mat.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            if (Dimension != mat.Dimension)
+                throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(mat), mat.Dimension, Dimension);
 
             Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
 
@@ -149,7 +149,7 @@ namespace LinearAlgebraSharp.Matrices
                 start.x >= Dimension.x || start.y >= Dimension.y ||
                 count.x < 0 || count.y < 0 ||
                 start.x + count.x > Dimension.x || start.y + count.y > Dimension.y)
-                throw new Exception("make a message here");
+                throw new ArgumentException("Arguments outside matrix bounds.");
 
             Scalar<T>[,] data = new Scalar<T>[count.x, count.y];
 
@@ -200,7 +200,9 @@ namespace LinearAlgebraSharp.Matrices
 
         public Matrix<T> Multiply(Matrix<T> mat)
         {
-            if (Dimension.y != mat.Dimension.x) throw new ArgumentException("Incompatible dimensions.");
+            if (Dimension != mat.Dimension)
+                throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(mat), mat.Dimension, Dimension);
+
 
             Scalar<T>[,] data = new Scalar<T>[Dimension.x, mat.Dimension.y];
 
@@ -517,7 +519,13 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            int hash = 1;
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    hash = hash * 31 + Data[i, j].GetHashCode();
+
+            return hash;
         }
 
         #endregion

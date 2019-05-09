@@ -21,6 +21,7 @@
 		new int[2] { 2, 4 }, new int[2] { 4, 2 },
 		new int[2] { 3, 4 }, new int[2] { 4, 3 }
 	};
+	var possibleMatrixLengths = supportedDimensions.SelectMany(x => x).Distinct().OrderBy(x => x).ToList();
 	var maxMatrixDimension = supportedDimensions.SelectMany(x => x).Max();
 	var componentName = new Func<int, int, string>((x, y) => "e" + x + y);
 	var vectorComponentName = new Func<int, int, string>((n, i) => n < 5 ? "xyzw"[i].ToString() : "v" + i);
@@ -296,7 +297,69 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
+		
+<# foreach (var k in possibleMatrixLengths) if (possibleMatrixLengths.Contains(k + n[1])) { #>
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix<#= n[0] #>x<#= n[1] + k #><T> operator |(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= k #><T> right)
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] + k #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left.e" + x + y).Concat(Enumerable.Range(0, k).Select(y => "right.e" + x + y))) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+		
+<# if (k != n[1]) { #>
+        /// <summary>
+        /// Augments two matrices.
+        /// </summary>
+        public static Matrix<#= n[0] #>x<#= n[1] + k #><T> operator |(Matrix<#= n[0] #>x<#= k #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        {
+            return new Matrix<#= n[0] #>x<#= n[1] + k #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, k).Select(y => "left.e" + x + y).Concat(Enumerable.Range(0, n[1]).Select(y => "right.e" + x + y))) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
 
+<# } #>
+<# } #>
+<# foreach (var k in possibleMatrixLengths) if (possibleMatrixLengths.Contains(k + n[0])) { #>
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix<#= n[0] + k #>x<#= n[1] #><T> operator /(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= k #>x<#= n[1] #><T> right)
+        {
+            return new Matrix<#= n[0] + k #>x<#= n[1] #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left.e" + x + y)) #>,
+<# } #>
+<# for(int x = 0; x < k; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "right.e" + x + y)) #><#= x < k - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+
+<# if (k != n[0]) { #>
+        /// <summary>
+        /// Concatenates two matrices.
+        /// </summary>
+        public static Matrix<#= n[0] + k #>x<#= n[1] #><T> operator /(Matrix<#= k #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        {
+            return new Matrix<#= n[0] + k #>x<#= n[1] #><T>(
+<# for(int x = 0; x < k; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "left.e" + x + y)) #>,
+<# } #>
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "right.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+
+<# } #>
+<# } #>
         #endregion
 
         #region Identity
@@ -351,7 +414,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return <#= Enumerable.Range(0, n[0]).SelectMany(x => Enumerable.Range(0, n[1]).Select(y => "e" + x + y)).Aggregate("1", (a, c) => "31 * (" + a + ") + " + c + ".GetHashCode()") #>;
         }
 
         public object Clone()

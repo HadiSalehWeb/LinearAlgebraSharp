@@ -19,7 +19,7 @@ namespace LinearAlgebraSharp.Matrices
         Scalar<T>[,] Data { get; }
         TRow[] Rows { get; }
         TColumn[] Columns { get; }
-        TColumn Multiply(TRow vec);
-        TRow GetMultipliedBy(TColumn vec);
+        TColumn MultiplyLeft(TRow vec);
+        TRow MultiplyRight(TColumn vec);
     }
 }

@@ -114,11 +114,11 @@ namespace LinearAlgebraSharp.UnitTest.Vectors
         }
 
         [TestMethod]
-        public void TestScale()
+        public void TestElementwiseProduct()
         {
             Vector2<int> v1 = (1, 2), v2 = (3, 4);
 
-            Assert.AreEqual(new Vector2<int>(1 * 3, 2 * 4), v1.Scale(v2));
+            Assert.AreEqual(new Vector2<int>(1 * 3, 2 * 4), v1.ElementwiseProduct(v2));
         }
 
         [TestMethod]

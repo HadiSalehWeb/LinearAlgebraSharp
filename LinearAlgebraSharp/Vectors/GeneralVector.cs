@@ -9,9 +9,6 @@ namespace LinearAlgebraSharp.Vectors
 {
     [Serializable]
     public struct Vector<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector<T>>
         where T : struct
     {
@@ -75,11 +72,11 @@ namespace LinearAlgebraSharp.Vectors
         /// Retrurns an n-dimensional vector with the i-th element set to one.
         /// </summary>
         /// <param name="dimension">the 'n' in n-dimensional, the dimension of the vector</param>
-        /// <param name="basis">the 'i' in i-th element, the 1-indexe axis of the vector (1 for x, 2 for y etc.)</param>
+        /// <param name="basis">the 'i' in i-th element, the 0-indexeD axis of the vector (0 for x, 1 for y etc.)</param>
         /// <returns></returns>
         public static Vector<T> Basis(int dimension, int basis)
         {
-            return new Vector<T>(Enumerable.Range(0, dimension).Select(i => i == basis + 1 ? Scalar<T>.One : Scalar<T>.Zero).ToArray());
+            return new Vector<T>(Enumerable.Range(0, dimension).Select(i => i == basis ? Scalar<T>.One : Scalar<T>.Zero).ToArray());
         }
 
         public static Vector<T> Repeat(T t, int dimension)
@@ -94,7 +91,20 @@ namespace LinearAlgebraSharp.Vectors
             arr[0] = new Scalar<T>(start);
 
             for (int i = 1; i < dimension; i++)
-                arr[i - 1] = arr[i] + Scalar<T>.One;
+                arr[i] = arr[i - 1] + Scalar<T>.One;
+
+            return new Vector<T>(arr);
+        }
+
+        public static Vector<T> Range(T start, T step, int dimension)
+        {
+            if (dimension == 0) return Zero(0);
+            var arr = new Scalar<T>[dimension];
+            arr[0] = new Scalar<T>(start);
+            var sStep = new Scalar<T>(step);
+
+            for (int i = 1; i < dimension; i++)
+                arr[i] = arr[i - 1] + sStep;
 
             return new Vector<T>(arr);
         }
@@ -122,33 +132,73 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return ScalarMath<T>.Pow(Data.Aggregate(Scalar<T>.Zero, (a, c) => a + ScalarMath<T>.Pow(c, p)), 1d / p);
+            return ScalarMath<T>.Pow(Data.Aggregate(Scalar<T>.Zero, (a, c) => a + ScalarMath<T>.Pow(ScalarMath<T>.Abs(c), p)), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
         {
-            return new Scalar<T>(Data.Max(x => x.Value));
+            return new Scalar<T>(Data.Max(x => ScalarMath<T>.Abs(x).Value));
         }
 
+        /// <summary>
+        /// Appends Scalar<typeparamref name="T"/>.One at the end of the vector. Used for e.g. affine transformations.
+        /// </summary>
+        public Vector<T> Append1()
+        {
+            var data = Data.ToList();
+            data.Add(Scalar<T>.Zero);
+            return new Vector<T>(data.ToArray());
+        }
+
+        /// <summary>
+        /// Returns a slice of the vector starting at 'start' with 'count' components.
+        /// </summary>
         public Vector<T> Subvector(int start, int count)
         {
-            if (start < 0 || start >= Dimension || count < 0 || start + count > Dimension)
+            if (start < 0 || start >= Dimension || count < 0)
                 throw new ArgumentException("Arguments outside vector bounds.");
 
             return new Vector<T>(Data.Skip(start).Take(count).ToArray());
         }
 
-        public Vector<T> ExpandBy(int length)
+        /// <summary>
+        /// Extends the vector by 'length' components and set the new components to zero.
+        /// </summary>
+        public Vector<T> ExtendBy(int length)
         {
             return new Vector<T>(Data.Concat(Zero(length).Data).ToArray());
         }
 
-        public Vector<T> ExpandTo(int targetLength)
+        /// <summary>
+        /// Extends the vector by 'length' components and set the new components to 'filling'.
+        /// </summary>
+        public Vector<T> ExtendBy(int length, Scalar<T> filling)
+        {
+            return new Vector<T>(Data.Concat(Enumerable.Repeat(filling, length)).ToArray());
+        }
+
+        /// <summary>
+        /// Extends the vector to have 'targetLength' componenets. The added components are set to zero.
+        /// If the vector is already at targetLength, returns the vector unchanged.
+        /// </summary>
+        public Vector<T> ExtendTo(int targetLength)
         {
             if (targetLength <= Length)
-                throw new ArgumentException($"{ nameof(targetLength) } must be greater than or equal to the length of this vector.");
+                return this;
 
             return new Vector<T>(Data.Concat(Zero(targetLength - Length).Data).ToArray());
+        }
+
+        /// <summary>
+        /// Extends the vector to have 'targetLength' componenets. The added components are set to 'filling'.
+        /// If the vector is already at targetLength, returns the vector unchanged.
+        /// </summary>
+        public Vector<T> ExtendTo(int targetLength, Scalar<T> filling)
+        {
+            if (targetLength <= Length)
+                return this;
+
+            return new Vector<T>(Data.Concat(Enumerable.Repeat(filling, targetLength - Length)).ToArray());
         }
 
         public Scalar<T> Dot(Vector<T> vec)
@@ -189,7 +239,7 @@ namespace LinearAlgebraSharp.Vectors
             throw new Exception("Cross product can only be performed on vectors of dimension 0, 1, 3 and 7.");
         }
 
-        public Vector<T> Scale(Vector<T> vec)
+        public Vector<T> ElementwiseProduct(Vector<T> vec)
         {
             if (Dimension != vec.Dimension)
                 throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
@@ -198,6 +248,19 @@ namespace LinearAlgebraSharp.Vectors
 
             for (int i = 0; i < Dimension; i++)
                 result[i] = Data[i] * vec.Data[i];
+
+            return new Vector<T>(result);
+        }
+
+        public Vector<T> ElementwiseQuotient(Vector<T> vec)
+        {
+            if (Dimension != vec.Dimension)
+                throw new DimensionMismatchException<T, Vector1<int>, Vector<T>>(nameof(vec), vec.Dimension, Dimension);
+
+            Scalar<T>[] result = new Scalar<T>[Dimension];
+
+            for (int i = 0; i < Dimension; i++)
+                result[i] = Data[i] / vec.Data[i];
 
             return new Vector<T>(result);
         }
@@ -274,24 +337,24 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector<T> Divide(Scalar<T> s)
+        public Vector<T> DivideLeft(Scalar<T> s)
         {
             return new Vector<T>(Data.Select((x, i) => x / s).ToArray());
         }
 
         public static Vector<T> operator /(Vector<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector<T> GetDividedBy(Scalar<T> s)
+        public Vector<T> DivideRight(Scalar<T> s)
         {
             return new Vector<T>(Data.Select((x, i) => s / x).ToArray());
         }
 
         public static Vector<T> operator /(Scalar<T> left, Vector<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector<T> Negate()

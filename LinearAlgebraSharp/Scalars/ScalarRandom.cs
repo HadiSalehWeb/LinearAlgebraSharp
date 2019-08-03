@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LinearAlgebraSharp.Scalars
 {
@@ -14,6 +12,9 @@ namespace LinearAlgebraSharp.Scalars
             rand = new Random(seed);
         }
 
+        /// <summary>
+        /// Returns a random number that is greater than or equal to Scalar&lt;<typeparamref name="T"/>&gt;.MinValue, and less than or equal to Scalar&lt;<typeparamref name="T"/>&gt;.MaxValue.
+        /// </summary>
         public Scalar<T> Next()
         {
             double next = rand.NextDouble(), min = Scalar<T>.MinValue, max = Scalar<T>.MaxValue;
@@ -21,7 +22,7 @@ namespace LinearAlgebraSharp.Scalars
         }
 
         /// <summary>
-        /// Returns a random floating-point number that is greater than or equal to Scalar&lt;<typeparamref name="T"/>&gt;.Zero, and less than Scalar&lt;<typeparamref name="T"/>&gt;.One.
+        /// Returns a random number that is greater than or equal to Scalar&lt;<typeparamref name="T"/>&gt;.Zero, and less than Scalar&lt;<typeparamref name="T"/>&gt;.One.
         /// </summary>
         public Scalar<T> NextBetweenZeroOne()
         {

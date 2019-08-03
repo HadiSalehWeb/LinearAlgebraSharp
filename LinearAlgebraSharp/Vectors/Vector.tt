@@ -30,9 +30,6 @@ namespace LinearAlgebraSharp.Vectors
 <# foreach (var n in supportedDimensions) { #>
     [Serializable]
     public struct Vector<#= n #><T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector<#= n #><T>>
         where T : struct
     {
@@ -65,6 +62,22 @@ namespace LinearAlgebraSharp.Vectors
 
 <# } #>
 <# } #>
+
+        public static Vector<#= n #><T> Range(T start)
+        {
+            return Range(start, Scalar<T>.One.Value);
+        }
+
+        public static Vector<#= n #><T> Range(T start, T step)
+        {
+<# if (n > 0) { #>
+            var sStart = new Scalar<T>(start);
+<# } #>
+<# if (n > 1) { #>
+            var sStep = new Scalar<T>(step);
+<# } #>
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "sStart" + string.Concat(Enumerable.Repeat(" + sStep", x)))) #>);
+        }
         #endregion
 
 <# if (n > 0) { #>
@@ -113,9 +126,9 @@ namespace LinearAlgebraSharp.Vectors
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
 <# if (n > 1) { #>
-            return ScalarMath<T>.Pow(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "ScalarMath<T>.Pow(" + componentName(n, x) + ", p)")) #>, 1d / p);
+            return ScalarMath<T>.Pow(<#= string.Join(" + ", Enumerable.Range(0, n).Select(x => "ScalarMath<T>.Pow(ScalarMath<T>.Abs(" + componentName(n, x) + "), p)")) #>, 1d / p);
 <# } else if (n == 1) { #>
-            return <#= componentName(n, 0) #>;
+            return ScalarMath<T>.Abs(<#= componentName(n, 0) #>);
 <# } else { #>
             return Scalar<T>.Zero;
 <# } #>
@@ -124,30 +137,45 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> MaximumNorm()
         {
 <# if (n > 1) { #>
-            Scalar<T> max = <#= componentName(n, 0) #>;
+            Scalar<T> max = ScalarMath<T>.Abs(<#= componentName(n, 0) #>);
 
 <# for (int i = 1; i < n; i++) { #>
-            if (<#= componentName(n, i) #> > max)
-                max = <#= componentName(n, i) #>;
+            if (ScalarMath<T>.Abs(<#= componentName(n, i) #>) > max)
+                max = ScalarMath<T>.Abs(<#= componentName(n, i) #>);
 <# } #>
 
             return max;
 <# } else if (n == 1) { #>
-            return <#= componentName(n, 0) #>;
+            return ScalarMath<T>.Abs(<#= componentName(n, 0) #>);
 <# } else { #>
             return Scalar<T>.Zero;
 <# } #>
         }
-
+		
+<# if (supportedDimensions.Contains(n + 1)) { #>
+        /// <summary>
+        /// Appends Scalar<typeparamref name="T"/>.One at the end of the vector. Used for e.g. affine transformations.
+        /// </summary>
+        public Vector<#= n + 1 #><T> Append1()
+        {
+            return new Vector<#= n + 1 #><T>(<#= string.Join(", ", Enumerable.Range(0, n + 1).Select(x => x == n ? "Scalar<T>.One" : componentName(n, x))) #>);
+        }
+		
+<# } #>
         public Vector<#= n #><U> Cast<U>()
             where U : struct
         {
             return new Vector<#= n #><U>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + ".Cast<U>()")) #>);
         }
 
-        public Vector<#= n #><T> Scale(Vector<#= n #><T> vec)
+        public Vector<#= n #><T> ElementwiseProduct(Vector<#= n #><T> vec)
         {
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " * vec." + componentName(n, x))) #>);
+        }
+
+        public Vector<#= n #><T> ElementwiseQuotient(Vector<#= n #><T> vec)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " / vec." + componentName(n, x))) #>);
         }
 
         public Scalar<T> Dot(Vector<#= n #><T> vec)
@@ -221,17 +249,17 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector<#= n #><T> Divide(Scalar<T> s)
+        public Vector<#= n #><T> DivideLeft(Scalar<T> s)
         {
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => componentName(n, x) + " / s")) #>);
         }
 
         public static Vector<#= n #><T> operator /(Vector<#= n #><T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector<#= n #><T> GetDividedBy(Scalar<T> s)
+        public Vector<#= n #><T> DivideRight(Scalar<T> s)
         {
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "s / " + componentName(n, x))) #>);
         }
@@ -243,7 +271,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector<#= n #><T> operator /(Scalar<T> left, Vector<#= n #><T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector<#= n #><T> Negate()
@@ -494,7 +522,7 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
             where TResult : struct
         {
-            Scalar<TResult> max = new Scalar<TResult>(func(v.<#= componentName(n, 0) #>.Value)), temp;
+            Scalar<TResult> max = new Scalar<TResult>(func(v.<#= componentName(n, 0) #>.Value))<#= n == 1 ? "" : ", temp" #>;
 
 <# for (int i = 1; i < n; i++) { #>
             temp = new Scalar<TResult>(func(v.<#= componentName(n, i) #>.Value));
@@ -508,7 +536,7 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
             where TResult : struct
         {
-            Scalar<TResult> min = new Scalar<TResult>(func(v.<#= componentName(n, 0) #>.Value)), temp;
+            Scalar<TResult> min = new Scalar<TResult>(func(v.<#= componentName(n, 0) #>.Value))<#= n == 1 ? "" : ", temp" #>;
 
 <# for (int i = 1; i < n; i++) { #>
             temp = new Scalar<TResult>(func(v.<#= componentName(n, i) #>.Value));
@@ -522,6 +550,14 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
         {
             return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(i => "v." + componentName(n, n - i - 1))) #>);
+        }
+
+        public static Vector<#= n #><TResult> Zip<TFirst, TSecond, TResult>(this Vector<#= n #><TFirst> t1, Vector<#= n #><TSecond> t2, Func<TFirst, TSecond, TResult> func)
+            where TFirst : struct
+            where TSecond : struct
+            where TResult : struct
+        {
+            return new Vector<#= n #><TResult>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "func(t1." + componentName(n, x) + ".Value, t2." + componentName(n, x) + ".Value)")) #>);
         }
 
         #endregion

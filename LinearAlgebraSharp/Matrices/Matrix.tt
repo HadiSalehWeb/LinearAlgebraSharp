@@ -87,27 +87,40 @@ namespace LinearAlgebraSharp.Matrices
         public Scalar<T> this[int i, int j] => Data[i, j];
 
         public Vector<#= n[1] #><T> this[int row] => Rows[row];
+<# if (n[0] == n[1]) { #>
+
+        public Scalar<T> Trace => <#= string.Join(" + ", Enumerable.Range(0, n[0]).Select(x => "e" + x + x)) #>;
+<# } #>
 
         #endregion
 
         #region Static
 
-        public static Matrix<#= n[0] #>x<#= n[1] #><T> Zero()
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> Fill(Scalar<T> value)
         {
-            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0] * n[1]).Select(x => "0")) #>);
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0] * n[1]).Select(x => "value")) #>);
         }
 
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> Zeros => Fill(Scalar<T>.Zero);
+
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> Ones => Fill(Scalar<T>.One);
+
 <# if (n[0] == n[1]) { #>
-        public static Matrix<#= n[0] #>x<#= n[1] #><T> One()
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> Identity => new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => x == y ? "Scalar<T>.One" : "Scalar<T>.Zero")))) #>);
+
+<# } else { #>
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> Eye => new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => x == y ? "Scalar<T>.One" : "Scalar<T>.Zero")))) #>);
+
+<# } #>
+        public static Matrix<#= n[0] #>x<#= n[1] #><T> Diagonal(Vector<#= Math.Min(n[0], n[1]) #><T> vec)
         {
-            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => x == y ? "1" : "0")))) #>);
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => x == y ? "vec." + vectorComponentName(Math.Min(n[0], n[1]), x) : "Scalar<T>.Zero")))) #>);
         }
 
         #endregion
 
         #region Constructors
 
-<# } #>
         public Matrix<#= n[0] #>x<#= n[1] #>(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "Scalar<T> e" + x + y)))) #>)
         {
 <# for(int x = 0; x < n[0]; x++) { #>
@@ -130,20 +143,20 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
-        public Vector<#= n[0] #><T> Transform(Vector<#= n[1] #><T> vec)
+        public Matrix<#= n[0] #>x<#= n[1] #><T> ElementwiseProduct(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
         {
-            return new Vector<#= n[0] #><T>(
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(" + ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " * vec." + vectorComponentName(n[0], y))) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " * mat.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
 
-        public Matrix1x<#= n[0] #><T> Transform(Matrix<#= n[1] #>x1<T> mat)
+        public Matrix<#= n[0] #>x<#= n[1] #><T> ElementwiseQuotient(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
         {
-            return new Matrix1x<#= n[0] #><T>(
+            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(" + ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " * mat." + componentName(y, 0))) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " / mat.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
@@ -157,11 +170,12 @@ namespace LinearAlgebraSharp.Matrices
             );
         }
 
-        public Matrix<#= n[0] #>x<#= n[1] #><T> Scale(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
+        public Matrix<#= n[0] #>x<#= n[1] #><TResult> Select<TResult>(Func<Scalar<T>, Scalar<TResult>> func)
+            where TResult : struct
         {
-            return new Matrix<#= n[0] #>x<#= n[1] #><T>(
+            return new Matrix<#= n[0] #>x<#= n[1] #><TResult>(
 <# for(int x = 0; x < n[0]; x++) { #>
-                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " * mat.e" + x + y)) #><#= x < n[0] - 1 ? "," : "" #>
+                <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "func(e" + x + y + ")")) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
         }
@@ -172,12 +186,30 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Arithmetic
 
-        public Vector<#= n[0] #><T> Multiply(Vector<#= n[1] #><T> vec)
+        public Matrix1x<#= n[0] #><T> Multiply(Matrix<#= n[1] #>x1<T> mat)
         {
-            return Transform(vec);
+            return new Matrix1x<#= n[0] #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(" + ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " * mat." + componentName(y, 0))) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
         }
 
-        public Vector<#= n[1] #><T> GetMultipliedBy(Vector<#= n[0] #><T> vec)
+        public static Matrix1x<#= n[0] #><T> operator *(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= n[1] #>x1<T> right)
+        {
+            return left.Multiply(right);
+        }
+
+        public Vector<#= n[0] #><T> MultiplyLeft(Vector<#= n[1] #><T> vec)
+        {
+            return new Vector<#= n[0] #><T>(
+<# for(int x = 0; x < n[0]; x++) { #>
+                <#= string.Join(" + ", Enumerable.Range(0, n[1]).Select(y => "e" + x + y + " * vec." + vectorComponentName(n[0], y))) #><#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            );
+        }
+
+        public Vector<#= n[1] #><T> MultiplyRight(Vector<#= n[0] #><T> vec)
         {
             return new Vector<#= n[1] #><T>(
 <# for(int y = 0; y < n[1]; y++) { #>
@@ -188,12 +220,12 @@ namespace LinearAlgebraSharp.Matrices
 
         public static Vector<#= n[0] #><T> operator *(Matrix<#= n[0] #>x<#= n[1] #><T> left, Vector<#= n[1] #><T> right)
         {
-            return left.Multiply(right);
+            return left.MultiplyLeft(right);
         }
 
         public static Vector<#= n[1] #><T> operator *(Vector<#= n[0] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
         {
-            return right.GetMultipliedBy(left);
+            return right.MultiplyRight(left);
         }
 
         public Matrix<#= n[0] #>x<#= n[1] #><T> Add(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
@@ -252,7 +284,7 @@ namespace LinearAlgebraSharp.Matrices
             );
         }
 
-        public Matrix<#= n[0] #>x<#= n[1] #><T> Divide(Scalar<T> s)
+        public Matrix<#= n[0] #>x<#= n[1] #><T> DivideLeft(Scalar<T> s)
         {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
@@ -263,10 +295,10 @@ namespace LinearAlgebraSharp.Matrices
 
         public static Matrix<#= n[0] #>x<#= n[1] #><T> operator /(Matrix<#= n[0] #>x<#= n[1] #><T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Matrix<#= n[0] #>x<#= n[1] #><T> GetDividedBy(Scalar<T> s)
+        public Matrix<#= n[0] #>x<#= n[1] #><T> DivideRight(Scalar<T> s)
         {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
@@ -277,7 +309,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public static Matrix<#= n[0] #>x<#= n[1] #><T> operator /(Scalar<T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Matrix<#= n[0] #>x<#= n[1] #><T> Negate()
@@ -297,10 +329,10 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Structure
-		
+
 <# foreach (var k in possibleMatrixLengths) if (possibleMatrixLengths.Contains(k + n[1])) { #>
         /// <summary>
-        /// Augments two matrices.
+        /// Augments two matrices left to right.
         /// </summary>
         public static Matrix<#= n[0] #>x<#= n[1] + k #><T> operator |(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= k #><T> right)
         {
@@ -310,10 +342,10 @@ namespace LinearAlgebraSharp.Matrices
 <# } #>
             );
         }
-		
+
 <# if (k != n[1]) { #>
         /// <summary>
-        /// Augments two matrices.
+        /// Augments two matrices left to right.
         /// </summary>
         public static Matrix<#= n[0] #>x<#= n[1] + k #><T> operator |(Matrix<#= n[0] #>x<#= k #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
         {
@@ -328,9 +360,9 @@ namespace LinearAlgebraSharp.Matrices
 <# } #>
 <# foreach (var k in possibleMatrixLengths) if (possibleMatrixLengths.Contains(k + n[0])) { #>
         /// <summary>
-        /// Concatenates two matrices.
+        /// Concatenates two matrices top to bottom.
         /// </summary>
-        public static Matrix<#= n[0] + k #>x<#= n[1] #><T> operator /(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= k #>x<#= n[1] #><T> right)
+        public static Matrix<#= n[0] + k #>x<#= n[1] #><T> operator ^(Matrix<#= n[0] #>x<#= n[1] #><T> left, Matrix<#= k #>x<#= n[1] #><T> right)
         {
             return new Matrix<#= n[0] + k #>x<#= n[1] #><T>(
 <# for(int x = 0; x < n[0]; x++) { #>
@@ -344,9 +376,9 @@ namespace LinearAlgebraSharp.Matrices
 
 <# if (k != n[0]) { #>
         /// <summary>
-        /// Concatenates two matrices.
+        /// Concatenates two matrices top to bottom.
         /// </summary>
-        public static Matrix<#= n[0] + k #>x<#= n[1] #><T> operator /(Matrix<#= k #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
+        public static Matrix<#= n[0] + k #>x<#= n[1] #><T> operator ^(Matrix<#= k #>x<#= n[1] #><T> left, Matrix<#= n[0] #>x<#= n[1] #><T> right)
         {
             return new Matrix<#= n[0] + k #>x<#= n[1] #><T>(
 <# for(int x = 0; x < k; x++) { #>
@@ -388,6 +420,15 @@ namespace LinearAlgebraSharp.Matrices
                 <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "t.Item" + (x + 1) + ".Item" + (y + 1))) #><#= x < n[0] - 1 ? "," : "" #>
 <# } #>
             );
+        }
+
+        public static implicit operator Matrix<T>(Matrix<#= n[0] #>x<#= n[1] #><T> t)
+        {
+            return new Matrix<T>(new Scalar<T>[,] {
+<# for(int x = 0; x < n[0]; x++) { #>
+                { <#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "t.e" + x + y)) #> }<#= x < n[0] - 1 ? "," : "" #>
+<# } #>
+            });
         }
 
         #endregion

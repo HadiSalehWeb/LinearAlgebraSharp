@@ -11,12 +11,13 @@ namespace LinearAlgebraSharp
     {
         TDimension Dimension { get; }
 
-        TThis Scale(TThis ten);
+        TThis ElementwiseProduct(TThis ten);
+        TThis ElementwiseQuotient(TThis ten);
         TThis Add(TThis ten);
         TThis Substract(TThis ten);
         TThis Multiply(Scalar<T> s);
-        TThis Divide(Scalar<T> s);
-        TThis GetDividedBy(Scalar<T> s);
+        TThis DivideLeft(Scalar<T> s);
+        TThis DivideRight(Scalar<T> s);
         TThis Negate();
         TThis Reciprocal();
     }

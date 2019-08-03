@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LinearAlgebraSharp.Scalars
 {
@@ -12,6 +10,9 @@ namespace LinearAlgebraSharp.Scalars
         private static readonly Scalar<T>? _e;
         private static readonly Scalar<T>? _pi;
 
+        /// <summary>
+        /// Euler's number.
+        /// </summary>
         public static Scalar<T> E
         {
             get

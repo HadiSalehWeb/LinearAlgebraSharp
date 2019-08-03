@@ -7,9 +7,6 @@ namespace LinearAlgebraSharp.Vectors
 {
     [Serializable]
     public struct Vector0<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector0<T>>
         where T : struct
     {
@@ -28,6 +25,16 @@ namespace LinearAlgebraSharp.Vectors
         public static readonly Vector0<T> zero = new Vector0<T>();
         public static readonly Vector0<T> one = new Vector0<T>();
 
+
+        public static Vector0<T> Range(T start)
+        {
+            return Range(start, Scalar<T>.One.Value);
+        }
+
+        public static Vector0<T> Range(T start, T step)
+        {
+            return new Vector0<T>();
+        }
         #endregion
 
         #region Functions
@@ -46,14 +53,27 @@ namespace LinearAlgebraSharp.Vectors
         {
             return Scalar<T>.Zero;
         }
-
+		
+        /// <summary>
+        /// Appends Scalar<typeparamref name="T"/>.One at the end of the vector. Used for e.g. affine transformations.
+        /// </summary>
+        public Vector1<T> Append1()
+        {
+            return new Vector1<T>(Scalar<T>.One);
+        }
+		
         public Vector0<U> Cast<U>()
             where U : struct
         {
             return new Vector0<U>();
         }
 
-        public Vector0<T> Scale(Vector0<T> vec)
+        public Vector0<T> ElementwiseProduct(Vector0<T> vec)
+        {
+            return new Vector0<T>();
+        }
+
+        public Vector0<T> ElementwiseQuotient(Vector0<T> vec)
         {
             return new Vector0<T>();
         }
@@ -129,17 +149,17 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector0<T> Divide(Scalar<T> s)
+        public Vector0<T> DivideLeft(Scalar<T> s)
         {
             return new Vector0<T>();
         }
 
         public static Vector0<T> operator /(Vector0<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector0<T> GetDividedBy(Scalar<T> s)
+        public Vector0<T> DivideRight(Scalar<T> s)
         {
             return new Vector0<T>();
         }
@@ -151,7 +171,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector0<T> operator /(Scalar<T> left, Vector0<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector0<T> Negate()
@@ -246,9 +266,6 @@ namespace LinearAlgebraSharp.Vectors
 
     [Serializable]
     public struct Vector1<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector1<T>>
         where T : struct
     {
@@ -272,6 +289,17 @@ namespace LinearAlgebraSharp.Vectors
         public static readonly Vector1<T> right = new Vector1<T>(Scalar<T>.One);
         public static readonly Vector1<T> left = new Vector1<T>(Scalar<T>.NegativeOneOrZero);
 
+
+        public static Vector1<T> Range(T start)
+        {
+            return Range(start, Scalar<T>.One.Value);
+        }
+
+        public static Vector1<T> Range(T start, T step)
+        {
+            var sStart = new Scalar<T>(start);
+            return new Vector1<T>(sStart);
+        }
         #endregion
 
         #region Constructors
@@ -297,23 +325,36 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return x;
+            return ScalarMath<T>.Abs(x);
         }
 
         public Scalar<T> MaximumNorm()
         {
-            return x;
+            return ScalarMath<T>.Abs(x);
         }
-
+		
+        /// <summary>
+        /// Appends Scalar<typeparamref name="T"/>.One at the end of the vector. Used for e.g. affine transformations.
+        /// </summary>
+        public Vector2<T> Append1()
+        {
+            return new Vector2<T>(x, Scalar<T>.One);
+        }
+		
         public Vector1<U> Cast<U>()
             where U : struct
         {
             return new Vector1<U>(x.Cast<U>());
         }
 
-        public Vector1<T> Scale(Vector1<T> vec)
+        public Vector1<T> ElementwiseProduct(Vector1<T> vec)
         {
             return new Vector1<T>(x * vec.x);
+        }
+
+        public Vector1<T> ElementwiseQuotient(Vector1<T> vec)
+        {
+            return new Vector1<T>(x / vec.x);
         }
 
         public Scalar<T> Dot(Vector1<T> vec)
@@ -387,17 +428,17 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector1<T> Divide(Scalar<T> s)
+        public Vector1<T> DivideLeft(Scalar<T> s)
         {
             return new Vector1<T>(x / s);
         }
 
         public static Vector1<T> operator /(Vector1<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector1<T> GetDividedBy(Scalar<T> s)
+        public Vector1<T> DivideRight(Scalar<T> s)
         {
             return new Vector1<T>(s / x);
         }
@@ -409,7 +450,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector1<T> operator /(Scalar<T> left, Vector1<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector1<T> Negate()
@@ -519,9 +560,6 @@ namespace LinearAlgebraSharp.Vectors
 
     [Serializable]
     public struct Vector2<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector2<T>>
         where T : struct
     {
@@ -548,6 +586,18 @@ namespace LinearAlgebraSharp.Vectors
         public static readonly Vector2<T> up = new Vector2<T>(Scalar<T>.Zero, Scalar<T>.One);
         public static readonly Vector2<T> down = new Vector2<T>(Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
 
+
+        public static Vector2<T> Range(T start)
+        {
+            return Range(start, Scalar<T>.One.Value);
+        }
+
+        public static Vector2<T> Range(T start, T step)
+        {
+            var sStart = new Scalar<T>(start);
+            var sStep = new Scalar<T>(step);
+            return new Vector2<T>(sStart, sStart + sStep);
+        }
         #endregion
 
         #region Constructors
@@ -587,28 +637,41 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(x, p) + ScalarMath<T>.Pow(y, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(ScalarMath<T>.Abs(x), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(y), p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
         {
-            Scalar<T> max = x;
+            Scalar<T> max = ScalarMath<T>.Abs(x);
 
-            if (y > max)
-                max = y;
+            if (ScalarMath<T>.Abs(y) > max)
+                max = ScalarMath<T>.Abs(y);
 
             return max;
         }
-
+		
+        /// <summary>
+        /// Appends Scalar<typeparamref name="T"/>.One at the end of the vector. Used for e.g. affine transformations.
+        /// </summary>
+        public Vector3<T> Append1()
+        {
+            return new Vector3<T>(x, y, Scalar<T>.One);
+        }
+		
         public Vector2<U> Cast<U>()
             where U : struct
         {
             return new Vector2<U>(x.Cast<U>(), y.Cast<U>());
         }
 
-        public Vector2<T> Scale(Vector2<T> vec)
+        public Vector2<T> ElementwiseProduct(Vector2<T> vec)
         {
             return new Vector2<T>(x * vec.x, y * vec.y);
+        }
+
+        public Vector2<T> ElementwiseQuotient(Vector2<T> vec)
+        {
+            return new Vector2<T>(x / vec.x, y / vec.y);
         }
 
         public Scalar<T> Dot(Vector2<T> vec)
@@ -682,17 +745,17 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector2<T> Divide(Scalar<T> s)
+        public Vector2<T> DivideLeft(Scalar<T> s)
         {
             return new Vector2<T>(x / s, y / s);
         }
 
         public static Vector2<T> operator /(Vector2<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector2<T> GetDividedBy(Scalar<T> s)
+        public Vector2<T> DivideRight(Scalar<T> s)
         {
             return new Vector2<T>(s / x, s / y);
         }
@@ -704,7 +767,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector2<T> operator /(Scalar<T> left, Vector2<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector2<T> Negate()
@@ -817,9 +880,6 @@ namespace LinearAlgebraSharp.Vectors
 
     [Serializable]
     public struct Vector3<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector3<T>>
         where T : struct
     {
@@ -849,6 +909,18 @@ namespace LinearAlgebraSharp.Vectors
         public static readonly Vector3<T> forward = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
         public static readonly Vector3<T> backward = new Vector3<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
 
+
+        public static Vector3<T> Range(T start)
+        {
+            return Range(start, Scalar<T>.One.Value);
+        }
+
+        public static Vector3<T> Range(T start, T step)
+        {
+            var sStart = new Scalar<T>(start);
+            var sStep = new Scalar<T>(step);
+            return new Vector3<T>(sStart, sStart + sStep, sStart + sStep + sStep);
+        }
         #endregion
 
         #region Constructors
@@ -892,30 +964,43 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(x, p) + ScalarMath<T>.Pow(y, p) + ScalarMath<T>.Pow(z, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(ScalarMath<T>.Abs(x), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(y), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(z), p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
         {
-            Scalar<T> max = x;
+            Scalar<T> max = ScalarMath<T>.Abs(x);
 
-            if (y > max)
-                max = y;
-            if (z > max)
-                max = z;
+            if (ScalarMath<T>.Abs(y) > max)
+                max = ScalarMath<T>.Abs(y);
+            if (ScalarMath<T>.Abs(z) > max)
+                max = ScalarMath<T>.Abs(z);
 
             return max;
         }
-
+		
+        /// <summary>
+        /// Appends Scalar<typeparamref name="T"/>.One at the end of the vector. Used for e.g. affine transformations.
+        /// </summary>
+        public Vector4<T> Append1()
+        {
+            return new Vector4<T>(x, y, z, Scalar<T>.One);
+        }
+		
         public Vector3<U> Cast<U>()
             where U : struct
         {
             return new Vector3<U>(x.Cast<U>(), y.Cast<U>(), z.Cast<U>());
         }
 
-        public Vector3<T> Scale(Vector3<T> vec)
+        public Vector3<T> ElementwiseProduct(Vector3<T> vec)
         {
             return new Vector3<T>(x * vec.x, y * vec.y, z * vec.z);
+        }
+
+        public Vector3<T> ElementwiseQuotient(Vector3<T> vec)
+        {
+            return new Vector3<T>(x / vec.x, y / vec.y, z / vec.z);
         }
 
         public Scalar<T> Dot(Vector3<T> vec)
@@ -989,17 +1074,17 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector3<T> Divide(Scalar<T> s)
+        public Vector3<T> DivideLeft(Scalar<T> s)
         {
             return new Vector3<T>(x / s, y / s, z / s);
         }
 
         public static Vector3<T> operator /(Vector3<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector3<T> GetDividedBy(Scalar<T> s)
+        public Vector3<T> DivideRight(Scalar<T> s)
         {
             return new Vector3<T>(s / x, s / y, s / z);
         }
@@ -1011,7 +1096,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector3<T> operator /(Scalar<T> left, Vector3<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector3<T> Negate()
@@ -1127,9 +1212,6 @@ namespace LinearAlgebraSharp.Vectors
 
     [Serializable]
     public struct Vector4<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector4<T>>
         where T : struct
     {
@@ -1162,6 +1244,18 @@ namespace LinearAlgebraSharp.Vectors
         public static readonly Vector4<T> ana = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
         public static readonly Vector4<T> kata = new Vector4<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.NegativeOneOrZero);
 
+
+        public static Vector4<T> Range(T start)
+        {
+            return Range(start, Scalar<T>.One.Value);
+        }
+
+        public static Vector4<T> Range(T start, T step)
+        {
+            var sStart = new Scalar<T>(start);
+            var sStep = new Scalar<T>(step);
+            return new Vector4<T>(sStart, sStart + sStep, sStart + sStep + sStep, sStart + sStep + sStep + sStep);
+        }
         #endregion
 
         #region Constructors
@@ -1209,32 +1303,45 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(x, p) + ScalarMath<T>.Pow(y, p) + ScalarMath<T>.Pow(z, p) + ScalarMath<T>.Pow(w, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(ScalarMath<T>.Abs(x), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(y), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(z), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(w), p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
         {
-            Scalar<T> max = x;
+            Scalar<T> max = ScalarMath<T>.Abs(x);
 
-            if (y > max)
-                max = y;
-            if (z > max)
-                max = z;
-            if (w > max)
-                max = w;
+            if (ScalarMath<T>.Abs(y) > max)
+                max = ScalarMath<T>.Abs(y);
+            if (ScalarMath<T>.Abs(z) > max)
+                max = ScalarMath<T>.Abs(z);
+            if (ScalarMath<T>.Abs(w) > max)
+                max = ScalarMath<T>.Abs(w);
 
             return max;
         }
-
+		
+        /// <summary>
+        /// Appends Scalar<typeparamref name="T"/>.One at the end of the vector. Used for e.g. affine transformations.
+        /// </summary>
+        public Vector5<T> Append1()
+        {
+            return new Vector5<T>(x, y, z, w, Scalar<T>.One);
+        }
+		
         public Vector4<U> Cast<U>()
             where U : struct
         {
             return new Vector4<U>(x.Cast<U>(), y.Cast<U>(), z.Cast<U>(), w.Cast<U>());
         }
 
-        public Vector4<T> Scale(Vector4<T> vec)
+        public Vector4<T> ElementwiseProduct(Vector4<T> vec)
         {
             return new Vector4<T>(x * vec.x, y * vec.y, z * vec.z, w * vec.w);
+        }
+
+        public Vector4<T> ElementwiseQuotient(Vector4<T> vec)
+        {
+            return new Vector4<T>(x / vec.x, y / vec.y, z / vec.z, w / vec.w);
         }
 
         public Scalar<T> Dot(Vector4<T> vec)
@@ -1308,17 +1415,17 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector4<T> Divide(Scalar<T> s)
+        public Vector4<T> DivideLeft(Scalar<T> s)
         {
             return new Vector4<T>(x / s, y / s, z / s, w / s);
         }
 
         public static Vector4<T> operator /(Vector4<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector4<T> GetDividedBy(Scalar<T> s)
+        public Vector4<T> DivideRight(Scalar<T> s)
         {
             return new Vector4<T>(s / x, s / y, s / z, s / w);
         }
@@ -1330,7 +1437,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector4<T> operator /(Scalar<T> left, Vector4<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector4<T> Negate()
@@ -1449,9 +1556,6 @@ namespace LinearAlgebraSharp.Vectors
 
     [Serializable]
     public struct Vector5<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IVector<T, Vector5<T>>
         where T : struct
     {
@@ -1486,6 +1590,18 @@ namespace LinearAlgebraSharp.Vectors
 
         public static readonly Vector5<T> basis5 = new Vector5<T>(Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.Zero, Scalar<T>.One);
 
+
+        public static Vector5<T> Range(T start)
+        {
+            return Range(start, Scalar<T>.One.Value);
+        }
+
+        public static Vector5<T> Range(T start, T step)
+        {
+            var sStart = new Scalar<T>(start);
+            var sStep = new Scalar<T>(step);
+            return new Vector5<T>(sStart, sStart + sStep, sStart + sStep + sStep, sStart + sStep + sStep + sStep, sStart + sStep + sStep + sStep + sStep);
+        }
         #endregion
 
         #region Constructors
@@ -1537,34 +1653,39 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
-            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(v0, p) + ScalarMath<T>.Pow(v1, p) + ScalarMath<T>.Pow(v2, p) + ScalarMath<T>.Pow(v3, p) + ScalarMath<T>.Pow(v4, p), 1d / p);
+            return ScalarMath<T>.Pow(ScalarMath<T>.Pow(ScalarMath<T>.Abs(v0), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(v1), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(v2), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(v3), p) + ScalarMath<T>.Pow(ScalarMath<T>.Abs(v4), p), 1d / p);
         }
 
         public Scalar<T> MaximumNorm()
         {
-            Scalar<T> max = v0;
+            Scalar<T> max = ScalarMath<T>.Abs(v0);
 
-            if (v1 > max)
-                max = v1;
-            if (v2 > max)
-                max = v2;
-            if (v3 > max)
-                max = v3;
-            if (v4 > max)
-                max = v4;
+            if (ScalarMath<T>.Abs(v1) > max)
+                max = ScalarMath<T>.Abs(v1);
+            if (ScalarMath<T>.Abs(v2) > max)
+                max = ScalarMath<T>.Abs(v2);
+            if (ScalarMath<T>.Abs(v3) > max)
+                max = ScalarMath<T>.Abs(v3);
+            if (ScalarMath<T>.Abs(v4) > max)
+                max = ScalarMath<T>.Abs(v4);
 
             return max;
         }
-
+		
         public Vector5<U> Cast<U>()
             where U : struct
         {
             return new Vector5<U>(v0.Cast<U>(), v1.Cast<U>(), v2.Cast<U>(), v3.Cast<U>(), v4.Cast<U>());
         }
 
-        public Vector5<T> Scale(Vector5<T> vec)
+        public Vector5<T> ElementwiseProduct(Vector5<T> vec)
         {
             return new Vector5<T>(v0 * vec.v0, v1 * vec.v1, v2 * vec.v2, v3 * vec.v3, v4 * vec.v4);
+        }
+
+        public Vector5<T> ElementwiseQuotient(Vector5<T> vec)
+        {
+            return new Vector5<T>(v0 / vec.v0, v1 / vec.v1, v2 / vec.v2, v3 / vec.v3, v4 / vec.v4);
         }
 
         public Scalar<T> Dot(Vector5<T> vec)
@@ -1638,17 +1759,17 @@ namespace LinearAlgebraSharp.Vectors
             return right.Multiply(left);
         }
 
-        public Vector5<T> Divide(Scalar<T> s)
+        public Vector5<T> DivideLeft(Scalar<T> s)
         {
             return new Vector5<T>(v0 / s, v1 / s, v2 / s, v3 / s, v4 / s);
         }
 
         public static Vector5<T> operator /(Vector5<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Vector5<T> GetDividedBy(Scalar<T> s)
+        public Vector5<T> DivideRight(Scalar<T> s)
         {
             return new Vector5<T>(s / v0, s / v1, s / v2, s / v3, s / v4);
         }
@@ -1660,7 +1781,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public static Vector5<T> operator /(Scalar<T> left, Vector5<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Vector5<T> Negate()
@@ -1893,7 +2014,7 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
             where TResult : struct
         {
-            Scalar<TResult> max = new Scalar<TResult>(func(v.x.Value)), temp;
+            Scalar<TResult> max = new Scalar<TResult>(func(v.x.Value));
 
 
             return max.Value;
@@ -1903,7 +2024,7 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
             where TResult : struct
         {
-            Scalar<TResult> min = new Scalar<TResult>(func(v.x.Value)), temp;
+            Scalar<TResult> min = new Scalar<TResult>(func(v.x.Value));
 
 
             return min.Value;
@@ -1913,6 +2034,14 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
         {
             return new Vector1<T>(v.x);
+        }
+
+        public static Vector1<TResult> Zip<TFirst, TSecond, TResult>(this Vector1<TFirst> t1, Vector1<TSecond> t2, Func<TFirst, TSecond, TResult> func)
+            where TFirst : struct
+            where TSecond : struct
+            where TResult : struct
+        {
+            return new Vector1<TResult>(func(t1.x.Value, t2.x.Value));
         }
 
         #endregion
@@ -2051,6 +2180,14 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
         {
             return new Vector2<T>(v.y, v.x);
+        }
+
+        public static Vector2<TResult> Zip<TFirst, TSecond, TResult>(this Vector2<TFirst> t1, Vector2<TSecond> t2, Func<TFirst, TSecond, TResult> func)
+            where TFirst : struct
+            where TSecond : struct
+            where TResult : struct
+        {
+            return new Vector2<TResult>(func(t1.x.Value, t2.x.Value), func(t1.y.Value, t2.y.Value));
         }
 
         #endregion
@@ -2195,6 +2332,14 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
         {
             return new Vector3<T>(v.z, v.y, v.x);
+        }
+
+        public static Vector3<TResult> Zip<TFirst, TSecond, TResult>(this Vector3<TFirst> t1, Vector3<TSecond> t2, Func<TFirst, TSecond, TResult> func)
+            where TFirst : struct
+            where TSecond : struct
+            where TResult : struct
+        {
+            return new Vector3<TResult>(func(t1.x.Value, t2.x.Value), func(t1.y.Value, t2.y.Value), func(t1.z.Value, t2.z.Value));
         }
 
         #endregion
@@ -2345,6 +2490,14 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
         {
             return new Vector4<T>(v.w, v.z, v.y, v.x);
+        }
+
+        public static Vector4<TResult> Zip<TFirst, TSecond, TResult>(this Vector4<TFirst> t1, Vector4<TSecond> t2, Func<TFirst, TSecond, TResult> func)
+            where TFirst : struct
+            where TSecond : struct
+            where TResult : struct
+        {
+            return new Vector4<TResult>(func(t1.x.Value, t2.x.Value), func(t1.y.Value, t2.y.Value), func(t1.z.Value, t2.z.Value), func(t1.w.Value, t2.w.Value));
         }
 
         #endregion
@@ -2501,6 +2654,14 @@ namespace LinearAlgebraSharp.Vectors.Extensions
             where T : struct
         {
             return new Vector5<T>(v.v4, v.v3, v.v2, v.v1, v.v0);
+        }
+
+        public static Vector5<TResult> Zip<TFirst, TSecond, TResult>(this Vector5<TFirst> t1, Vector5<TSecond> t2, Func<TFirst, TSecond, TResult> func)
+            where TFirst : struct
+            where TSecond : struct
+            where TResult : struct
+        {
+            return new Vector5<TResult>(func(t1.v0.Value, t2.v0.Value), func(t1.v1.Value, t2.v1.Value), func(t1.v2.Value, t2.v2.Value), func(t1.v3.Value, t2.v3.Value), func(t1.v4.Value, t2.v4.Value));
         }
 
         #endregion

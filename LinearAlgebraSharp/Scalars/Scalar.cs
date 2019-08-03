@@ -560,9 +560,14 @@ namespace LinearAlgebraSharp.Scalars
             }
         }
 
-        public Scalar<T> Scale(Scalar<T> s)
+        public Scalar<T> ElementwiseProduct(Scalar<T> s)
         {
             return Multiply(s);
+        }
+
+        public Scalar<T> ElementwiseQuotient(Scalar<T> s)
+        {
+            return DivideLeft(s);
         }
 
         public static Scalar<T> operator *(Scalar<T> left, Scalar<T> right)
@@ -570,7 +575,7 @@ namespace LinearAlgebraSharp.Scalars
             return left.Multiply(right);
         }
 
-        public Scalar<T> Divide(Scalar<T> s)
+        public Scalar<T> DivideLeft(Scalar<T> s)
         {
             switch (scalarType)
             {
@@ -601,7 +606,7 @@ namespace LinearAlgebraSharp.Scalars
             }
         }
 
-        public Scalar<T> GetDividedBy(Scalar<T> s)
+        public Scalar<T> DivideRight(Scalar<T> s)
         {
             switch (scalarType)
             {
@@ -653,11 +658,11 @@ namespace LinearAlgebraSharp.Scalars
                 case ScalarType.UInt64:
                     throw new Exception("Cannot take reciprocal of type <System.UInt64>.");
                 case ScalarType.Single:
-                    return From(One.Divide(SingleValue));
+                    return From(One.DivideLeft(SingleValue));
                 case ScalarType.Double:
-                    return From(One.Divide(DoubleValue));
+                    return From(One.DivideLeft(DoubleValue));
                 case ScalarType.Decimal:
-                    return From(One.Divide(DecimalValue));
+                    return From(One.DivideLeft(DecimalValue));
                 default:
                     throw new Exception($"Unrecognized scalar type <{ scalarType }>");
             }
@@ -665,7 +670,7 @@ namespace LinearAlgebraSharp.Scalars
 
         public static Scalar<T> operator /(Scalar<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
         public Scalar<T> Negate()

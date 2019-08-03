@@ -3,6 +3,7 @@ using LinearAlgebraSharp.Vectors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LinearAlgebraSharp.Matrices
@@ -63,32 +64,105 @@ namespace LinearAlgebraSharp.Matrices
         public Scalar<T> this[int i, int j] => Data[i, j];
         public Vector<T> this[int row] => Rows[row];
 
+        public Scalar<T> Trace
+        {
+            get
+            {
+                if (Dimension.x != Dimension.y) throw new Exception("The trace is only defined on square matrices.");
+
+                Scalar<T> sum = Scalar<T>.Zero;
+
+                for (int i = 0; i < Dimension.x; i++)
+                    sum += Data[i, i];
+
+                return sum;
+            }
+        }
+
         #endregion
 
         #region Static
 
-        public static Matrix<T> Zero(Vector2<int> dimensions)
+        /// <summary>
+        /// Returns an n * m matrix filled with 'filling'.
+        /// </summary>
+        public static Matrix<T> Fill(Vector2<int> dimensions, Scalar<T> filling)
         {
             Scalar<T>[,] data = new Scalar<T>[dimensions.x, dimensions.y];
+
             for (int i = 0; i < dimensions.x; i++)
                 for (int j = 0; j < dimensions.y; j++)
-                    data[i, j] = Scalar<T>.Zero;
+                    data[i, j] = filling;
 
             return new Matrix<T>(data);
         }
 
-        public static Matrix<T> Zero(int dimension)
+        /// <summary>
+        /// Returns an n * m matrix filled with zeros.
+        /// </summary>
+        public static Matrix<T> Zeros(Vector2<int> dimensions)
         {
-            return Zero(new Vector2<int>(dimension));
+            return Fill(dimensions, Scalar<T>.Zero);
         }
 
-        public static Matrix<T> One(int dimension)
+        /// <summary>
+        /// Returns an n * n matrix filled with zeros.
+        /// </summary>
+        public static Matrix<T> Zeros(int dimension)
         {
-            Scalar<T>[,] data = new Scalar<T>[dimension, dimension];
-            for (int i = 0; i < dimension; i++)
-                for (int j = 0; j < dimension; j++)
+            return Zeros(new Vector2<int>(dimension));
+        }
+
+        /// <summary>
+        /// Returns an n * m matrix filled with ones.
+        /// </summary>
+        public static Matrix<T> Ones(Vector2<int> dimensions)
+        {
+            return Fill(dimensions, Scalar<T>.One);
+        }
+
+        /// <summary>
+        /// Returns an n * n matrix filled with ones.
+        /// </summary>
+        public static Matrix<T> Ones(int dimension)
+        {
+            return Ones(new Vector2<int>(dimension));
+        }
+
+        /// <summary>
+        /// Returns an n * n matrix with ones on the diagonal and zeros elsewhere.
+        /// </summary>
+        public static Matrix<T> Eye(Vector2<int> dimensions)
+        {
+            Scalar<T>[,] data = new Scalar<T>[dimensions.x, dimensions.y];
+            for (int i = 0; i < dimensions.x; i++)
+                for (int j = 0; j < dimensions.y; j++)
                     if (i == j)
                         data[i, j] = Scalar<T>.One;
+                    else
+                        data[i, j] = Scalar<T>.Zero;
+
+            return new Matrix<T>(data);
+        }
+
+        /// <summary>
+        /// Returns the n * n identity matrix.
+        /// </summary>
+        public static Matrix<T> Identity(int dimension)
+        {
+            return Eye(new Vector2<int>(dimension));
+        }
+
+        /// <summary>
+        /// Returns an n * n matrix with the values of 'vec' on the diagonal and zeros elsewhere.
+        /// </summary>
+        public static Matrix<T> Diagonal(Vector<T> vec)
+        {
+            Scalar<T>[,] data = new Scalar<T>[vec.Length, vec.Length];
+            for (int i = 0; i < vec.Length; i++)
+                for (int j = 0; j < vec.Length; j++)
+                    if (i == j)
+                        data[i, j] = vec[i];
                     else
                         data[i, j] = Scalar<T>.Zero;
 
@@ -119,7 +193,7 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
-        public Matrix<T> Scale(Matrix<T> mat)
+        public Matrix<T> ElementwiseProduct(Matrix<T> mat)
         {
             if (Dimension != mat.Dimension)
                 throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(mat), mat.Dimension, Dimension);
@@ -133,28 +207,35 @@ namespace LinearAlgebraSharp.Matrices
             return new Matrix<T>(data);
         }
 
-        public Vector<T> Transform(Vector<T> v)
+        public Matrix<T> ElementwiseQuotient(Matrix<T> mat)
         {
-            return this * v;
+            if (Dimension != mat.Dimension)
+                throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(mat), mat.Dimension, Dimension);
+
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j] / mat.Data[i, j];
+
+            return new Matrix<T>(data);
         }
 
-        public Matrix<T> Transform(Matrix<T> m)
-        {
-            return this * m;
-        }
-
+        /// <summary>
+        /// Returns a slice of the matrix starting at (start.x, start.y) with count.x rows and count.y columns.
+        /// </summary>
         public Matrix<T> Submatrix(Vector2<int> start, Vector2<int> count)
         {
             if (start.x < 0 || start.y < 0 ||
                 start.x >= Dimension.x || start.y >= Dimension.y ||
-                count.x < 0 || count.y < 0 ||
-                start.x + count.x > Dimension.x || start.y + count.y > Dimension.y)
+                count.x < 0 || count.y < 0)
                 throw new ArgumentException("Arguments outside matrix bounds.");
 
-            Scalar<T>[,] data = new Scalar<T>[count.x, count.y];
+            int n = Math.Min(count.x.Value, Dimension.x.Value), m = Math.Min(count.y.Value, Dimension.y.Value);
+            Scalar<T>[,] data = new Scalar<T>[n, m];
 
-            for (int i = start.x; i < count.x; i++)
-                for (int j = start.y; j < count.y; j++)
+            for (int i = start.x; i < n; i++)
+                for (int j = start.y; j < m; j++)
                     data[i - start.x, j - start.y] = Data[i, j];
 
             return new Matrix<T>(data);
@@ -200,7 +281,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public Matrix<T> Multiply(Matrix<T> mat)
         {
-            if (Dimension != mat.Dimension)
+            if (Dimension.y != mat.Dimension.x)
                 throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(mat), mat.Dimension, Dimension);
 
 
@@ -219,7 +300,7 @@ namespace LinearAlgebraSharp.Matrices
             return left.Multiply(right);
         }
 
-        public Vector<T> Multiply(Vector<T> vec)
+        public Vector<T> MultiplyLeft(Vector<T> vec)
         {
             if (Dimension.y != vec.Dimension) throw new ArgumentException("Incompatible dimensions.");
 
@@ -232,7 +313,7 @@ namespace LinearAlgebraSharp.Matrices
             return new Vector<T>(data);
         }
 
-        public Vector<T> GetMultipliedBy(Vector<T> vec)
+        public Vector<T> MultiplyRight(Vector<T> vec)
         {
             if (Dimension.x != vec.Dimension) throw new ArgumentException("Incompatible dimensions.");
 
@@ -247,17 +328,17 @@ namespace LinearAlgebraSharp.Matrices
 
         public static Vector<T> operator *(Matrix<T> left, Vector<T> right)
         {
-            return left.Multiply(right);
+            return left.MultiplyLeft(right);
         }
 
         public static Vector<T> operator *(Vector<T> left, Matrix<T> right)
         {
-            return right.GetMultipliedBy(left);
+            return right.MultiplyRight(left);
         }
 
         public Matrix<T> Add(Matrix<T> mat)
         {
-            if (Dimension != mat.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            if (Dimension != mat.Dimension) throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(mat), mat.Dimension, Dimension);
 
             Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
 
@@ -275,7 +356,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public Matrix<T> Substract(Matrix<T> mat)
         {
-            if (Dimension != mat.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            if (Dimension != mat.Dimension) throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(mat), mat.Dimension, Dimension);
 
             Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
 
@@ -312,7 +393,7 @@ namespace LinearAlgebraSharp.Matrices
             return left.Multiply(right);
         }
 
-        public Matrix<T> Divide(Scalar<T> s)
+        public Matrix<T> DivideLeft(Scalar<T> s)
         {
             Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
 
@@ -325,10 +406,10 @@ namespace LinearAlgebraSharp.Matrices
 
         public static Matrix<T> operator /(Matrix<T> left, Scalar<T> right)
         {
-            return left.Divide(right);
+            return left.DivideLeft(right);
         }
 
-        public Matrix<T> GetDividedBy(Scalar<T> s)
+        public Matrix<T> DivideRight(Scalar<T> s)
         {
             Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y];
 
@@ -341,7 +422,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public static Matrix<T> operator /(Scalar<T> left, Matrix<T> right)
         {
-            return right.GetDividedBy(left);
+            return right.DivideRight(left);
         }
 
         public Matrix<T> Reciprocal()
@@ -376,43 +457,59 @@ namespace LinearAlgebraSharp.Matrices
         #region Structure
 
         /// <summary>
-        /// Augments two matrices.
+        /// Augments two matrices left to right.
         /// </summary>
-        public static Matrix<T> operator |(Matrix<T> left, Matrix<T> right)
+        public Matrix<T> Augment(Matrix<T> right)
         {
-            if (left.Dimension.x != right.Dimension.x) throw new ArgumentException("Incompatible dimensions.");
+            if (Dimension.x != right.Dimension.x) throw new ArgumentException("Incompatible dimensions.");
 
-            Scalar<T>[,] data = new Scalar<T>[left.Dimension.x, left.Dimension.y + right.Dimension.y];
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x, Dimension.y + right.Dimension.y];
 
-            for (int i = 0; i < left.Dimension.x; i++)
+            for (int i = 0; i < Dimension.x; i++)
             {
-                for (int j = 0; j < left.Dimension.y; j++)
-                    data[i, j] = left[i, j];
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j];
                 for (int j = 0; j < right.Dimension.y; j++)
-                    data[i, j + left.Dimension.y] = right[i, j];
+                    data[i, j + Dimension.y] = right[i, j];
             }
 
             return new Matrix<T>(data);
         }
 
         /// <summary>
-        /// Concatenates two matrices.
+        /// Augments two matrices left to right.
         /// </summary>
-        public static Matrix<T> operator /(Matrix<T> left, Matrix<T> right)
+        public static Matrix<T> operator |(Matrix<T> left, Matrix<T> right)
         {
-            if (left.Dimension.y != right.Dimension.y) throw new ArgumentException("Incompatible dimensions.");
+            return left.Augment(right);
+        }
 
-            Scalar<T>[,] data = new Scalar<T>[left.Dimension.x + right.Dimension.x, left.Dimension.y];
+        /// <summary>
+        /// Concatenates two matrices top to bottom.
+        /// </summary>
+        public Matrix<T> Concatenate(Matrix<T> right)
+        {
+            if (Dimension.y != right.Dimension.y) throw new ArgumentException("Incompatible dimensions.");
 
-            for (int i = 0; i < left.Dimension.x; i++)
-                for (int j = 0; j < left.Dimension.y; j++)
-                    data[i, j] = left[i, j];
+            Scalar<T>[,] data = new Scalar<T>[Dimension.x + right.Dimension.x, Dimension.y];
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    data[i, j] = Data[i, j];
 
             for (int i = 0; i < right.Dimension.x; i++)
                 for (int j = 0; j < right.Dimension.y; j++)
-                    data[i + left.Dimension.x, j] = right[i, j];
+                    data[i + Dimension.x, j] = right[i, j];
 
             return new Matrix<T>(data);
+        }
+
+        /// <summary>
+        /// Concatenates two matrices top to bottom.
+        /// </summary>
+        public static Matrix<T> operator ^(Matrix<T> left, Matrix<T> right)
+        {
+            return left.Concatenate(right);
         }
 
         #endregion
@@ -421,7 +518,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public static bool operator ==(Matrix<T> left, Matrix<T> right)
         {
-            if (left.Dimension != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            if (left.Dimension != right.Dimension) throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(right), right.Dimension, left.Dimension);
 
             for (int i = 0; i < left.Dimension.x; i++)
                 for (int j = 0; j < left.Dimension.y; j++)
@@ -433,7 +530,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public static bool operator !=(Matrix<T> left, Matrix<T> right)
         {
-            if (left.Dimension != right.Dimension) throw new ArgumentException("Incompatible dimensions.");
+            if (left.Dimension != right.Dimension) throw new DimensionMismatchException<T, Vector2<int>, Matrix<T>>(nameof(right), right.Dimension, left.Dimension);
 
             for (int i = 0; i < left.Dimension.x; i++)
                 for (int j = 0; j < left.Dimension.y; j++)
@@ -446,6 +543,56 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #endregion
+
+        //TODO: move this to its own class
+        //#region Transformations
+
+        //public static Matrix<T> Scaling(int dimension, T scalingFactor)
+        //{
+        //    Scalar<T>[,] scalars = new Scalar<T>[dimension, dimension];
+        //    Scalar<T> scalingScalar = new Scalar<T>(scalingFactor);
+
+        //    for (int i = 0; i < dimension; i++)
+        //        for (int j = 0; j < dimension; j++)
+        //            if (i == j) scalars[i, j] = scalingScalar;
+        //            else scalars[i, j] = Scalar<T>.Zero;
+
+        //    return new Matrix<T>(scalars);
+        //}
+
+        //public static Matrix<T> Stretching(int dimension, int stretchingAxis, T stretchingFactor)
+        //{
+        //    Scalar<T>[,] scalars = new Scalar<T>[dimension, dimension];
+        //    Scalar<T> stretchingScalar = new Scalar<T>(stretchingFactor);
+
+        //    for (int i = 0; i < dimension; i++)
+        //        for (int j = 0; j < dimension; j++)
+        //            if (i == j)
+        //                if (i == stretchingAxis) scalars[i, j] = stretchingScalar;
+        //                else scalars[i, j] = Scalar<T>.One;
+        //            else scalars[i, j] = Scalar<T>.Zero;
+
+        //    return new Matrix<T>(scalars);
+        //}
+
+        //public static Matrix<T> Squeezing(int dimension, int squeezingAxis, T squeezingFactor)
+        //{
+        //    Scalar<T>[,] scalars = new Scalar<T>[dimension, dimension];
+        //    Scalar<T> squeezingScalar = new Scalar<T>(squeezingFactor);
+        //    Scalar<T> squeezingScalarToPower = ScalarMath<T>.Pow(squeezingScalar, dimension - 1);
+        //    Scalar<T> squeezingReciprocal = squeezingScalar.Reciprocal();
+
+        //    for (int i = 0; i < dimension; i++)
+        //        for (int j = 0; j < dimension; j++)
+        //            if (i == j)
+        //                if (i == squeezingAxis) scalars[i, j] = squeezingScalarToPower;
+        //                else scalars[i, j] = squeezingReciprocal;
+        //            else scalars[i, j] = Scalar<T>.Zero;
+
+        //    return new Matrix<T>(scalars);
+        //}
+
+        //#endregion
 
         #region Interface Implementations
 

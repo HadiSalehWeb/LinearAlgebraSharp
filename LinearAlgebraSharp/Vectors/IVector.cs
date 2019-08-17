@@ -18,6 +18,8 @@ namespace LinearAlgebraSharp.Vectors
         Scalar<T> SqrMagnitude { get; }
         TThis Normalized { get; }
 
+        TThis SetComponent(int component, Scalar<T> value);
+
         Scalar<T> Norm(int p);
         Scalar<T> MaximumNorm();
         Scalar<T> Dot(TThis vec);

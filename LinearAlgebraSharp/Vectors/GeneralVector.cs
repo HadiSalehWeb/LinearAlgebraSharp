@@ -129,6 +129,12 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector<T> Normalized => this / Magnitude;
 
+        public Vector<T> SetComponent(int component, Scalar<T> value)
+        {
+            var that = this;
+            return new Vector<T>(Enumerable.Range(0, Length).Select(i => i == component ? value : that[i]).ToArray());
+        }
+
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
@@ -403,7 +409,7 @@ namespace LinearAlgebraSharp.Vectors
 
         public object Clone()
         {
-            return new Vector<T>(Data);
+            return new Vector<T>((Scalar<T>[])Data.Clone());
         }
 
         public bool Equals(Vector<T> other)

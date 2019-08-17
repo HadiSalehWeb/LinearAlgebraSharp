@@ -122,6 +122,11 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector<#= n #><T> Normalized => this / Magnitude;
 
+        public Vector<#= n #><T> SetComponent(int component, Scalar<T> value)
+        {
+            return new Vector<#= n #><T>(<#= string.Join(", ", Enumerable.Range(0, n).Select(x => "component == " + x + " ? value : " + componentName(n, x))) #>);
+        }
+
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));

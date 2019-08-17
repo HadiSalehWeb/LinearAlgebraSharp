@@ -43,6 +43,11 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector0<T> Normalized => this / Magnitude;
 
+        public Vector0<T> SetComponent(int component, Scalar<T> value)
+        {
+            return new Vector0<T>();
+        }
+
         public Scalar<T> Norm(int p)
         {
             if (p < 1) throw new ArgumentException("p must be greater than or equal to 1.", nameof(p));
@@ -321,6 +326,11 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> SqrMagnitude => x * x;
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector1<T> Normalized => this / Magnitude;
+
+        public Vector1<T> SetComponent(int component, Scalar<T> value)
+        {
+            return new Vector1<T>(component == 0 ? value : x);
+        }
 
         public Scalar<T> Norm(int p)
         {
@@ -633,6 +643,11 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> SqrMagnitude => x * x + y * y;
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector2<T> Normalized => this / Magnitude;
+
+        public Vector2<T> SetComponent(int component, Scalar<T> value)
+        {
+            return new Vector2<T>(component == 0 ? value : x, component == 1 ? value : y);
+        }
 
         public Scalar<T> Norm(int p)
         {
@@ -960,6 +975,11 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> SqrMagnitude => x * x + y * y + z * z;
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector3<T> Normalized => this / Magnitude;
+
+        public Vector3<T> SetComponent(int component, Scalar<T> value)
+        {
+            return new Vector3<T>(component == 0 ? value : x, component == 1 ? value : y, component == 2 ? value : z);
+        }
 
         public Scalar<T> Norm(int p)
         {
@@ -1299,6 +1319,11 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> SqrMagnitude => x * x + y * y + z * z + w * w;
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector4<T> Normalized => this / Magnitude;
+
+        public Vector4<T> SetComponent(int component, Scalar<T> value)
+        {
+            return new Vector4<T>(component == 0 ? value : x, component == 1 ? value : y, component == 2 ? value : z, component == 3 ? value : w);
+        }
 
         public Scalar<T> Norm(int p)
         {
@@ -1649,6 +1674,11 @@ namespace LinearAlgebraSharp.Vectors
         public Scalar<T> SqrMagnitude => v0 * v0 + v1 * v1 + v2 * v2 + v3 * v3 + v4 * v4;
         public Scalar<T> Magnitude => ScalarMath<T>.Sqrt(SqrMagnitude);
         public Vector5<T> Normalized => this / Magnitude;
+
+        public Vector5<T> SetComponent(int component, Scalar<T> value)
+        {
+            return new Vector5<T>(component == 0 ? value : v0, component == 1 ? value : v1, component == 2 ? value : v2, component == 3 ? value : v3, component == 4 ? value : v4);
+        }
 
         public Scalar<T> Norm(int p)
         {

@@ -598,7 +598,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public object Clone()
         {
-            return new Matrix<T>(Data);
+            return new Matrix<T>((Scalar<T>[,])Data.Clone());
         }
 
         public bool Equals(Matrix<T> other)

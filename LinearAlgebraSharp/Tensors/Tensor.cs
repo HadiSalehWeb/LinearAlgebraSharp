@@ -1,5 +1,6 @@
 ﻿using LinearAlgebraSharp.Scalars;
 using LinearAlgebraSharp.Vectors;
+using LinearAlgebraSharp.Matrices;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -265,6 +266,60 @@ namespace LinearAlgebraSharp.Tensors
         }
 
         #endregion
+
+        #endregion
+
+        #region Explicit Conversion
+
+        public static Tensor<Vector0<int>, T> OfScalar(Scalar<T> scalar)
+        {
+            return new Tensor<Vector0<int>, T>(scalar.Dimension, new Scalar<T>[] { scalar });
+        }
+
+        public static Tensor<Vector1<int>, T> OfVector(Vector<T> vector)
+        {
+            return new Tensor<Vector1<int>, T>(vector.Dimension, vector.Data);
+        }
+
+        public static Tensor<Vector1<int>, T> OfIVector<TVec>(TVec vector)
+            where TVec : IVector<T, TVec>
+        {
+            return new Tensor<Vector1<int>, T>(vector.Dimension, vector.Data);
+        }
+
+        public static Tensor<Vector2<int>, T> OfMatrix(Matrix<T> matrix)
+        {
+            return new Tensor<Vector2<int>, T>(matrix.Dimension, matrix.Rows.SelectMany(x => x.Data).ToArray());
+        }
+
+        public static Tensor<Vector2<int>, T> OfIMatrix<TMatrix, TRow, TColumn>(TMatrix matrix)
+            where TMatrix : IMatrix<T, TMatrix, TRow, TColumn>
+            where TRow : IVector<T, TRow>
+            where TColumn : IVector<T, TColumn>
+        {
+            return new Tensor<Vector2<int>, T>(matrix.Dimension, matrix.Rows.SelectMany(x => x.Data).ToArray());
+        }
+
+        public static Scalar<T> AsScalar(Tensor<Vector0<int>, T> tensor)
+        {
+            return tensor.Data[0];
+        }
+
+        public static Vector<T> AsVector(Tensor<Vector1<int>, T> tensor)
+        {
+            return new Vector<T>(tensor.Data);
+        }
+
+        public static Matrix<T> AsMatrix(Tensor<Vector2<int>, T> tensor)
+        {
+            Scalar<T>[,] data = new Scalar<T>[tensor.Dimension.x, tensor.Dimension.y];
+
+            for (int i = 0; i < tensor.Dimension.x; i++)
+                for (int j = 0; j < tensor.Dimension.y; j++)
+                    data[i, j] = tensor.Data[i * tensor.Dimension.y + j];
+
+            return new Matrix<T>(data);
+        }
 
         #endregion
 

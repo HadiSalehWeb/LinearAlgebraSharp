@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LinearAlgebraSharp.Scalars
 {
@@ -59,14 +60,50 @@ namespace LinearAlgebraSharp.Scalars
             return s < Scalar<T>.Zero ? s.Negate() : s;
         }
 
+        public static Scalar<T> Max(Scalar<T> s1, Scalar<T> s2)
+        {
+            return s1 > s2 ? s1 : s2;
+        }
+
         public static Scalar<T> Min(Scalar<T> s1, Scalar<T> s2)
         {
             return s1 < s2 ? s1 : s2;
         }
 
-        public static Scalar<T> Max(Scalar<T> s1, Scalar<T> s2)
+        public static Scalar<T> Max(params Scalar<T>[] arr)
         {
-            return s1 > s2 ? s1 : s2;
+            return Max((IEnumerable<Scalar<T>>)arr);
+        }
+
+        public static Scalar<T> Min(params Scalar<T>[] arr)
+        {
+            return Min((IEnumerable<Scalar<T>>)arr);
+        }
+
+        public static Scalar<T> Max(IEnumerable<Scalar<T>> list)
+        {
+            var ret = Scalar<T>.MinValue;
+
+            foreach (var elem in list)
+            {
+                if (elem > ret)
+                    ret = elem;
+            }
+
+            return ret;
+        }
+
+        public static Scalar<T> Min(IEnumerable<Scalar<T>> list)
+        {
+            var ret = Scalar<T>.MaxValue;
+
+            foreach (var elem in list)
+            {
+                if (elem < ret)
+                    ret = elem;
+            }
+
+            return ret;
         }
 
         #endregion

@@ -140,6 +140,53 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(<#= string.Join(", ", Enumerable.Range(0, n[1]).Select(y => "Columns[" + y + "].Norm(1)"))#>);
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(<#= string.Join(", ", Enumerable.Range(0, n[0]).Select(x => "Rows[" + x + "].Norm(1)"))#>);
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+<# for(int x = 0; x < n[0]; x++) { #>
+<# for(int y = 0; y < n[1]; y++) { #>
+                ScalarMath<T>.Pow(e<#= x + "" + y #>, p)<#= (x == n[0] - 1 && y == n[1] - 1) ? "," : " +" #>
+<# } #>
+<# } #>
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(<# for(int x = 0; x < n[0]; x++) { #><# for(int y = 0; y < n[1]; y++) { #>e<#= x + "" + y #><#= (x == n[0] - 1 && y == n[1] - 1) ? "" : ", " #><# } #><# } #>);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(<# for(int x = 0; x < n[0]; x++) { #><# for(int y = 0; y < n[1]; y++) { #>e<#= x + "" + y #> * e<#= x + "" + y #><#= (x == n[0] - 1 && y == n[1] - 1) ? "" : " + " #><# } #><# } #>);
+        }
+
         public Matrix<#= n[0] #>x<#= n[1] #><T> ElementwiseProduct(Matrix<#= n[0] #>x<#= n[1] #><T> mat)
         {
             return new Matrix<#= n[0] #>x<#= n[1] #><T>(

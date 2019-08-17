@@ -89,6 +89,49 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00);
+        }
+
         public Matrix1x1<T> ElementwiseProduct(Matrix1x1<T> mat)
         {
             return new Matrix1x1<T>(
@@ -518,6 +561,52 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e10, e11);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e10 * e10 + e11 * e11);
+        }
 
         public Matrix2x2<T> ElementwiseProduct(Matrix2x2<T> mat)
         {
@@ -961,6 +1050,57 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e12, p) +
+                ScalarMath<T>.Pow(e20, p) +
+                ScalarMath<T>.Pow(e21, p) +
+                ScalarMath<T>.Pow(e22, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02, e10, e11, e12, e20, e21, e22);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02 + e10 * e10 + e11 * e11 + e12 * e12 + e20 * e20 + e21 * e21 + e22 * e22);
+        }
 
         public Matrix3x3<T> ElementwiseProduct(Matrix3x3<T> mat)
         {
@@ -1429,6 +1569,64 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1), Columns[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1), Rows[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p) +
+                ScalarMath<T>.Pow(e03, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e12, p) +
+                ScalarMath<T>.Pow(e13, p) +
+                ScalarMath<T>.Pow(e20, p) +
+                ScalarMath<T>.Pow(e21, p) +
+                ScalarMath<T>.Pow(e22, p) +
+                ScalarMath<T>.Pow(e23, p) +
+                ScalarMath<T>.Pow(e30, p) +
+                ScalarMath<T>.Pow(e31, p) +
+                ScalarMath<T>.Pow(e32, p) +
+                ScalarMath<T>.Pow(e33, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23, e30, e31, e32, e33);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02 + e03 * e03 + e10 * e10 + e11 * e11 + e12 * e12 + e13 * e13 + e20 * e20 + e21 * e21 + e22 * e22 + e23 * e23 + e30 * e30 + e31 * e31 + e32 * e32 + e33 * e33);
+        }
+
         public Matrix4x4<T> ElementwiseProduct(Matrix4x4<T> mat)
         {
             return new Matrix4x4<T>(
@@ -1839,6 +2037,50 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01);
+        }
+
         public Matrix1x2<T> ElementwiseProduct(Matrix1x2<T> mat)
         {
             return new Matrix1x2<T>(
@@ -2245,6 +2487,50 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e10, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e10);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e10 * e10);
+        }
 
         public Matrix2x1<T> ElementwiseProduct(Matrix2x1<T> mat)
         {
@@ -2667,6 +2953,51 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02);
+        }
+
         public Matrix1x3<T> ElementwiseProduct(Matrix1x3<T> mat)
         {
             return new Matrix1x3<T>(
@@ -3071,6 +3402,51 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e20, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e10, e20);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e10 * e10 + e20 * e20);
+        }
 
         public Matrix3x1<T> ElementwiseProduct(Matrix3x1<T> mat)
         {
@@ -3505,6 +3881,52 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1), Columns[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p) +
+                ScalarMath<T>.Pow(e03, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02, e03);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02 + e03 * e03);
+        }
+
         public Matrix1x4<T> ElementwiseProduct(Matrix1x4<T> mat)
         {
             return new Matrix1x4<T>(
@@ -3897,6 +4319,52 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1), Rows[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e20, p) +
+                ScalarMath<T>.Pow(e30, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e10, e20, e30);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e10 * e10 + e20 * e20 + e30 * e30);
+        }
 
         public Matrix4x1<T> ElementwiseProduct(Matrix4x1<T> mat)
         {
@@ -4330,6 +4798,54 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e12, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02, e10, e11, e12);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02 + e10 * e10 + e11 * e11 + e12 * e12);
+        }
+
         public Matrix2x3<T> ElementwiseProduct(Matrix2x3<T> mat)
         {
             return new Matrix2x3<T>(
@@ -4758,6 +5274,54 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e20, p) +
+                ScalarMath<T>.Pow(e21, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e10, e11, e20, e21);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e10 * e10 + e11 * e11 + e20 * e20 + e21 * e21);
+        }
 
         public Matrix3x2<T> ElementwiseProduct(Matrix3x2<T> mat)
         {
@@ -5208,6 +5772,56 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1), Columns[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p) +
+                ScalarMath<T>.Pow(e03, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e12, p) +
+                ScalarMath<T>.Pow(e13, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02, e03, e10, e11, e12, e13);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02 + e03 * e03 + e10 * e10 + e11 * e11 + e12 * e12 + e13 * e13);
+        }
+
         public Matrix2x4<T> ElementwiseProduct(Matrix2x4<T> mat)
         {
             return new Matrix2x4<T>(
@@ -5626,6 +6240,56 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1), Rows[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e20, p) +
+                ScalarMath<T>.Pow(e21, p) +
+                ScalarMath<T>.Pow(e30, p) +
+                ScalarMath<T>.Pow(e31, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e10, e11, e20, e21, e30, e31);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e10 * e10 + e11 * e11 + e20 * e20 + e21 * e21 + e30 * e30 + e31 * e31);
+        }
 
         public Matrix4x2<T> ElementwiseProduct(Matrix4x2<T> mat)
         {
@@ -6082,6 +6746,60 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1), Columns[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p) +
+                ScalarMath<T>.Pow(e03, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e12, p) +
+                ScalarMath<T>.Pow(e13, p) +
+                ScalarMath<T>.Pow(e20, p) +
+                ScalarMath<T>.Pow(e21, p) +
+                ScalarMath<T>.Pow(e22, p) +
+                ScalarMath<T>.Pow(e23, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02, e03, e10, e11, e12, e13, e20, e21, e22, e23);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02 + e03 * e03 + e10 * e10 + e11 * e11 + e12 * e12 + e13 * e13 + e20 * e20 + e21 * e21 + e22 * e22 + e23 * e23);
+        }
+
         public Matrix3x4<T> ElementwiseProduct(Matrix3x4<T> mat)
         {
             return new Matrix3x4<T>(
@@ -6521,6 +7239,60 @@ namespace LinearAlgebraSharp.Matrices
         #endregion
 
         #region Functions
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns[0].Norm(1), Columns[1].Norm(1), Columns[2].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows[0].Norm(1), Rows[1].Norm(1), Rows[2].Norm(1), Rows[3].Norm(1));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            return ScalarMath<T>.Pow(
+                ScalarMath<T>.Pow(e00, p) +
+                ScalarMath<T>.Pow(e01, p) +
+                ScalarMath<T>.Pow(e02, p) +
+                ScalarMath<T>.Pow(e10, p) +
+                ScalarMath<T>.Pow(e11, p) +
+                ScalarMath<T>.Pow(e12, p) +
+                ScalarMath<T>.Pow(e20, p) +
+                ScalarMath<T>.Pow(e21, p) +
+                ScalarMath<T>.Pow(e22, p) +
+                ScalarMath<T>.Pow(e30, p) +
+                ScalarMath<T>.Pow(e31, p) +
+                ScalarMath<T>.Pow(e32, p),
+                1d / p
+            );
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            return ScalarMath<T>.Max(e00, e01, e02, e10, e11, e12, e20, e21, e22, e30, e31, e32);
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            return ScalarMath<T>.Sqrt(e00 * e00 + e01 * e01 + e02 * e02 + e10 * e10 + e11 * e11 + e12 * e12 + e20 * e20 + e21 * e21 + e22 * e22 + e30 * e30 + e31 * e31 + e32 * e32);
+        }
 
         public Matrix4x3<T> ElementwiseProduct(Matrix4x3<T> mat)
         {

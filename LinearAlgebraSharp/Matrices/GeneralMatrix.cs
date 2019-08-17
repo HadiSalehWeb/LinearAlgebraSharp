@@ -190,6 +190,65 @@ namespace LinearAlgebraSharp.Matrices
 
         #region Functions
 
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = 1 as induced by vector norms.
+        /// </summary>
+        public Scalar<T> OneNorm()
+        {
+            return ScalarMath<T>.Max(Columns.Select(x => x.Norm(1)));
+        }
+
+        /// <summary>
+        /// Returns the p-norm of the matrix for p = infinity as induced by vector norms.
+        /// </summary>
+        public Scalar<T> MaximumNorm()
+        {
+            return ScalarMath<T>.Max(Rows.Select(x => x.Norm(1)));
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix.
+        /// </summary>
+        public Scalar<T> EntrywisePNorm(int p)
+        {
+            Scalar<T> norm = Scalar<T>.Zero;
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    norm += ScalarMath<T>.Pow(ScalarMath<T>.Abs(Data[i, j]), p);
+
+            return ScalarMath<T>.Pow(norm, 1d / p);
+        }
+
+        /// <summary>
+        /// Returns the entrywise p-norm of the matrix for p = infinity.
+        /// </summary>
+        public Scalar<T> EntrywiseMaximumNorm()
+        {
+            Scalar<T> norm = Scalar<T>.MinValue;
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    if (Data[i, j] > norm)
+                        norm = Data[i, j];
+
+            return norm;
+        }
+
+        /// <summary>
+        /// Returns the Frobenius norm of the matrix i.e the L_pq-norm for p = 2, q = 2.
+        /// </summary>
+        public Scalar<T> FrobeniusNorm()
+        {
+            Scalar<T> norm = Scalar<T>.Zero;
+
+            for (int i = 0; i < Dimension.x; i++)
+                for (int j = 0; j < Dimension.y; j++)
+                    norm += Data[i, j] * Data[i, j];
+
+            return ScalarMath<T>.Sqrt(norm);
+        }
+
         public Matrix<T> ElementwiseProduct(Matrix<T> mat)
         {
             if (Dimension != mat.Dimension)
@@ -302,7 +361,7 @@ namespace LinearAlgebraSharp.Matrices
             if (Dimension.y != vec.Dimension) throw new ArgumentException("Incompatible dimensions.");
 
             Scalar<T>[] data = new Scalar<T>[Dimension.x];
-            int i = 0, j = 0;
+            int i, j;
             for (i = 0, data[i] = Scalar<T>.Zero; i < Dimension.x; i++)
                 for (j = 0; j < vec.Dimension; j++)
                     data[i] += Data[i, j] * vec[j];
@@ -315,7 +374,7 @@ namespace LinearAlgebraSharp.Matrices
             if (Dimension.x != vec.Dimension) throw new ArgumentException("Incompatible dimensions.");
 
             Scalar<T>[] data = new Scalar<T>[Dimension.y];
-            int i = 0, j = 0;
+            int i, j;
             for (i = 0, data[i] = Scalar<T>.Zero; i < vec.Dimension; i++)
                 for (j = 0; j < Dimension.y; j++)
                     data[i] += Data[i, j] * vec[i];

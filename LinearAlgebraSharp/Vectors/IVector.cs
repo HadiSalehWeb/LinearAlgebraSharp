@@ -1,13 +1,8 @@
 ﻿using LinearAlgebraSharp.Scalars;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace LinearAlgebraSharp.Vectors
 {
     public interface IVector<T, TThis> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         ITensor<T, Vector1<int>, TThis>
         where T : struct
         where TThis : IVector<T, TThis>

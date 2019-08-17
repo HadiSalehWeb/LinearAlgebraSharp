@@ -240,7 +240,7 @@ namespace LinearAlgebraSharp.Vectors
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public bool Equals(Vector0<T> other)
@@ -539,7 +539,7 @@ namespace LinearAlgebraSharp.Vectors
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public bool Equals(Vector1<T> other)
@@ -864,7 +864,7 @@ namespace LinearAlgebraSharp.Vectors
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public bool Equals(Vector2<T> other)
@@ -1201,7 +1201,7 @@ namespace LinearAlgebraSharp.Vectors
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public bool Equals(Vector3<T> other)
@@ -1550,7 +1550,7 @@ namespace LinearAlgebraSharp.Vectors
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public bool Equals(Vector4<T> other)
@@ -1902,7 +1902,7 @@ namespace LinearAlgebraSharp.Vectors
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public bool Equals(Vector5<T> other)

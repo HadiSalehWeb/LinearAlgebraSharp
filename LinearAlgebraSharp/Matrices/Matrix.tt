@@ -38,9 +38,6 @@ namespace LinearAlgebraSharp.Matrices
 <# foreach (var n in supportedDimensions) { #>
     [Serializable]
     public struct Matrix<#= n[0] #>x<#= n[1] #><T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix<#= n[0] #>x<#= n[1] #><T>, Vector<#= n[1] #><T>, Vector<#= n[0] #><T>>
         where T : struct
     {
@@ -470,7 +467,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()

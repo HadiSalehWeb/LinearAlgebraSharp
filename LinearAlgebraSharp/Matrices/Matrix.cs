@@ -8,9 +8,6 @@ namespace LinearAlgebraSharp.Matrices
 {
     [Serializable]
     public struct Matrix1x1<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix1x1<T>, Vector1<T>, Vector1<T>>
         where T : struct
     {
@@ -414,7 +411,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -432,9 +429,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix2x2<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix2x2<T>, Vector2<T>, Vector2<T>>
         where T : struct
     {
@@ -841,7 +835,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -865,9 +859,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix3x3<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix3x3<T>, Vector3<T>, Vector3<T>>
         where T : struct
     {
@@ -1284,7 +1275,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -1318,9 +1309,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix4x4<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix4x4<T>, Vector4<T>, Vector4<T>>
         where T : struct
     {
@@ -1721,7 +1709,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -1769,9 +1757,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix1x2<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix1x2<T>, Vector2<T>, Vector1<T>>
         where T : struct
     {
@@ -2158,7 +2143,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -2178,9 +2163,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix2x1<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix2x1<T>, Vector1<T>, Vector2<T>>
         where T : struct
     {
@@ -2580,7 +2562,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -2600,9 +2582,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix1x3<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix1x3<T>, Vector3<T>, Vector1<T>>
         where T : struct
     {
@@ -2984,7 +2963,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -3006,9 +2985,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix3x1<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix3x1<T>, Vector1<T>, Vector3<T>>
         where T : struct
     {
@@ -3419,7 +3395,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -3441,9 +3417,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix1x4<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix1x4<T>, Vector4<T>, Vector1<T>>
         where T : struct
     {
@@ -3810,7 +3783,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -3834,9 +3807,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix4x1<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix4x1<T>, Vector1<T>, Vector4<T>>
         where T : struct
     {
@@ -4243,7 +4213,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -4267,9 +4237,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix2x3<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix2x3<T>, Vector3<T>, Vector2<T>>
         where T : struct
     {
@@ -4670,7 +4637,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -4698,9 +4665,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix3x2<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix3x2<T>, Vector2<T>, Vector3<T>>
         where T : struct
     {
@@ -5118,7 +5082,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -5146,9 +5110,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix2x4<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix2x4<T>, Vector4<T>, Vector2<T>>
         where T : struct
     {
@@ -5534,7 +5495,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -5566,9 +5527,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix4x2<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix4x2<T>, Vector2<T>, Vector4<T>>
         where T : struct
     {
@@ -5984,7 +5942,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -6016,9 +5974,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix3x4<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix3x4<T>, Vector4<T>, Vector3<T>>
         where T : struct
     {
@@ -6418,7 +6373,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
@@ -6458,9 +6413,6 @@ namespace LinearAlgebraSharp.Matrices
 
     [Serializable]
     public struct Matrix4x3<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix4x3<T>, Vector3<T>, Vector4<T>>
         where T : struct
     {
@@ -6874,7 +6826,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()

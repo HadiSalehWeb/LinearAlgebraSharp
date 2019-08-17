@@ -373,7 +373,7 @@ namespace LinearAlgebraSharp.Vectors
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public bool Equals(Vector<#= n #><T> other)

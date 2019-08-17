@@ -421,21 +421,21 @@ namespace LinearAlgebraSharp.Vectors
             return Data.All(x => x == other.Data[i++]);
         }
 
-        IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
-        {
-            foreach (var d in Data)
-                yield return d;
-        }
-
         public IEnumerator<T> GetEnumerator()
         {
             foreach (var d in Data)
                 yield return d.Value;
         }
 
+        IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()
+        {
+            foreach (var d in Data)
+                yield return d;
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public override bool Equals(object obj)

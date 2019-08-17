@@ -10,9 +10,6 @@ namespace LinearAlgebraSharp.Matrices
 {
     [Serializable]
     public struct Matrix<T> :
-        IEnumerable,
-        IEnumerable<Scalar<T>>,
-        IEnumerable<T>,
         IMatrix<T, Matrix<T>, Vector<T>, Vector<T>>
         where T : struct
     {
@@ -130,7 +127,7 @@ namespace LinearAlgebraSharp.Matrices
         }
 
         /// <summary>
-        /// Returns an n * n matrix with ones on the diagonal and zeros elsewhere.
+        /// Returns an n * m matrix with ones on the diagonal and zeros elsewhere.
         /// </summary>
         public static Matrix<T> Eye(Vector2<int> dimensions)
         {
@@ -146,7 +143,7 @@ namespace LinearAlgebraSharp.Matrices
         }
 
         /// <summary>
-        /// Returns the n * n identity matrix.
+        /// Returns the n * n identity matrix with ones on the diagonal and zeros elsewhere.
         /// </summary>
         public static Matrix<T> Identity(int dimension)
         {
@@ -616,7 +613,7 @@ namespace LinearAlgebraSharp.Matrices
 
         public IEnumerator GetEnumerator()
         {
-            return GetEnumerator();
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         IEnumerator<Scalar<T>> IEnumerable<Scalar<T>>.GetEnumerator()

@@ -1,10 +1,11 @@
 ﻿using LinearAlgebraSharp.Scalars;
 using LinearAlgebraSharp.Vectors;
 using System;
+using System.Collections.Generic;
 
 namespace LinearAlgebraSharp
 {
-    public interface ITensor<T, TDimension, TThis> : ICloneable, IEquatable<TThis>
+    public interface ITensor<T, TDimension, TThis> : ICloneable, IEquatable<TThis>, IEnumerable<T>, IEnumerable<Scalar<T>>
         where T : struct
         where TDimension : IVector<int, TDimension>
         where TThis : ITensor<T, TDimension, TThis>

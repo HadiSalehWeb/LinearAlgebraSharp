@@ -78,13 +78,7 @@ namespace LinearAlgebraSharp.UnitTest.Scalars
             Scalar<decimal> a = new Scalar<decimal>(ta);
 
             if (a != Scalar<decimal>.Zero)
-            {
-                var inverse = Scalar<decimal>.One / a;
-                var mult = inverse * a;
-                var diff = Scalar<decimal>.One - mult;
-                var abs = Math.Abs(diff.Value);
-                Assert.True(abs <= 0.000000000000000000000000001m);
-            }
+                Assert.Equal((a * (Scalar<decimal>.One / a)).Value, Scalar<decimal>.One.Value, 20);
         }
     }
 }

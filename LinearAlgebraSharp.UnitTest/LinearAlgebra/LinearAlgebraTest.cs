@@ -1,11 +1,7 @@
-﻿using LinearAlgebraSharp.Matrices;
-using LinearAlgebraSharp.Scalars;
+﻿using LinearAlgebraSharp.Scalars;
 using LinearAlgebraSharp.Vectors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LinearAlgebraSharp.Matrices;
+using LinearAlgebraSharp.Tensors;
 using Xunit;
 
 namespace LinearAlgebraSharp.UnitTest.LinearAlgebra
@@ -46,6 +42,13 @@ namespace LinearAlgebraSharp.UnitTest.LinearAlgebra
             Assert.Equal(1, Vector4<byte>.Order.Value);
             Assert.Equal(1, Vector5<byte>.Order.Value);
 
+            Assert.Equal(1, Vector0<decimal>.Order.Value);
+            Assert.Equal(1, Vector1<decimal>.Order.Value);
+            Assert.Equal(1, Vector2<decimal>.Order.Value);
+            Assert.Equal(1, Vector3<decimal>.Order.Value);
+            Assert.Equal(1, Vector4<decimal>.Order.Value);
+            Assert.Equal(1, Vector5<decimal>.Order.Value);
+
             Assert.Equal(2, Matrix<byte>.Order.Value);
             Assert.Equal(2, Matrix<sbyte>.Order.Value);
             Assert.Equal(2, Matrix<ushort>.Order.Value);
@@ -75,7 +78,36 @@ namespace LinearAlgebraSharp.UnitTest.LinearAlgebra
             Assert.Equal(2, Matrix4x3<byte>.Order.Value);
             Assert.Equal(2, Matrix4x4<byte>.Order.Value);
 
-            //todo: tensors
+            Assert.Equal(2, Matrix1x1<decimal>.Order.Value);
+            Assert.Equal(2, Matrix1x2<decimal>.Order.Value);
+            Assert.Equal(2, Matrix1x3<decimal>.Order.Value);
+            Assert.Equal(2, Matrix1x4<decimal>.Order.Value);
+            Assert.Equal(2, Matrix2x1<decimal>.Order.Value);
+            Assert.Equal(2, Matrix2x2<decimal>.Order.Value);
+            Assert.Equal(2, Matrix2x3<decimal>.Order.Value);
+            Assert.Equal(2, Matrix2x4<decimal>.Order.Value);
+            Assert.Equal(2, Matrix3x1<decimal>.Order.Value);
+            Assert.Equal(2, Matrix3x2<decimal>.Order.Value);
+            Assert.Equal(2, Matrix3x3<decimal>.Order.Value);
+            Assert.Equal(2, Matrix3x4<decimal>.Order.Value);
+            Assert.Equal(2, Matrix4x1<decimal>.Order.Value);
+            Assert.Equal(2, Matrix4x2<decimal>.Order.Value);
+            Assert.Equal(2, Matrix4x3<decimal>.Order.Value);
+            Assert.Equal(2, Matrix4x4<decimal>.Order.Value);
+
+            Assert.Equal(0, new Tensor<Vector0<int>, float>(new Vector0<int>()).Order.Value);
+            Assert.Equal(1, new Tensor<Vector1<int>, float>(new Vector1<int>(1)).Order.Value);
+            Assert.Equal(2, new Tensor<Vector2<int>, float>(new Vector2<int>(1, 1)).Order.Value);
+            Assert.Equal(3, new Tensor<Vector3<int>, float>(new Vector3<int>(1, 1, 1)).Order.Value);
+            Assert.Equal(4, new Tensor<Vector4<int>, float>(new Vector4<int>(1, 1, 1, 1)).Order.Value);
+            Assert.Equal(5, new Tensor<Vector5<int>, float>(new Vector5<int>(1, 1, 1, 1, 1)).Order.Value);
+
+            Assert.Equal(1, new Tensor<Vector<int>, float>(new Vector<int>(1)).Order.Value);
+            Assert.Equal(2, new Tensor<Vector<int>, float>(new Vector<int>(1, 1)).Order.Value);
+            Assert.Equal(3, new Tensor<Vector<int>, float>(new Vector<int>(1, 1, 1)).Order.Value);
+            Assert.Equal(4, new Tensor<Vector<int>, float>(new Vector<int>(1, 1, 1, 1)).Order.Value);
+            Assert.Equal(5, new Tensor<Vector<int>, float>(new Vector<int>(1, 1, 1, 1, 1)).Order.Value);
+            Assert.Equal(6, new Tensor<Vector<int>, float>(new Vector<int>(1, 1, 1, 1, 1, 1)).Order.Value);
         }
     }
 }

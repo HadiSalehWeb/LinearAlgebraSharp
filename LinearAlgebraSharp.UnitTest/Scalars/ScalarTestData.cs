@@ -114,12 +114,12 @@ namespace LinearAlgebraSharp.UnitTest.Scalars
         {
             return new List<object[]>
             {
-                new object[] { 0f        , 1f      , 2f       },
-                new object[] { 1f        , 2f      , 0.5f     },
-                new object[] { 2f        , 0.5f    , 12.0358f },
-                new object[] { 0.5f      , 12.0358f, 10000f   },
-                new object[] { 12.0358f  , 10000f  , 0f       },
-                new object[] { 10000f    , 0f      , 1f       },
+                new object[] { 0f      , 1f      , 2f       },
+                new object[] { 1f      , 2f      , 0.5f     },
+                new object[] { 2f      , 0.5f    , 12.0358f },
+                new object[] { 0.5f    , 12.0358f, 10000f   },
+                new object[] { 12.0358f, 10000f  , 0f       },
+                new object[] { 10000f  , 0f      , 1f       },
             }.Select(x => x.Take(itemCount).ToArray()).Take(testCount);
         }
 
@@ -127,12 +127,12 @@ namespace LinearAlgebraSharp.UnitTest.Scalars
         {
             return new List<object[]>
             {
-                new object[] { 0d        , 1d      , 2d       },
-                new object[] { 1d        , 2d      , 0.5d     },
-                new object[] { 2d        , 0.5d    , 12.0358d },
-                new object[] { 0.5d      , 12.0358d, 10000d   },
-                new object[] { 12.0358d  , 10000d  , 0d       },
-                new object[] { 10000d    , 0d      , 1d       },
+                new object[] { 0d      , 1d      , 2d       },
+                new object[] { 1d      , 2d      , 0.5d     },
+                new object[] { 2d      , 0.5d    , 12.0358d },
+                new object[] { 0.5d    , 12.0358d, 10000d   },
+                new object[] { 12.0358d, 10000d  , 0d       },
+                new object[] { 10000d  , 0d      , 1d       },
             }.Select(x => x.Take(itemCount).ToArray()).Take(testCount);
         }
 
@@ -140,12 +140,12 @@ namespace LinearAlgebraSharp.UnitTest.Scalars
         {
             return new List<object[]>
             {
-                new object[] { 0m       , 1m     , 2m      },
-                new object[] { 1m       , 2m     , 0.5m    },
-                new object[] { 2m       , 0.5m   , 12.035m },
-                new object[] { 0.5m     , 12.035m, 10000m  },
-                new object[] { 12.035m  , 10000m , 0m      },
-                new object[] { 10000m   , 0m     , 1m      },
+                new object[] { 0m     , 1m     , 2m      },
+                new object[] { 1m     , 2m     , 0.5m    },
+                new object[] { 2m     , 0.5m   , 12.035m },
+                new object[] { 0.5m   , 12.035m, 10000m  },
+                new object[] { 12.035m, 10000m , 0m      },
+                new object[] { 10000m , 0m     , 1m      },
             }.Select(x => x.Take(itemCount).ToArray()).Take(testCount);
         }
     }

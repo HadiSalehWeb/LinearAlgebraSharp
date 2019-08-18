@@ -71,6 +71,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scalars\DecimalAxioms.cs" />
     <Compile Include="Scalars\Axioms.cs" />
+    <Compile Include="Scalars\ScalarCastTest.cs" />
+    <Compile Include="Scalars\RandomScalarTest.cs" />
     <Compile Include="Scalars\ScalarTest.cs" />
     <Compile Include="Scalars\ScalarTestData.cs" />
     <Compile Include="Vectors\VectorTest.cs" />
